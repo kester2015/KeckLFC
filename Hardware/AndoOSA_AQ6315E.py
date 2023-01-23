@@ -317,7 +317,8 @@ class AndoOSA_AQ6315E(Device):
                     savemat(filename + '.mat', {
                         'OSAWavelength': wl,
                         'OSAPower': intensity,
-                        'resolution': self.resolution
+                        'resolution': self.resolution,
+                        'timestamp': time.ctime()
                     },
                             oned_as='column')
                     print(self.devicename + ": Trace " + trace + " data is saved to " + filename + '.mat')

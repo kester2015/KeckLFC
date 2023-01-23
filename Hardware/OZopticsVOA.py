@@ -38,7 +38,7 @@ class OZopticsVOA(Device):
         message = message + f"|\t Attenuation: {self.atten_db:.2f} (dB)"+'\n'
         message = message + "|\t Device Configure String:" + '\n'
         message = message + "|\t\t" + self._getConfigStr()[:-1].replace('\n','\n|\t\t')
-        message = message + 'OZ optics VOA Status Summary Ends'.center(80,'-')+'\n'
+        message = message + '\n'+'OZ optics VOA Status Summary Ends'.center(80,'-')+'\n'
         print(message)
         return message
 

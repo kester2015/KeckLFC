@@ -99,7 +99,7 @@ if __name__=="__main__":
     daq2 = USB2408(addr=1)
     daq2.connect()
 
-    filename = r"Z:\Maodong\Projects\Keck\System Assembly test\Temp_Monitor_with_Rack_2.txt"   
+    filename = r"Z:\Maodong\Projects\Keck\System Assembly test\Full_Comb_Running_1.txt"   
     with  open(filename,"w") as f:
         #TODO: write table head
         f.write("")
