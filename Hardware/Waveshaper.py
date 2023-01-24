@@ -75,6 +75,7 @@ class Waveshaper(Device):
             plt.xlabel('Freq (THz)')
             plt.ylabel('Phase (Rad)')
             plt.show()
+        return beta2
 
     def set3rdDisper(self, d2, d3, center=1560, centerunit='nm', preview_plot=False):
         if centerunit.upper() == 'NM':
@@ -91,6 +92,7 @@ class Waveshaper(Device):
             plt.xlabel('Freq (THz)')
             plt.ylabel('Phase (Rad)')
             plt.show()
+        return beta2, beta3
 
     def setBandPass(self, center=192.175, span=4, unit='thz'):
         if str(unit).casefold() == 'nm':
@@ -241,6 +243,11 @@ class Waveshaper(Device):
         self.plotStatus()
         plt.draw()
         print((str(self.devicename) + " Status Summary Ends").center(80, '-'))
+
+    def nm2thz(self,nm):
+        return self.__nm2thz(nm)
+    def thz2nm(self,thz):
+        return self.__thz2nm(thz)
 
     def __nm2thz(self, nm):
         return Waveshaper.c_const / nm / 1000

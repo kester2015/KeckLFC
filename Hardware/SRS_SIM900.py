@@ -6,6 +6,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import numbers
 import os
+from decimal import Decimal
+
 ''' Author: Maodong Gao, version 0.0, Aug 18 2022 '''
 ''' PLEASE FOLLOW camelCase Convention to maintain '''
 
@@ -124,8 +126,8 @@ class SRS_PIDcontrol_SIM960(object):
 
         self.__setpoint_max = 10  # in Volt
         self.__setpoint_min = -10  # in Volt
-        # self.__setpoint_resolution = 1e-3  # in Volt
-        self.__setpoint_resolution = None
+        self.__setpoint_resolution = 1e-3  # in Volt
+        # self.__setpoint_resolution = None
 
         self.__manual_output_max = 10  # in Volt
         self.__manual_output_min = -10  # in Volt
@@ -136,6 +138,9 @@ class SRS_PIDcontrol_SIM960(object):
         self.__spramprate_max = 1e4  # in V/s
         self.__spramprate_min = 1e-3  # in V/s
         self.__spramprate_resolution = None
+
+        self.__output_lowerlim_resolution = 1e-2 # in Volt
+        self.__output_upperlim_resolution = 1e-2 # in Volt
 
     def write(self, cmd, clear=True):
         if clear:  # clear=True means robust is important, otherwise speed is important
@@ -434,8 +439,8 @@ class SRS_PIDcontrol_SIM960(object):
             printstr="Proportional Gain in V/V",
             low_lim=-self.__prop_gain_max,
             high_lim=self.__prop_gain_max,
-            #    decimal=int(-log10(self.__prop_gain_resolution)),
-            resolution=self.__prop_gain_resolution,
+            decimal=None if self.__prop_gain_resolution == None else int(-log10(self.__prop_gain_resolution)),
+            # resolution=self.__prop_gain_resolution,
             clear=clear)
 
     # APOL(?) z 3 – 11 Controller Polarity
@@ -454,8 +459,8 @@ class SRS_PIDcontrol_SIM960(object):
             printstr="Integral Gain in 1/seconds",
             low_lim=self.__intg_gain_min,
             high_lim=self.__intg_gain_max,
-            # decimal=None if self.__intg_gain_resolution == None else int(-log10(self.__intg_gain_resolution)),
-            resolution=self.__intg_gain_resolution,
+            decimal=None if self.__intg_gain_resolution == None else int(-log10(self.__intg_gain_resolution)),
+            # resolution=self.__intg_gain_resolution,
             clear=clear)
 
     # DERV(?) {f} 3 – 11 Derivative Gain
@@ -473,8 +478,8 @@ class SRS_PIDcontrol_SIM960(object):
             printstr="Derivative Gain in seconds",
             low_lim=self.__derv_gain_min,
             high_lim=self.__derv_gain_max,
-            # decimal=None if self.__derv_gain_resolution == None else int(-log10(self.__derv_gain_resolution)),
-            resolution=self.__derv_gain_resolution,
+            decimal=None if self.__derv_gain_resolution == None else int(-log10(self.__derv_gain_resolution)),
+            # resolution=self.__derv_gain_resolution,
             clear=clear)
 
     # OFST(?) {f} 3 – 11 Output Offset
@@ -492,8 +497,8 @@ class SRS_PIDcontrol_SIM960(object):
             printstr="Output offset in Volts",
             low_lim=self.__outoffset_min,
             high_lim=self.__outoffset_max,
-            # decimal=None if self.__outoffset_resolution == None else int(-log10(self.__outoffset_resolution)),
-            resolution=self.__outoffset_resolution,
+            decimal=None if self.__outoffset_resolution == None else int(-log10(self.__outoffset_resolution)),
+            # resolution=self.__outoffset_resolution,
             clear=clear)
 
     ## ------------------Controller Configuration------------------
@@ -566,8 +571,8 @@ class SRS_PIDcontrol_SIM960(object):
             printstr="Locking set point in Volt",
             low_lim=self.__setpoint_min,
             high_lim=self.__setpoint_max,
-            # decimal=None if self.__setpoint_resolution == None else int(-log10(self.__setpoint_resolution)),
-            resolution=self.__setpoint_resolution,
+            decimal=None if self.__setpoint_resolution == None else int(-log10(self.__setpoint_resolution)),
+            # resolution=self.__setpoint_resolution,
             clear=clear)
 
     # RAMP(?) z 3 – 12 Internal setpoint ramping ON/OFF
@@ -593,8 +598,8 @@ class SRS_PIDcontrol_SIM960(object):
             printstr="Setpoint Ramping Rate in V/s",
             low_lim=self.__spramprate_min,
             high_lim=self.__spramprate_max,
-            # decimal=None if self.__spramprate_resolution == None else int(-log10(self.__spramprate_resolution)),
-            resolution=self.__spramprate_resolution,
+            decimal=None if self.__spramprate_resolution == None else int(-log10(self.__spramprate_resolution)),
+            # resolution=self.__spramprate_resolution,
             clear=clear)
 
     # RMPS? 3 – 13 Setpoint ramping status
@@ -619,6 +624,21 @@ class SRS_PIDcontrol_SIM960(object):
     def set_manual_output(self, num, clear=True):
         cmd = "MOUT"
         num = num if isinstance(num, numbers.Number) else self.__decode_str_to_SIunit(num)
+        # ---------------
+        low_lim = self.__manual_output_min 
+        high_lim = self.__manual_output_max
+        printstr="Output in Manual Mode in Volt"
+        if not low_lim == None:
+            low_lim = float(low_lim)
+            if num < low_lim:
+                raise ValueError(self.devicename + ": Setting " + printstr + " number over low range." +
+                                 f"Given number {num} should NOT lower than {low_lim}")
+        if not high_lim == None:
+            high_lim = float(high_lim)
+            if num > high_lim:
+                raise ValueError(self.devicename + ": Setting " + printstr + " number over high range." +
+                                 f"Given number {num} should NOT higher than {high_lim}")
+        # ---------------
         from math import log10
         if self.manual_output_ramp == 0:
             self.__set_num_withcmd(
@@ -627,9 +647,9 @@ class SRS_PIDcontrol_SIM960(object):
                 printstr="Output in Manual Mode in Volt",
                 low_lim=self.__manual_output_min,
                 high_lim=self.__manual_output_max,
-                #    decimal=None if self.__manual_output_resolution == None else
-                #    int(-log10(self.__manual_output_resolution)),
-                resolution=self.__manual_output_resolution,
+                decimal=None if self.__manual_output_resolution == None else
+                int(-log10(self.__manual_output_resolution)),
+                # resolution=self.__manual_output_resolution,
                 clear=clear)
         else:
             volt_start = self.get_manual_output(clear=clear)
@@ -639,9 +659,10 @@ class SRS_PIDcontrol_SIM960(object):
                 np.linspace(volt_start, volt_stop, max(int(np.ceil(np.abs(volt_start - volt_stop) / volt_incr)), 2)) *
                 1000) / 1000
             print(self.devicename + ": Manual output voltage Ramping. Disable this by set self.manual_output_ramp=0. ")
+            decimal=3 if self.__manual_output_resolution == None else int(-log10(self.__manual_output_resolution))
             for vv in volt_list:
-                self.write(cmd + f"{vv:.3f}", clear=clear)  # TODO: use __set_num_withcmd instead
-                print(f"Output in Manual Mode in Volt set to {vv:.3f}.")
+                self.write(cmd + "{:.{}f}".format(vv, decimal), clear=clear)
+                print(f"Output in Manual Mode in Volt set to "+"{:.{}f}".format(vv, decimal)+".")
                 # self.__set_num_withcmd(cmd,
                 #                        vv,
                 #                        printstr="Output in Manual Mode in Volt",
@@ -659,7 +680,12 @@ class SRS_PIDcontrol_SIM960(object):
     def set_output_upperlim(self, num, clear=True):
         cmd = "ULIM"
         num = num if isinstance(num, numbers.Number) else self.__decode_str_to_SIunit(num)
-        self.__set_num_withcmd(cmd, num, printstr="Output Upper limit in Volt", clear=clear)
+        from math import log10
+        self.__set_num_withcmd(cmd, 
+                               num,
+                               decimal=None if self.__output_upperlim_resolution == None else
+                               int(-log10(self.__output_upperlim_resolution)),
+                               printstr="Output Upper limit in Volt", clear=clear)
 
     # LLIM(?) {f} 3 – 14 Lower Output Limit
     def get_output_lowerlim(self, clear=True):
@@ -669,7 +695,12 @@ class SRS_PIDcontrol_SIM960(object):
     def set_output_lowerlim(self, num, clear=True):
         cmd = "LLIM"
         num = num if isinstance(num, numbers.Number) else self.__decode_str_to_SIunit(num)
-        self.__set_num_withcmd(cmd, num, printstr="Output Lower limit in Volt", clear=clear)
+        from math import log10
+        self.__set_num_withcmd(cmd, 
+                               num, 
+                               decimal=None if self.__output_lowerlim_resolution == None else
+                                int(-log10(self.__output_lowerlim_resolution)),
+                               printstr="Output Lower limit in Volt", clear=clear)
 
     ## ------------------Monitor------------------
     # SMON? [i] 3 – 14 Setpoint Input Monitor
@@ -736,7 +767,7 @@ class SRS_PIDcontrol_SIM960(object):
                           low_lim=None,
                           high_lim=None,
                           decimal=None,
-                          resolution=None,
+                        #   resolution=None, # TODO: Deprecate this option!
                           clear=True):
         cmd = str(cmd).upper()
         num = float(num)
@@ -756,14 +787,15 @@ class SRS_PIDcontrol_SIM960(object):
             if num > high_lim:
                 raise ValueError(self.devicename + ": Setting " + printstr + " number over high range." +
                                  f"Given number {num} should NOT higher than {high_lim}")
-        if not decimal == None:  # TODO: will be deprecated by resolution
+        if not decimal == None:  
             decimal = int(decimal)
-            if not num * 10**decimal % 1 == 0:
+            new_num = Decimal("{:.{}f}".format(num, decimal))
+            if not abs(Decimal(num) -new_num)<0.00001:
                 warnings.warn(self.devicename + ": Setting " + printstr + " precision overgiven, " + str(decimal) +
                               " decimal degits required. Given number " + str(num) + " is rounded.")
-                num = round(num, decimal)
-        if not resolution == None:
-            num = num // resolution * resolution  # TODO: Add warning
+                num = new_num
+        # if not resolution == None:
+        #     num = num // resolution * resolution  
         self.write(cmd + str(num), clear=clear)
         print(self.devicename + ": Setting " + printstr + f" to {num}.")
 
