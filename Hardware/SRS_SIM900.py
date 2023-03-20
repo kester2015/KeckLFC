@@ -658,11 +658,11 @@ class SRS_PIDcontrol_SIM960(object):
             volt_list = np.round(
                 np.linspace(volt_start, volt_stop, max(int(np.ceil(np.abs(volt_start - volt_stop) / volt_incr)), 2)) *
                 1000) / 1000
-            print(self.devicename + ": Manual output voltage Ramping. Disable this by set self.manual_output_ramp=0. ")
+            print(self.devicename + ": ....Manual output voltage Ramping.... Disable ranp by set self.manual_output_ramp=0. ")
             decimal=3 if self.__manual_output_resolution == None else int(-log10(self.__manual_output_resolution))
             for vv in volt_list:
                 self.write(cmd + "{:.{}f}".format(vv, decimal), clear=clear)
-                print(f"Output in Manual Mode in Volt set to "+"{:.{}f}".format(vv, decimal)+".")
+                print(self.devicename+f": Output in Manual Mode in Volt set to "+"{:.{}f}".format(vv, decimal)+".")
                 # self.__set_num_withcmd(cmd,
                 #                        vv,
                 #                        printstr="Output in Manual Mode in Volt",
@@ -671,7 +671,7 @@ class SRS_PIDcontrol_SIM960(object):
                 #                        decimal=None if self.__manual_output_resolution == None else
                 #                        int(-log10(self.__manual_output_resolution)),
                 #                        clear=clear)
-
+            print(self.devicename + ": ....Manual output voltage Ramp Finished. Disable ramp by set self.manual_output_ramp=0. ")
     # ULIM(?) {f} 3 – 13 Upper Output Limit
     def get_output_upperlim(self, clear=True):
         cmd = "ULIM"

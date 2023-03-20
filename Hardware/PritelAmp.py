@@ -147,7 +147,7 @@ class PritelAmp(Device):
             mA_list = np.round( np.linspace( now_mA, mA, max(int(np.ceil(np.abs(now_mA-mA)/cur_incr)) ,2) )/10 )*10
             for cur in mA_list:
                 response = self._setPwrAmpStr(amp_mA = cur)
-                print(self.devicename + ": " + response + f", , current Output {self.outputPwr_mW/1e3:.2f} W.")
+                print(self.devicename + ": " + response + f", current Output {self.outputPwr_mW/1e3:.2f} W.")
 
     @property
     def outputPwr_mW(self): # return in mW

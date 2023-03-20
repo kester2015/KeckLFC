@@ -1,12 +1,12 @@
 import imp
 import scipy as sp
 from wsapi import *
-from .Device import Device
+from .Hardware import Device
 import numpy as np
 import matplotlib.pyplot as plt
 import copy
 import time
-#from scipy.interpolate import interp1d
+from scipy.interpolate import interp1d
 
 # Finisar Waveshaper
 # Follow https://ii-vi.com/use-64-bit-python-3-7-to-control-the-waveshaper-through-the-usb-port/ for connection guide
@@ -75,7 +75,6 @@ class Waveshaper(Device):
             plt.xlabel('Freq (THz)')
             plt.ylabel('Phase (Rad)')
             plt.show()
-        return beta2
 
     def set3rdDisper(self, d2, d3, center=1560, centerunit='nm', preview_plot=False):
         if centerunit.upper() == 'NM':
@@ -92,14 +91,27 @@ class Waveshaper(Device):
             plt.xlabel('Freq (THz)')
             plt.ylabel('Phase (Rad)')
             plt.show()
-        return beta2, beta3
+    
+    def set4thDisper(self, d2, d3, d4, center=1560, centerunit='nm', preview_plot=False):
+        if centerunit.upper() == 'NM':
+            center = Waveshaper.c_const / center / 1000
+        beta2 = (Waveshaper.c_const / center)**2 / (2 * np.pi * Waveshaper.c_const) * (d2 * 1e-3)
+        beta3 = (Waveshaper.c_const)**2 / (4 * np.pi * np.pi * center**4) * (d3 * 1e-6)
+        beta4 = (Waveshaper.c_const)**3 / (8 * np.pi * np.pi * np.pi * center**6) * (d4 * 1e-9)
+        self.phase = lambda y: beta2 * ((y - center) * 2 * np.pi)**2 / 2 + beta3 * ((y - center) * 2 * np.pi)**3 / 6 + beta4 * ((y - center) * 2 * np.pi)**4 / 24
 
-    # interp phase set by jinhao------------------------------
+        self.info_phase = f"Set 4th disper with d2={d2} ps/nm, d3={d3} ps/nm^2, d4={d4} ps/nm^3, center {center} THz"
+        print("Waveshaper " + self.info_phase + ".")
+        if preview_plot:
+            plt.figure(figsize=(6, 3))
+            plt.plot(self.freq, [self.phase(x) for x in self.freq])
+            plt.xlabel('Freq (THz)')
+            plt.ylabel('Phase (Rad)')
+            plt.show()
 
     def set_interp_phase(self, x_fre,y_phase, center=1560, centerunit='nm', preview_plot=False):
         if centerunit.upper() == 'NM':
             center = Waveshaper.c_const / center / 1000
-        from scipy.interpolate import interp1d
         self.phase = interp1d(x_fre, y_phase, kind='cubic', fill_value="extrapolate")
 
         self.info_phase = f"Set interp phase with center {center} THz"
@@ -110,9 +122,6 @@ class Waveshaper(Device):
             plt.xlabel('Freq (THz)')
             plt.ylabel('Phase (Rad)')
             plt.show()
-
-    # ------------------------------------------------------------------------
-
 
 
     def setBandPass(self, center=192.175, span=4, unit='thz'):
@@ -168,7 +177,7 @@ class Waveshaper(Device):
             plt.xlim([min(peak_wl) - 0.05 * np.ptp(peak_wl), max(peak_wl) + 0.05 * np.ptp(peak_wl)])
             plt.show()
         peak_freq = np.array([self.__nm2thz(wl) for wl in peak_wl]).flatten()
-        from scipy.interpolate import interp1d
+        
         atten_intp = interp1d(peak_freq, peak_pw - max(peak_pw) + max_atten_db, bounds_error=False, fill_value=0)
 
         if (bandpass_center == None) | (bandpass_span == None):
@@ -265,13 +274,11 @@ class Waveshaper(Device):
         plt.draw()
         print((str(self.devicename) + " Status Summary Ends").center(80, '-'))
 
-    def nm2thz(self,nm):
-        return self.__nm2thz(nm)
-    def thz2nm(self,thz):
-        return self.__thz2nm(thz)
-
     def __nm2thz(self, nm):
         return Waveshaper.c_const / nm / 1000
 
     def __thz2nm(self, thz):
         return Waveshaper.c_const / thz / 1000
+
+
+

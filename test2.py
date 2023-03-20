@@ -11,40 +11,13 @@ from .Hardware import *
 import numpy as np
 import time
 
-class EquipmentManager(object):
-    def __init__(self) -> None:
-        self.equipment_list = []
-
-    def add_equipment(self, varname:str, device):
-        '''
-        Add equipment to manage
-        ===
-        Inputs:
-        ====
-            varname: string will be converted to attribute name.
-            device: object that is a Device class (Device class defined in Hardware.Device)
-        '''
-        if hasattr(self, varname):
-            raise ValueError("EquipmentManager: attribute name "+varname+" already exists. Change varname then try Add equipment again.")
-        
-        setattr(self,varname,device)
-        self.equipment_list.append(getattr(self,varname))
-
-    def get_addressbook(self):
-        self.addressbook = {'amamp27':["ASRL7::INSTR"],
-                            'amamp13':["ASRL4::INSTR"],
-                            'amamp23':["ASRL13::INSTR"],
-                            }
-
-
-
 class KeckLFC(object):
     def __init__(self, 
-                amamp_addr = 'ASRL13::INSTR', amamp_name = 'Amonic 6A 680mW EDFA',
+                amamp_addr = 'ASRL7::INSTR', amamp_name = 'Amonic27 6A 680mW EDFA',
                 amamp2_addr = 'ASRL4::INSTR', amamp2_name = 'Amonic 13dbm EDFA',
                 ptamp_addr = 'ASRL6::INSTR', ptamp_name = 'Pritel 3.85A 3.6W FA',
                 RFoscPS_addr = 'ASRL5::INSTR', RFoscPS_name = 'RF oscillator Power Supply 15V 0.4A',
-                RFampPS_addr = 'ASRL10::INSTR', RFampPS_name = 'RF amplifier Power Supply 30V 4.5A',
+                RFampPS_addr = 'ASRL34::INSTR', RFampPS_name = 'RF amplifier Power Supply 30V 4.5A',
                 rbclock_addr = 'ASRL9::INSTR', rbclock_name = 'FS725 Rubidium Frequency Standard',
                 wsp_addr = 'SN201904', wsp_name = "WS1"
                 ) -> None:
@@ -56,6 +29,8 @@ class KeckLFC(object):
         self.rbclock = RbClock(addr=rbclock_addr, name=rbclock_name)
 
         self._dev_list = [self.amamp,self.amamp2, self.ptamp, self.RFampPS, self.RFoscPS, self.rbclock]
+        #self._dev_list = [self.amamp,self.amamp2, self.RFampPS, self.RFoscPS]
+        
 
         try:
             self.wsp = Waveshaper(addr=wsp_addr, WSname=wsp_name)
@@ -85,8 +60,40 @@ class KeckLFC(object):
                 e = sys.exc_info()[0]
                 print(f"Error:{e}")
 
-    def minicomb_Up(self, amonic_mode = '23ACC'):
+    def minicomb_Up(self, amonic_mode = 'APC'):
         print("Mini-Comb Turn UP process Begins".center(80,'-'))
+
+        self.RFoscPS.Vset2 = 15
+        self.RFoscPS.Iset2 = 3
+        self.RFoscPS.activation = 1
+        rfoscPS_out = np.array([0.,0.,0.])
+        while not (np.mean(rfoscPS_out)>0.3 and np.mean(rfoscPS_out)<0.5):
+            print(f"Waiting RF oscillator Power Supply output stablize to 0.3~0.45A. Last 3 seconds ave = {np.mean(rfoscPS_out)} A....")
+            time.sleep(1)
+            rfoscPS_out[0] = self.RFoscPS.Iout2
+            time.sleep(1)
+            rfoscPS_out[1] = self.RFoscPS.Iout2
+            time.sleep(1)
+            rfoscPS_out[2] = self.RFoscPS.Iout2
+            print(rfoscPS_out)
+
+        self.RFampPS.Vset1 = 30
+        self.RFampPS.Iset1 = 5
+        self.RFampPS.activation1 = 1
+        rfampPS_out = np.array([0.,0.,0.])
+        while not (np.mean(rfampPS_out)>3 and np.mean(rfampPS_out)<5):
+            print(f"Waiting RF oscillator Power Supply output stablize to 4.3~4.5A. Last 3 seconds ave = {np.mean(rfampPS_out)} A....")
+            time.sleep(1)
+            rfampPS_out[0] = self.RFampPS.Iout1
+            time.sleep(1)
+            rfampPS_out[1] = self.RFampPS.Iout1
+            time.sleep(1)
+            rfampPS_out[2] = self.RFampPS.Iout1
+            print(rfampPS_out)
+
+            
+
+
         if amonic_mode.casefold() == 'acc':
             self.amamp.modeCh1 = 'ACC'
             self.amamp.accCh1Cur = '6A'
@@ -137,34 +144,10 @@ class KeckLFC(object):
         else:
             raise ValueError("KeckLFC: Minicomb up unknown Amonic mode"+amonic_mode)
             
-        # self.RFoscPS.setAllZero()
-        self.RFoscPS.Vset2 = 15
-        self.RFoscPS.Iset2 = 3
-        self.RFoscPS.activation = 1
-        rfoscPS_out = np.array([0.,0.,0.])
-        while not (np.mean(rfoscPS_out)>0.3 and np.mean(rfoscPS_out)<0.45):
-            print(f"Waiting RF oscillator Power Supply output stablize to 0.3~0.45A. Last 3 seconds ave = {np.mean(rfoscPS_out)} A....")
-            time.sleep(1)
-            rfoscPS_out[0] = self.RFoscPS.Iout2
-            time.sleep(1)
-            rfoscPS_out[1] = self.RFoscPS.Iout2
-            time.sleep(1)
-            rfoscPS_out[2] = self.RFoscPS.Iout2
-            print(rfoscPS_out)
 
-        self.RFampPS.Vset1 = 30
-        self.RFampPS.Iset1 = 5
-        self.RFampPS.activation1 = 1
-        rfampPS_out = np.array([0.,0.,0.])
-        while not (np.mean(rfampPS_out)>4.3 and np.mean(rfampPS_out)<4.5):
-            print(f"Waiting RF oscillator Power Supply output stablize to 4.3~4.5A. Last 3 seconds ave = {np.mean(rfampPS_out)} A....")
-            time.sleep(1)
-            rfampPS_out[0] = self.RFampPS.Iout1
-            time.sleep(1)
-            rfampPS_out[1] = self.RFampPS.Iout1
-            time.sleep(1)
-            rfampPS_out[2] = self.RFampPS.Iout1
-            print(rfampPS_out)
+
+        # self.RFoscPS.setAllZero()
+        
 
         print("Mini-Comb Turn UP process Finished".center(80,'-'))
 

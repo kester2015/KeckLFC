@@ -1,7 +1,33 @@
+import sys
+sys.path.append('..')
+from Hardware.SRS_SIM900 import SRS_SIM900, SRS_PIDcontrol_SIM960
+
+def eqp_status():
+    srs = SRS_SIM900(addr="GPIB0::2::INSTR")
+    srs.connect()
+    servo1 = SRS_PIDcontrol_SIM960(srs, 1)
+    servo1.set_manual_output_max(4)
+    servo1.set_manual_output_min(-4)
+    return servo1.printStatus()
+
+
 import signal, sys, time, Ice
 
 Ice.loadSlice('KtlIce.ice')
 import Demo
+
+class mockKeckLFC:
+    def __init__(self):
+
+        self.dev1 = 'dev'
+    
+    def call_eqp_status(self, value):
+        if int(value) == 1: eqp_status()
+        
+        return #eqp_status()
+    
+    
+
 
 class KTLKeyword:
     
@@ -77,6 +103,10 @@ class HelloI(Demo.Hello):
         
         self._keywords = [self.keytest, self.icencall, self.temp, self.disp3sta, self.icesta]
         
+        self.mkl = mockKeckLFC()
+
+        self._functions= [None, None, self.mkl.call_eqp_status, None, None]
+
         print('ICE server starts ...')
         
     
@@ -102,10 +132,17 @@ class HelloI(Demo.Hello):
         index = self.keys_to_monitor.index(key.name)
         self._keywords[index].setstr(key.value)
         print(' Keyword <%s> changed to %s' % (key.name, key.value))
+        self.run_functions(index)
         #print('(String)    Keyword <%s> changed to ' % (key.name), self._keywords[index].readstr())
         #print('(Converted) Keyword <%s> changed to %s' % (key.name, str(self._keywords[index].read())))
         
-                
+    def run_functions(self,index):
+        func = self._functions[index]
+        value = self._keywords[index].strvalue
+
+        if func != None:
+            func(value)
+        return            
     
     def keylist(self, current):
         return self.keys_to_monitor
