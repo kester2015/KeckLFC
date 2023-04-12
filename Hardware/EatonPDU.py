@@ -4,6 +4,7 @@ from Device import Device
 
 class EatonPDU(Device):
     def __init__(self, addr='ASRL23::INSTR', name="Eaton PDU epduDC	192.168.0.160", isVISA=True):
+        '''Eaton PDU epduDC'''
         super().__init__(addr=addr, name=name, isVISA=isVISA)
         self.inst.baud_rate = 9600
         # self.inst.read_termination = '\r\n'  # read_termination is not specified by default.
@@ -16,6 +17,7 @@ class EatonPDU(Device):
         self.loggedin = False
 
     def test_loggedin(self):
+        '''Test if the device is logged in. Return True if logged in, False if not.'''
         try:
             self.write("")
             tt = self.inst.read(termination='>')
@@ -35,7 +37,8 @@ class EatonPDU(Device):
             lgot = self.logout()
         return dcnt, lgot
 
-    def login(self):
+    def login(self): # login to the device
+        '''Login to the device. Return 1 if succeed, -1 if failed.'''
         if not self.connected:
             raise ConnectionError(self.devicename+": Should connect to device before Login.")
         self.loggedin = self.test_loggedin()
@@ -76,6 +79,24 @@ class EatonPDU(Device):
         self.loggedin = False
         print(self.devicename + ": Logged out.")
 
+    # Active Power Measurement
+    def get_active_power(self, outlet=1):
+        self.write(f"get PDU.OutletSystem.Outlet[{outlet}].ActivePower")
+        return float(self.inst.read(termination='pdu#0>'))
+    # current measurement
+    def get_current(self, outlet=1):
+        self.write(f"get PDU.OutletSystem.Outlet[{outlet}].Current")
+        return float(self.inst.read(termination='pdu#0>'))
+
+    # voltage measurement
+    def get_voltage(self, outlet=1):
+        self.write(f"get PDU.OutletSystem.Outlet[{outlet}].Voltage")
+        return float(self.inst.read(termination='pdu#0>'))
+
+    # power factor measurement
+    def get_power_factor(self, outlet=1):
+        self.write(f"get PDU.OutletSystem.Outlet[{outlet}].PowerFactor")
+        return float(self.inst.read(termination='pdu#0>'))
 
 
 if __name__=="__main__":
@@ -89,7 +110,7 @@ if __name__=="__main__":
     time.sleep(5)
     eaton.write("set PDU.OutletSystem.Outlet[8].DelayBeforeStartup 0")
     print(eaton.inst.read(termination='pdu#0>'))
-
+    print(eaton.get_active_power(6))
 
     # ========== Below are already wrapped functions ==========
     # # eaton.login()

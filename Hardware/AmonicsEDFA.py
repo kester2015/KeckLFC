@@ -77,6 +77,10 @@ class AmonicsEDFA(Device):
     def serialNumber(self):
         return self.query(':CAL:SYS:SERIAL?')
 
+
+
+
+
     # ------------------- Channel 1 related methods ------------------- #
     @property
     def outputPowerCh1(self):
@@ -211,9 +215,14 @@ class AmonicsEDFA(Device):
         cur1 = np.abs(float(IorP))
         mode = str(mode).upper()
         channel = str(channel)
-        if not self._getChMode(channel=channel) == mode:
+        try:
+            current_mode = self._getChMode(channel=channel)
+        except:
+            current_mode = 'ACC'
+        if not current_mode == mode:
             print(self.devicename + ": Mode assignment discrepancy in Setting IorP. Switching to " + mode + " mode.")
             self._setChMode(channel=channel, mode=mode)
+
         max_cur = float(self.query(":READ:DRIV:MAX:" + mode + ":CH" + channel + "?"))  # ":READ:DRIV:MAX:APC:CH1?"
         if cur1 > max_cur:
             warnings.warn(self.devicename + ": " + mode + " CH" + channel + " set point " +
