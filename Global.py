@@ -3,6 +3,28 @@ import datetime
 from enum import Enum
 
 
+
+class DeviceInfo(Enum):
+    Waveshaper = 'SN201904'
+    FPGA1 = 'rp-f072a9.local'
+    FPGA2 = 'rp-f072ec.local'
+    # RbClock = 'ASRL3::INSTR'
+    PendulumCNT90 = 'GPIB0::10::INSTR'
+    # ========== New configs ======== #
+    Amonics23 = 'ASRL13::INSTR'
+    Amonics13 = 'ASRL4::INSTR'
+    Amonics27 = 'ASRL7::INSTR'
+    Pritel = 'ASRL6::INSTR'
+
+    RbClock = 'ASRL9::INSTR'
+
+    Keysight33500 = 'USB0::0x0957::0x2807::MY59003824::INSTR'
+
+    
+
+    
+
+
 class LFCStatus:
     debug = True
 
@@ -27,9 +49,3 @@ class LFCStatus:
         return json.dumps(out)
 
 
-class DeviceInfo(Enum):
-    Waveshaper = 'SN201904'
-    FPGA1 = 'rp-f072a9.local'
-    FPGA2 = 'rp-f072ec.local'
-    RbClock = 'ASRL3::INSTR'
-    PendulumCNT90 = 'GPIB0::10::INSTR'

@@ -1,7 +1,7 @@
 import warnings
 import time
 
-from .Device import Device
+from Device import Device
 import numpy as np
 import matplotlib.pyplot as plt
 import numbers
@@ -835,5 +835,52 @@ class SRS_VoltSorc_SIM928(object):
 
 
 if __name__ == '__main__':
+    srs = SRS_SIM900(addr="GPIB0::2::INSTR")
+    srs.connect()
 
-    pass
+    servo1 = SRS_PIDcontrol_SIM960(srs, 5)
+    servo1.set_manual_output_max(4)
+    servo1.set_manual_output_min(-4)
+
+    servo1.set_output_lowerlim(-4)
+    servo1.set_output_upperlim(4)
+
+    msg = servo1.printStatus()
+    
+    filename = r"Z:\Maodong\Projects\Keck\System Assembly test\RIO Rb locking\20230430\servo.txt"   
+
+    with  open(filename,"w") as f:
+        f.write("")
+    with  open(filename,"a") as f:
+        f.write(msg+'\n')
+        f.write("".center(80, "=")+"\n")
+        f.write("time\t")
+        f.write("measured input\t")
+        f.write("output\t")
+        f.write("amplified error\t")
+        f.write("\n")
+
+    import time
+    while True:
+        try:
+            with open(filename,"a") as f:
+                f.write(time.ctime()+"\t")
+
+                print("".center(80, "-"))
+
+                in_v = servo1.measure_input
+                f.write(f"{in_v:.5f}\t")
+                print(f"Measured input: {in_v:.5f} V")
+
+                out_v = servo1.output_voltage
+                f.write(f"{out_v:.5f}\t")
+                print(f"Output voltage: {out_v:.5f} V")
+
+                amp_err = servo1.amplified_error
+                f.write(f"{amp_err:.5f}\t")
+                print(f"Amplified error: {amp_err:.5f} V")
+
+                f.write("\n")
+        except Exception as e:
+            print(e)
+        time.sleep(1)

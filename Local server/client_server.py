@@ -21,4 +21,4 @@ response = client_socket.recv(1024).decode()
 print(response)
 
 # Close the connection
-client_socket.close()
+#client_socket.close()

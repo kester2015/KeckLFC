@@ -15,26 +15,47 @@ class EquipmentManager(object):
     def __init__(self) -> None:
         self.equipment_list = []
 
-    def add_equipment(self, varname:str, device):
-        '''
-        Add equipment to manage
-        ===
-        Inputs:
-        ====
-            varname: string will be converted to attribute name.
-            device: object that is a Device class (Device class defined in Hardware.Device)
-        '''
-        if hasattr(self, varname):
-            raise ValueError("EquipmentManager: attribute name "+varname+" already exists. Change varname then try Add equipment again.")
-        
-        setattr(self,varname,device)
-        self.equipment_list.append(getattr(self,varname))
+        self.amonics_13 = AmonicsEDFA(addr='ASRL4::INSTR', name = 'Amonic 13dbm EDFA')
+        self.amonics_23 = AmonicsEDFA(addr='ASRL13::INSTR', name = 'Amonic 23dbm EDFA')
+        self.amonics_27 = AmonicsEDFA(addr='ASRL7::INSTR', name = 'Amonic 27dbm EDFA')
+        self.pritel = PritelAmp(addr='ASRL6::INSTR', name='Pritel High Power EDFA')
+        self.waveshaper = Waveshaper(addr='SN201904', name="WS1")
+        self.srsframe = SRS_SIM900(addr='GPIB0::2::INSTR', name='SRS SIM900 mainframe')
+        self.osa = Agilent_86142B(addr='GPIB0::30::INSTR', name='Agilent 86142B Optical Spectrum Analyzer')
 
-    def get_addressbook(self):
-        self.addressbook = {'amamp27':["ASRL7::INSTR"],
-                            'amamp13':["ASRL4::INSTR"],
-                            'amamp23':["ASRL13::INSTR"],
-                            }
+        self.dcbias_1 = InstekGPD_4303S(addr='ASRL5::INSTR', name='4 channel DC Bias Supply InstekGPD_4303S')
+        self.dcps_1 = InstekGppDCSupply(addr='ASRL10::INSTR', name='1 channel DC Power Supply InstekGpp')
+        self.dcps_2 = InstekGppDCSupply(addr='ASRL34::INSTR', name='1 channel DC Power Supply InstekGpp')
+
+        self.rbclock = RbClock(addr='ASRL9::INSTR', name='FS725 Rubidium Frequency Standard')
+        self.pendulum = PendulumCNT90(addr='GPIB0::10::INSTR', name='Pendulum CNT90')
+
+        self.fctec = TEC_LFC3751(addr='ASRL41::INSTR', name='Filter cavity TEC LFC3751')
+        
+
+        self.rio = ORIONLaser(addr='ASRL8::INSTR', name='Rio ORION Laser')
+
+
+    # def add_equipment(self, varname:str, device):
+    #     '''
+    #     Add equipment to manage
+    #     ===
+    #     Inputs:
+    #     ====
+    #         varname: string will be converted to attribute name.
+    #         device: object that is a Device class (Device class defined in Hardware.Device)
+    #     '''
+    #     if hasattr(self, varname):
+    #         raise ValueError("EquipmentManager: attribute name "+varname+" already exists. Change varname then try Add equipment again.")
+        
+    #     setattr(self,varname,device)
+    #     self.equipment_list.append(getattr(self,varname))
+
+    # def get_addressbook(self):
+    #     self.addressbook = {'amamp27':["ASRL7::INSTR"],
+    #                         'amamp13':["ASRL4::INSTR"],
+    #                         'amamp23':["ASRL13::INSTR"],
+    #                         }
 
 
 
