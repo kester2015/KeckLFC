@@ -248,7 +248,6 @@ class KeckLFC(object):
         if value is not None:
             # write the value
             pass
-
         return #return value
 
     def RIO_I(self, value=None):
