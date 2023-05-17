@@ -236,3 +236,40 @@ class KeckLFC(object):
             print(rfoscPS_out)
 
         print("Mini-Comb Turn DOWN process Finished".center(80,'-'))
+
+    # KTL keywords Implementation
+
+    '''
+    KTL keywords are implemented as functions of the KeckLFC class.
+    '''
+
+    def RIO_T(self, value=None):
+        '''RIO pump laser temperature. float?'''
+        if value is not None:
+            # write the value
+            pass
+
+        return #return value
+
+    def RIO_I(self, value=None):
+        '''RIO pump laser current. float?'''
+        if value is not None:
+            # write the value
+            pass
+        return #return value
+
+    def EDFA27_P(self, value=None):
+        '''Small  EDFA (500 mW) 1 output power. float?'''
+        if value is not None:
+            # write the value
+            pass
+
+        return #return value
+    
+    def EDFA27_ONOFF(self, value=None):
+        '''Small EDFA (500 mW) 1 emission on/off. boolean'''
+        if value is not None:
+            # write the value
+            pass
+
+        return #return value
