@@ -273,3 +273,109 @@ class KeckLFC(object):
             pass
 
         return #return value
+
+    def EDFA13_P(self, value=None):
+        '''Small EDFA (20 mW) 2 output power. float?'''
+        if value is not None:
+            pass
+
+        return #return value
+    
+    def EDFA13_ONOFF(self, value=None):
+        '''Small EDFA (20 mW) 2 emission on/off. boolean'''
+        if value is not None:
+            pass
+        return
+    
+    def EDFA23_P(self, value=None):
+        '''Small EDFA (200 mW) 3 output power. float'''
+        if value is not None:
+            pass
+        return
+
+    def EDFA23_ONOFF(self, value=None):
+        '''Small EDFA (200 mW) 3 emission on/off. boolean'''
+        if value is not None:
+            pass
+        return
+
+    def RFAMP_I(self):
+        '''RF Amp current. float?'''
+        return #return value. this keyword is read-only
+    
+    def RFAMP_V(self, value=None):
+        '''RF Amp voltage. float?'''
+        if value is not None:
+            pass
+        return
+    
+    def RFOSCI_I(self):
+        '''RF Oscillator input current. float'''
+        return #return value. this keyword is read-only
+    
+    def RFOSCI_V(self, value=None):
+        '''RF Oscillator input voltage. float?'''
+        if value is not None:
+            pass
+        return
+    
+    def IM_BIAS(self, value=None):
+        '''Mini-comb amplitude lock offset bias. float'''
+        if value is not None:
+            pass
+        return
+    
+    def IM_RF_ATT(self, value=None):
+        '''Mini-comb RF voltage controlled variable attenuation setting'''
+        if value is not None:
+            pass
+        return
+    
+    def WSP_PHASE(self, value=None):
+        '''Waveshaper Dispersion Compensation. float array (2,N)'''
+        if value is not None:
+            pass
+        return
+
+    def WSP_ATTEN(self, value=None):
+        if value is not None:
+            pass
+        return
+
+    def PTAMP_PRE_P(self):
+        '''High-power EDFA pre-amp output power'''
+        return
+
+    def PTAMP_OUT(self):
+        '''High-power EDFA output power'''
+        return
+
+    def PTAMP_I(self, value=None):
+        '''High-power EDFA pump current'''
+        if value is not None:
+            pass
+        return
+
+    def PTAMP_ONOFF(self, value=None):
+        '''High-power EDFA emission on/standby. boolean'''
+        if value is not None:
+            pass
+        return
+    
+    def PTAMP_LATCH(self, value=None):
+        '''RESET preamp and pwramp latching circuits'''
+        if value is not None:
+            pass
+        return
+
+    def WGD_T(self, value=None):
+        '''Waveguide TEC control. float'''
+        if value is not None:
+            pass
+        return
+
+    def PPLN_T(self, value=None):
+        '''PPLN TEC control. float'''
+        if value is not None:
+            pass
+        return        
