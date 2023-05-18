@@ -47,8 +47,8 @@ class mockKeckLFC(object):
         
         self.funcs = func_dict
 
-        for key in keyword_names:
-            print('parsed Keyword ', key, self.types[key], self.funcs[key])
+        #for key in keyword_names:
+        #    print('parsed Keyword ', key, self.types[key], self.funcs[key])
 
     def __getitem__(self, key):
         '''Read keywords. 

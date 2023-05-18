@@ -2,6 +2,10 @@ import csv
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
 
+'''
+Writes an xml file from a csv file.
+'''
+
 def csv_to_xml(csv_file_path, xml_file_path):
 
     with open(csv_file_path, 'r') as csv_file:
@@ -14,24 +18,31 @@ def csv_to_xml(csv_file_path, xml_file_path):
         dispatcher_name.text = "+service+_dispatch_3"
         
         for row in reader:
+
             keyword = ET.SubElement(root, 'keyword')
             
+            # Keyword name
             name = ET.SubElement(keyword, 'name')
             name.text = row['name']
             
+            # Keyword type
             keyword_type = ET.SubElement(keyword, 'type')
             keyword_type.text = row['type']
             
+            # Brief help
             help_brief = ET.SubElement(keyword, 'help', level="brief")
             help_brief.text = row['brief_help']
             
-            #help_verbose = ET.SubElement(keyword, 'help', level="verbose")
-            #help_verbose.text = row['verbose_help']
+            # Verbose help
+            help_verbose = ET.SubElement(keyword, 'help', level="verbose")
+            help_verbose.text = row['verbose_help']
             
+            # Capability
             capability = ET.SubElement(keyword, 'capability', type="write")
             if row['capability'] == 'R/W': capability.text = "True"
             if row['capability'] == 'R'  : capability.text = "False"
 
+            # if ranges are defined, minimum and maximum
             if (row['min'] != '' or row['max'] != ''):
                 ranges = ET.SubElement(keyword, 'range')
                 
@@ -42,34 +53,40 @@ def csv_to_xml(csv_file_path, xml_file_path):
                     maxval = ET.SubElement(ranges, 'maximum')
                     maxval.text = row['max']
 
+            # If Array types
             if row['type'] in ['double array', 'integer array']:
-                elements = ET.SubElement(keyword, 'elements')
                 
-                for i in range(3):
+                assert row['units'] == '', 'Units are not supported for array types'
+
+                elements = ET.SubElement(keyword, 'elements')
+               
+                for value in row['values'].split(','):
                     entry = ET.SubElement(elements, 'entry')
                     index = ET.SubElement(entry, 'index')
-                    index.text = str(i)
+                    index.text = value.strip().split(':')[0].strip()
                     label = ET.SubElement(entry, 'label')
-                    label.text = 'Element_%d' % i
+                    label.text = value.strip().split(':')[1].strip()
 
-
+            # If units are defined
             if row['units'] != '':
                 units = ET.SubElement(keyword, 'units')
                 units.text = row['units']
 
+            # If Enumerated or Boolean types
             if row['type'] in ['enumerated', 'boolean']:
                values = ET.SubElement(keyword, 'values')
                
                for value in row['values'].split(','):
                    entry = ET.SubElement(values, 'entry')
                    key = ET.SubElement(entry, 'key')
-                   key.text = value.strip().split(':')[0]
+                   key.text = value.strip().split(':')[0].strip()
                    value_element = ET.SubElement(entry, 'value')
-                   value_element.text = value.strip().split(':')[1]
+                   value_element.text = value.strip().split(':')[1].strip()
             
-            if row['type'] == 'double':
+            if row['format'] != '':
                 formats = ET.SubElement(keyword, 'format')
-                formats.text = '%.1f'
+                formats.text = row['format']
+
         tree = ET.ElementTree(root)
         xml_string = ET.tostring(root, encoding='utf-8')
 
