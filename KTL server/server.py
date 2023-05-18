@@ -12,8 +12,9 @@ class HelloI(Demo.Hello):
     def __init__(self):
 
         #== List of the KTL keywords that should be monitored
-        self.keyword_names = ['ICEINT','ICEBOOL','ICEENUM','ICESTRING', 'ICESTA']
-        
+        #self.keyword_names = ['ICEINT','ICEBOOL','ICEENUM','ICESTRING', 'ICESTA']
+        keyword_names, keyword_types = parse_xml('/kroot/src/kss/nirspec/nsmine/ktlxml/LFC.xml.sin')
+        self.keyword_names = keyword_names
        
         #== Define mockKeckLFC class object as mkl
         self.mkl = mockKeckLFC()

@@ -1,0 +1,342 @@
+<?xml version="1.0" ?>
+<bundle name="LFC" service="nsmine">
+	<dispatcher>
+		<name>+service+_dispatch_3</name>
+	</dispatcher>
+	<keyword>
+		<name>LFC_RIO_T</name>
+		<type>double</type>
+		<help level="brief">RIO pump laser temperature</help>
+		<capability type="write">True</capability>
+		<range>
+			<minimum>-5</minimum>
+			<maximum>75</maximum>
+		</range>
+		<units>C</units>
+		<format>%.1f</format>
+	</keyword>
+	<keyword>
+		<name>LFC_RIO_I</name>
+		<type>double</type>
+		<help level="brief">RIO pump laser current</help>
+		<capability type="write">True</capability>
+		<units>mA</units>
+		<format>%.1f</format>
+	</keyword>
+	<keyword>
+		<name>LFC_EDFA27_P</name>
+		<type>double</type>
+		<help level="brief">Small  EDFA (500 mW) 1 output power</help>
+		<capability type="write">True</capability>
+		<range>
+			<minimum>0</minimum>
+			<maximum>630</maximum>
+		</range>
+		<units>mW</units>
+		<format>%.1f</format>
+	</keyword>
+	<keyword>
+		<name>LFC_EDFA27_ONOFF</name>
+		<type>boolean</type>
+		<help level="brief">Small EDFA (500 mW) 1 emission on/off</help>
+		<capability type="write">True</capability>
+		<values>
+			<entry>
+				<key>0</key>
+				<value> off</value>
+			</entry>
+			<entry>
+				<key>1</key>
+				<value> on</value>
+			</entry>
+		</values>
+	</keyword>
+	<keyword>
+		<name>LFC_EDFA13_P</name>
+		<type>double</type>
+		<help level="brief">Small EDFA (20 mW) 2 output power</help>
+		<capability type="write">True</capability>
+		<range>
+			<minimum>0</minimum>
+			<maximum>20</maximum>
+		</range>
+		<units>mW</units>
+		<format>%.1f</format>
+	</keyword>
+	<keyword>
+		<name>LFC_EDFA13_ONOFF</name>
+		<type>boolean</type>
+		<help level="brief">Small EDFA (20 mW) 2 emission on/off</help>
+		<capability type="write">True</capability>
+		<values>
+			<entry>
+				<key>0</key>
+				<value>off</value>
+			</entry>
+			<entry>
+				<key>1</key>
+				<value> on</value>
+			</entry>
+		</values>
+	</keyword>
+	<keyword>
+		<name>LFC_EDFA23_P</name>
+		<type>double</type>
+		<help level="brief">Small EDFA (200 mW) 3 output power</help>
+		<capability type="write">True</capability>
+		<range>
+			<minimum>0</minimum>
+			<maximum>20</maximum>
+		</range>
+		<units>mW</units>
+		<format>%.1f</format>
+	</keyword>
+	<keyword>
+		<name>LFC_EDFA23_ONOFF</name>
+		<type>boolean</type>
+		<help level="brief">Small EDFA (200 mW) 3 emission on/off</help>
+		<capability type="write">True</capability>
+		<values>
+			<entry>
+				<key>0</key>
+				<value>off</value>
+			</entry>
+			<entry>
+				<key>1</key>
+				<value> on</value>
+			</entry>
+		</values>
+	</keyword>
+	<keyword>
+		<name>LFC_RFAMP_I</name>
+		<type>double</type>
+		<help level="brief">RF Amp current</help>
+		<capability type="write">False</capability>
+		<units>Amp</units>
+		<format>%.1f</format>
+	</keyword>
+	<keyword>
+		<name>LFC_RFAMP_V</name>
+		<type>double</type>
+		<help level="brief">RF Amp voltage</help>
+		<capability type="write">True</capability>
+		<range>
+			<minimum>30</minimum>
+			<maximum>30</maximum>
+		</range>
+		<units>V</units>
+		<format>%.1f</format>
+	</keyword>
+	<keyword>
+		<name>LFC_RFOSCI_I</name>
+		<type>double</type>
+		<help level="brief">RF Oscillator input current</help>
+		<capability type="write">False</capability>
+		<range>
+			<minimum>0.35</minimum>
+			<maximum>0.7</maximum>
+		</range>
+		<units>mA</units>
+		<format>%.1f</format>
+	</keyword>
+	<keyword>
+		<name>LFC_RFOSCI_V</name>
+		<type>double</type>
+		<help level="brief">RF Oscillator input voltage</help>
+		<capability type="write">True</capability>
+		<range>
+			<minimum>15</minimum>
+			<maximum>15</maximum>
+		</range>
+		<units>V</units>
+		<format>%.1f</format>
+	</keyword>
+	<keyword>
+		<name>LFC_IM_BIAS</name>
+		<type>double</type>
+		<help level="brief">Mini-comb amplitude lock offset bias</help>
+		<capability type="write">True</capability>
+		<range>
+			<minimum>-3</minimum>
+			<maximum>3</maximum>
+		</range>
+		<units>V</units>
+		<format>%.1f</format>
+	</keyword>
+	<keyword>
+		<name>LFC_IM_RF_ATT</name>
+		<type>double</type>
+		<help level="brief">Mini-comb RF voltage controlled variable attenuation setting</help>
+		<capability type="write">True</capability>
+		<range>
+			<minimum>0</minimum>
+			<maximum>10</maximum>
+		</range>
+		<units>V</units>
+		<format>%.1f</format>
+	</keyword>
+	<keyword>
+		<name>LFC_WSP_PHASE</name>
+		<type>double array</type>
+		<help level="brief">Waveshaper Dispersion Compensation</help>
+		<capability type="write">True</capability>
+		<elements>
+			<entry>
+				<index>0</index>
+				<label>Element_0</label>
+			</entry>
+			<entry>
+				<index>1</index>
+				<label>Element_1</label>
+			</entry>
+			<entry>
+				<index>2</index>
+				<label>Element_2</label>
+			</entry>
+		</elements>
+	</keyword>
+	<keyword>
+		<name>LFC_WSP_ATTEN</name>
+		<type>double array</type>
+		<help level="brief">TBD</help>
+		<capability type="write">True</capability>
+		<elements>
+			<entry>
+				<index>0</index>
+				<label>Element_0</label>
+			</entry>
+			<entry>
+				<index>1</index>
+				<label>Element_1</label>
+			</entry>
+			<entry>
+				<index>2</index>
+				<label>Element_2</label>
+			</entry>
+		</elements>
+	</keyword>
+	<keyword>
+		<name>LFC_PTAMP_PRE_P</name>
+		<type>double</type>
+		<help level="brief">High-power EDFA pre-amp output power</help>
+		<capability type="write">False</capability>
+		<range>
+			<minimum>50</minimum>
+			<maximum>140</maximum>
+		</range>
+		<units>mW</units>
+		<format>%.1f</format>
+	</keyword>
+	<keyword>
+		<name>LFC_PTAMP_OUT</name>
+		<type>double</type>
+		<help level="brief">High-power EDFA output power</help>
+		<capability type="write">False</capability>
+		<range>
+			<minimum>0</minimum>
+			<maximum>4</maximum>
+		</range>
+		<units>W</units>
+		<format>%.1f</format>
+	</keyword>
+	<keyword>
+		<name>LFC_PTAMP_I</name>
+		<type>double</type>
+		<help level="brief">High-power EDFA pump current</help>
+		<capability type="write">True</capability>
+		<range>
+			<minimum>0</minimum>
+			<maximum>4.2</maximum>
+		</range>
+		<units>Amp</units>
+		<format>%.1f</format>
+	</keyword>
+	<keyword>
+		<name>LFC_PTAMP_ONOFF</name>
+		<type>boolean</type>
+		<help level="brief">High-power EDFA emission on/standby</help>
+		<capability type="write">True</capability>
+		<values>
+			<entry>
+				<key>0</key>
+				<value> standby</value>
+			</entry>
+			<entry>
+				<key>1</key>
+				<value> on</value>
+			</entry>
+		</values>
+	</keyword>
+	<keyword>
+		<name>LFC_PTAMP_LATCH</name>
+		<type>boolean</type>
+		<help level="brief">RESET preamp and pwramp latching circuits</help>
+		<capability type="write">True</capability>
+		<values>
+			<entry>
+				<key>0</key>
+				<value> off</value>
+			</entry>
+			<entry>
+				<key>1</key>
+				<value> on</value>
+			</entry>
+		</values>
+	</keyword>
+	<keyword>
+		<name>LFC_WGD_T</name>
+		<type>double</type>
+		<help level="brief">Waveguide TEC control</help>
+		<capability type="write">True</capability>
+		<format>%.1f</format>
+	</keyword>
+	<keyword>
+		<name>LFC_PPLN_T</name>
+		<type>double</type>
+		<help level="brief">PPLN TEC control</help>
+		<capability type="write">True</capability>
+		<format>%.1f</format>
+	</keyword>
+	<keyword>
+		<name>ICESTA</name>
+		<type>enumerated</type>
+		<help level="brief">Ice connection status</help>
+		<capability type="write">True</capability>
+		<values>
+			<entry>
+				<key>1</key>
+				<value>Connected</value>
+			</entry>
+			<entry>
+				<key>2</key>
+				<value>Disconnected</value>
+			</entry>
+			<entry>
+				<key>3</key>
+				<value>Initializing</value>
+			</entry>
+		</values>
+	</keyword>
+	<keyword>
+		<name>ICECLK</name>
+		<type>string</type>
+		<help level="brief">current time returned by ICE</help>
+		<capability type="write">False</capability>
+	</keyword>
+	<keyword>
+		<name>ICECLK_ONOFF</name>
+		<type>boolean</type>
+		<help level="brief">turn on / turn off the ICECLK</help>
+		<capability type="write">True</capability>
+		<values>
+			<entry>
+				<key>0</key>
+				<value>off</value>
+			</entry>
+			<entry>
+				<key>1</key>
+				<value>on</value>
+			</entry>
+		</values>
+	</keyword>
+</bundle>
