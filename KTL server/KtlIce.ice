@@ -21,7 +21,9 @@ module Demo
     {
         void initialkeywords(KeywordSequence keywords);
         KeyNameSequence keylist();
-        void modifiedkeyword(Keyword key);
+        void modifiedkeyword(string name, string value);
+        string receive(string name);
+        int errorstate();
         void shutdown();
     }
 }

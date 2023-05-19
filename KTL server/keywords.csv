@@ -22,6 +22,8 @@ LFC_PTAMP_ONOFF,R/W,boolean,High-power EDFA emission on/standby,High-power EDFA 
 LFC_PTAMP_LATCH,R/W,boolean,RESET preamp and pwramp latching circuits,RESET preamp and pwramp latching circuits,,,,"0: off, 1: on",,
 LFC_WGD_T,R/W,double,Waveguide TEC control,Waveguide TEC control,,,,,%.1f,
 LFC_PPLN_T,R/W,double,PPLN TEC control,PPLN TEC control,,,,,%.1f,
+ICETEST,R/W,integer,test integer,test integer,,,,,,,
 ICESTA,R/W,enumerated,Ice connection status,Ice connection status,,,,"1:Connected, 2:Disconnected, 3:Initializing",,
 ICECLK,R,string,current time returned by ICE,current time returned by ICE,,,,,,
 ICECLK_ONOFF,R/W,boolean,turn on / turn off the ICECLK,turn on / turn off the ICECLK,,,,"0:off, 1:on",,
+SHOW_ALL_VAL,R/W,boolean,show all, show all,,,,"0:off,1:on",,

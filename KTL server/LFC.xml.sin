@@ -7,6 +7,7 @@
 		<name>LFC_RIO_T</name>
 		<type>double</type>
 		<help level="brief">RIO pump laser temperature</help>
+		<help level="verbose">RIO pump laser temperature</help>
 		<capability type="write">True</capability>
 		<range>
 			<minimum>-5</minimum>
@@ -19,6 +20,7 @@
 		<name>LFC_RIO_I</name>
 		<type>double</type>
 		<help level="brief">RIO pump laser current</help>
+		<help level="verbose">RIO pump laser current</help>
 		<capability type="write">True</capability>
 		<units>mA</units>
 		<format>%.1f</format>
@@ -27,6 +29,7 @@
 		<name>LFC_EDFA27_P</name>
 		<type>double</type>
 		<help level="brief">Small  EDFA (500 mW) 1 output power</help>
+		<help level="verbose">Small  EDFA (500 mW) 1 output power</help>
 		<capability type="write">True</capability>
 		<range>
 			<minimum>0</minimum>
@@ -39,15 +42,16 @@
 		<name>LFC_EDFA27_ONOFF</name>
 		<type>boolean</type>
 		<help level="brief">Small EDFA (500 mW) 1 emission on/off</help>
+		<help level="verbose">Small EDFA (500 mW) 1 emission on/off</help>
 		<capability type="write">True</capability>
 		<values>
 			<entry>
 				<key>0</key>
-				<value> off</value>
+				<value>off</value>
 			</entry>
 			<entry>
 				<key>1</key>
-				<value> on</value>
+				<value>on</value>
 			</entry>
 		</values>
 	</keyword>
@@ -55,6 +59,7 @@
 		<name>LFC_EDFA13_P</name>
 		<type>double</type>
 		<help level="brief">Small EDFA (20 mW) 2 output power</help>
+		<help level="verbose">Small EDFA (20 mW) 2 output power</help>
 		<capability type="write">True</capability>
 		<range>
 			<minimum>0</minimum>
@@ -67,6 +72,7 @@
 		<name>LFC_EDFA13_ONOFF</name>
 		<type>boolean</type>
 		<help level="brief">Small EDFA (20 mW) 2 emission on/off</help>
+		<help level="verbose">Small EDFA (20 mW) 2 emission on/off</help>
 		<capability type="write">True</capability>
 		<values>
 			<entry>
@@ -75,7 +81,7 @@
 			</entry>
 			<entry>
 				<key>1</key>
-				<value> on</value>
+				<value>on</value>
 			</entry>
 		</values>
 	</keyword>
@@ -83,6 +89,7 @@
 		<name>LFC_EDFA23_P</name>
 		<type>double</type>
 		<help level="brief">Small EDFA (200 mW) 3 output power</help>
+		<help level="verbose">Small EDFA (200 mW) 3 output power</help>
 		<capability type="write">True</capability>
 		<range>
 			<minimum>0</minimum>
@@ -95,6 +102,7 @@
 		<name>LFC_EDFA23_ONOFF</name>
 		<type>boolean</type>
 		<help level="brief">Small EDFA (200 mW) 3 emission on/off</help>
+		<help level="verbose">Small EDFA (200 mW) 3 emission on/off</help>
 		<capability type="write">True</capability>
 		<values>
 			<entry>
@@ -103,7 +111,7 @@
 			</entry>
 			<entry>
 				<key>1</key>
-				<value> on</value>
+				<value>on</value>
 			</entry>
 		</values>
 	</keyword>
@@ -111,6 +119,7 @@
 		<name>LFC_RFAMP_I</name>
 		<type>double</type>
 		<help level="brief">RF Amp current</help>
+		<help level="verbose">RF Amp current</help>
 		<capability type="write">False</capability>
 		<units>Amp</units>
 		<format>%.1f</format>
@@ -119,6 +128,7 @@
 		<name>LFC_RFAMP_V</name>
 		<type>double</type>
 		<help level="brief">RF Amp voltage</help>
+		<help level="verbose">RF Amp voltage</help>
 		<capability type="write">True</capability>
 		<range>
 			<minimum>30</minimum>
@@ -131,18 +141,20 @@
 		<name>LFC_RFOSCI_I</name>
 		<type>double</type>
 		<help level="brief">RF Oscillator input current</help>
+		<help level="verbose">RF Oscillator input current</help>
 		<capability type="write">False</capability>
 		<range>
 			<minimum>0.35</minimum>
 			<maximum>0.7</maximum>
 		</range>
 		<units>mA</units>
-		<format>%.1f</format>
+		<format>%.2f</format>
 	</keyword>
 	<keyword>
 		<name>LFC_RFOSCI_V</name>
 		<type>double</type>
 		<help level="brief">RF Oscillator input voltage</help>
+		<help level="verbose">RF Oscillator input voltage</help>
 		<capability type="write">True</capability>
 		<range>
 			<minimum>15</minimum>
@@ -155,6 +167,7 @@
 		<name>LFC_IM_BIAS</name>
 		<type>double</type>
 		<help level="brief">Mini-comb amplitude lock offset bias</help>
+		<help level="verbose">Mini-comb amplitude lock offset bias</help>
 		<capability type="write">True</capability>
 		<range>
 			<minimum>-3</minimum>
@@ -167,6 +180,7 @@
 		<name>LFC_IM_RF_ATT</name>
 		<type>double</type>
 		<help level="brief">Mini-comb RF voltage controlled variable attenuation setting</help>
+		<help level="verbose">Mini-comb RF voltage controlled variable attenuation setting</help>
 		<capability type="write">True</capability>
 		<range>
 			<minimum>0</minimum>
@@ -179,6 +193,7 @@
 		<name>LFC_WSP_PHASE</name>
 		<type>double array</type>
 		<help level="brief">Waveshaper Dispersion Compensation</help>
+		<help level="verbose">Waveshaper Dispersion Compensation</help>
 		<capability type="write">True</capability>
 		<elements>
 			<entry>
@@ -199,6 +214,7 @@
 		<name>LFC_WSP_ATTEN</name>
 		<type>double array</type>
 		<help level="brief">TBD</help>
+		<help level="verbose">TBD</help>
 		<capability type="write">True</capability>
 		<elements>
 			<entry>
@@ -219,6 +235,7 @@
 		<name>LFC_PTAMP_PRE_P</name>
 		<type>double</type>
 		<help level="brief">High-power EDFA pre-amp output power</help>
+		<help level="verbose">High-power EDFA pre-amp output power</help>
 		<capability type="write">False</capability>
 		<range>
 			<minimum>50</minimum>
@@ -231,6 +248,7 @@
 		<name>LFC_PTAMP_OUT</name>
 		<type>double</type>
 		<help level="brief">High-power EDFA output power</help>
+		<help level="verbose">High-power EDFA output power</help>
 		<capability type="write">False</capability>
 		<range>
 			<minimum>0</minimum>
@@ -243,27 +261,29 @@
 		<name>LFC_PTAMP_I</name>
 		<type>double</type>
 		<help level="brief">High-power EDFA pump current</help>
+		<help level="verbose">High-power EDFA pump current</help>
 		<capability type="write">True</capability>
 		<range>
 			<minimum>0</minimum>
 			<maximum>4.2</maximum>
 		</range>
 		<units>Amp</units>
-		<format>%.1f</format>
+		<format>%.2f</format>
 	</keyword>
 	<keyword>
 		<name>LFC_PTAMP_ONOFF</name>
 		<type>boolean</type>
 		<help level="brief">High-power EDFA emission on/standby</help>
+		<help level="verbose">High-power EDFA emission on/standby</help>
 		<capability type="write">True</capability>
 		<values>
 			<entry>
 				<key>0</key>
-				<value> standby</value>
+				<value>standby</value>
 			</entry>
 			<entry>
 				<key>1</key>
-				<value> on</value>
+				<value>on</value>
 			</entry>
 		</values>
 	</keyword>
@@ -271,15 +291,16 @@
 		<name>LFC_PTAMP_LATCH</name>
 		<type>boolean</type>
 		<help level="brief">RESET preamp and pwramp latching circuits</help>
+		<help level="verbose">RESET preamp and pwramp latching circuits</help>
 		<capability type="write">True</capability>
 		<values>
 			<entry>
 				<key>0</key>
-				<value> off</value>
+				<value>off</value>
 			</entry>
 			<entry>
 				<key>1</key>
-				<value> on</value>
+				<value>on</value>
 			</entry>
 		</values>
 	</keyword>
@@ -287,6 +308,7 @@
 		<name>LFC_WGD_T</name>
 		<type>double</type>
 		<help level="brief">Waveguide TEC control</help>
+		<help level="verbose">Waveguide TEC control</help>
 		<capability type="write">True</capability>
 		<format>%.1f</format>
 	</keyword>
@@ -294,13 +316,22 @@
 		<name>LFC_PPLN_T</name>
 		<type>double</type>
 		<help level="brief">PPLN TEC control</help>
+		<help level="verbose">PPLN TEC control</help>
 		<capability type="write">True</capability>
 		<format>%.1f</format>
+	</keyword>
+	<keyword>
+		<name>ICETEST</name>
+		<type>integer</type>
+		<help level="brief">test integer</help>
+		<help level="verbose">test integer</help>
+		<capability type="write">True</capability>
 	</keyword>
 	<keyword>
 		<name>ICESTA</name>
 		<type>enumerated</type>
 		<help level="brief">Ice connection status</help>
+		<help level="verbose">Ice connection status</help>
 		<capability type="write">True</capability>
 		<values>
 			<entry>
@@ -321,12 +352,31 @@
 		<name>ICECLK</name>
 		<type>string</type>
 		<help level="brief">current time returned by ICE</help>
+		<help level="verbose">current time returned by ICE</help>
 		<capability type="write">False</capability>
 	</keyword>
 	<keyword>
 		<name>ICECLK_ONOFF</name>
 		<type>boolean</type>
 		<help level="brief">turn on / turn off the ICECLK</help>
+		<help level="verbose">turn on / turn off the ICECLK</help>
+		<capability type="write">True</capability>
+		<values>
+			<entry>
+				<key>0</key>
+				<value>off</value>
+			</entry>
+			<entry>
+				<key>1</key>
+				<value>on</value>
+			</entry>
+		</values>
+	</keyword>
+	<keyword>
+		<name>SHOW_ALL_VAL</name>
+		<type>boolean</type>
+		<help level="brief">show all</help>
+		<help level="verbose"> show all</help>
 		<capability type="write">True</capability>
 		<values>
 			<entry>

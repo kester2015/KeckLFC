@@ -34,7 +34,7 @@ class mockKeckLFC(object):
 
     def __init__(self):
 
-        keyword_names, keyword_types = parse_xml('/kroot/src/kss/nirspec/nsmine/ktlxml/LFC.xml.sin')
+        keyword_names, keyword_types = parse_xml('LFC.xml.sin')
         
         self.keywords = {keyword: None for keyword in keyword_names}
         self.types = {keyword: keyword_type for keyword, keyword_type in zip(keyword_names, keyword_types)}

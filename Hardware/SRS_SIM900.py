@@ -1,7 +1,7 @@
 import warnings
 import time
 
-from Device import Device
+from .Device import Device
 import numpy as np
 import matplotlib.pyplot as plt
 import numbers
