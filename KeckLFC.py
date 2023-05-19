@@ -57,7 +57,37 @@ class EquipmentManager(object):
     #                         'amamp23':["ASRL13::INSTR"],
     #                         }
 
+''' Some test functions for KTL implementation'''
 
+import xml.etree.ElementTree as ET
+import threading
+
+def parse_xml(xmlfile):
+    tree = ET.parse(xmlfile)
+    root = tree.getroot()
+
+    keyword_names = []
+    keyword_types = []
+
+    for keyword in root.findall('keyword'):
+        name = keyword.find('name').text
+        keyword_type = keyword.find('type').text
+        #capability_type = keyword.find('capability').get('type')
+
+        print('Parsed keyword: name=%s\ttype=%s' % (name, keyword_type))
+        keyword_names.append(name)
+        keyword_types.append(keyword_type)
+
+    return keyword_names, keyword_types
+
+def test_clock(stop, mkl):
+    while True:
+        mkl.keywords['ICECLK'] = time.strftime('%H:%M:%S')
+        time.sleep(1)
+        if stop(): 
+            mkl.clock = None
+            break
+            
 
 class KeckLFC(object):
     def __init__(self, 
@@ -87,6 +117,19 @@ class KeckLFC(object):
             e = sys.exc_info()[0]
             print(f"Error:{e}")
 
+        ''' KTL keywords'''
+        keyword_names, keyword_types = parse_xml(r'"KTL server/LFC.xml.sin"')
+        
+        self.keywords = {keyword: None for keyword in keyword_names}
+        self.types = {keyword: keyword_type for keyword, keyword_type in zip(keyword_names, keyword_types)}
+
+        func_dict = {}
+        for keyword in self.keywords:
+            method_name = f'{keyword}'
+            method = getattr(self, method_name)
+            func_dict[keyword] = method
+        
+        self.funcs = func_dict
 
     def connect_all(self):
         for device in self._dev_list:
@@ -239,142 +282,394 @@ class KeckLFC(object):
 
     # KTL keywords Implementation
 
-    '''
-    KTL keywords are implemented as functions of the KeckLFC class.
-    '''
+    ########## KTL Keywords Implementation ############
 
-    def RIO_T(self, value=None):
-        '''RIO pump laser temperature. float?'''
-        if value is not None:
-            # write the value
-            pass
-        return #return value
-
-    def RIO_I(self, value=None):
-        '''RIO pump laser current. float?'''
-        if value is not None:
-            # write the value
-            pass
-        return #return value
-
-    def EDFA27_P(self, value=None):
-        '''Small  EDFA (500 mW) 1 output power. float?'''
-        if value is not None:
-            # write the value
-            pass
-
-        return #return value
+    def LFC_RIO_T(self, value=None):
+        if value == None: 
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return 
+        
+        else:
+            # This is called when user modifies the keyword
+            # Insert some function to execute when user modifies this keyword
+            # If it's successful, return 0
+            return 0 # return 
+        
     
-    def EDFA27_ONOFF(self, value=None):
-        '''Small EDFA (500 mW) 1 emission on/off. boolean'''
-        if value is not None:
-            # write the value
-            pass
 
-        return #return value
-
-    def EDFA13_P(self, value=None):
-        '''Small EDFA (20 mW) 2 output power. float?'''
-        if value is not None:
-            pass
-
-        return #return value
+    def LFC_RIO_I(self, value=None):
+        if value == None: 
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return 
+        
+        else:
+            # This is called when user modifies the keyword
+            # Insert some function to execute when user modifies this keyword
+            # If it's successful, return 0
+            return 0 # return 
+        
     
-    def EDFA13_ONOFF(self, value=None):
-        '''Small EDFA (20 mW) 2 emission on/off. boolean'''
-        if value is not None:
-            pass
-        return
+
+    def LFC_EDFA27_P(self, value=None):
+        if value == None: 
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return 
+        
+        else:
+            # This is called when user modifies the keyword
+            # Insert some function to execute when user modifies this keyword
+            # If it's successful, return 0
+            return 0 # return 
+        
     
-    def EDFA23_P(self, value=None):
-        '''Small EDFA (200 mW) 3 output power. float'''
-        if value is not None:
-            pass
-        return
 
-    def EDFA23_ONOFF(self, value=None):
-        '''Small EDFA (200 mW) 3 emission on/off. boolean'''
-        if value is not None:
-            pass
-        return
-
-    def RFAMP_I(self):
-        '''RF Amp current. float?'''
-        return #return value. this keyword is read-only
+    def LFC_EDFA27_ONOFF(self, value=None):
+        if value == None: 
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return 
+        
+        else:
+            # This is called when user modifies the keyword
+            # Insert some function to execute when user modifies this keyword
+            # If it's successful, return 0
+            return 0 # return 
+        
     
-    def RFAMP_V(self, value=None):
-        '''RF Amp voltage. float?'''
-        if value is not None:
-            pass
-        return
+
+    def LFC_EDFA13_P(self, value=None):
+        if value == None: 
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return 
+        
+        else:
+            # This is called when user modifies the keyword
+            # Insert some function to execute when user modifies this keyword
+            # If it's successful, return 0
+            return 0 # return 
+        
     
-    def RFOSCI_I(self):
-        '''RF Oscillator input current. float'''
-        return #return value. this keyword is read-only
+
+    def LFC_EDFA13_ONOFF(self, value=None):
+        if value == None: 
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return 
+        
+        else:
+            # This is called when user modifies the keyword
+            # Insert some function to execute when user modifies this keyword
+            # If it's successful, return 0
+            return 0 # return 
+        
     
-    def RFOSCI_V(self, value=None):
-        '''RF Oscillator input voltage. float?'''
-        if value is not None:
-            pass
-        return
+
+    def LFC_EDFA23_P(self, value=None):
+        if value == None: 
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return 
+        
+        else:
+            # This is called when user modifies the keyword
+            # Insert some function to execute when user modifies this keyword
+            # If it's successful, return 0
+            return 0 # return 
+        
     
-    def IM_BIAS(self, value=None):
-        '''Mini-comb amplitude lock offset bias. float'''
-        if value is not None:
-            pass
-        return
+
+    def LFC_EDFA23_ONOFF(self, value=None):
+        if value == None: 
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return 
+        
+        else:
+            # This is called when user modifies the keyword
+            # Insert some function to execute when user modifies this keyword
+            # If it's successful, return 0
+            return 0 # return 
+        
     
-    def IM_RF_ATT(self, value=None):
-        '''Mini-comb RF voltage controlled variable attenuation setting'''
-        if value is not None:
-            pass
-        return
+
+    def LFC_RFAMP_I(self, value=None):
+        if value != None: return -1
+        else:
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value 
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return                 
     
-    def WSP_PHASE(self, value=None):
-        '''Waveshaper Dispersion Compensation. float array (2,N)'''
-        if value is not None:
-            pass
-        return
 
-    def WSP_ATTEN(self, value=None):
-        if value is not None:
-            pass
-        return
-
-    def PTAMP_PRE_P(self):
-        '''High-power EDFA pre-amp output power'''
-        return
-
-    def PTAMP_OUT(self):
-        '''High-power EDFA output power'''
-        return
-
-    def PTAMP_I(self, value=None):
-        '''High-power EDFA pump current'''
-        if value is not None:
-            pass
-        return
-
-    def PTAMP_ONOFF(self, value=None):
-        '''High-power EDFA emission on/standby. boolean'''
-        if value is not None:
-            pass
-        return
+    def LFC_RFAMP_V(self, value=None):
+        if value == None: 
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return 
+        
+        else:
+            # This is called when user modifies the keyword
+            # Insert some function to execute when user modifies this keyword
+            # If it's successful, return 0
+            return 0 # return 
+        
     
-    def PTAMP_LATCH(self, value=None):
-        '''RESET preamp and pwramp latching circuits'''
-        if value is not None:
-            pass
-        return
 
-    def WGD_T(self, value=None):
-        '''Waveguide TEC control. float'''
-        if value is not None:
-            pass
-        return
+    def LFC_RFOSCI_I(self, value=None):
+        if value != None: return -1
+        else:
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value 
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return                 
+    
 
-    def PPLN_T(self, value=None):
-        '''PPLN TEC control. float'''
-        if value is not None:
-            pass
-        return        
+    def LFC_RFOSCI_V(self, value=None):
+        if value == None: 
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return 
+        
+        else:
+            # This is called when user modifies the keyword
+            # Insert some function to execute when user modifies this keyword
+            # If it's successful, return 0
+            return 0 # return 
+        
+    
+
+    def LFC_IM_BIAS(self, value=None):
+        if value == None: 
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return 
+        
+        else:
+            # This is called when user modifies the keyword
+            # Insert some function to execute when user modifies this keyword
+            # If it's successful, return 0
+            return 0 # return 
+        
+    
+
+    def LFC_IM_RF_ATT(self, value=None):
+        if value == None: 
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return 
+        
+        else:
+            # This is called when user modifies the keyword
+            # Insert some function to execute when user modifies this keyword
+            # If it's successful, return 0
+            return 0 # return 
+        
+    
+
+    def LFC_WSP_PHASE(self, value=None):
+        if value == None: 
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return 
+        
+        else:
+            # This is called when user modifies the keyword
+            # Insert some function to execute when user modifies this keyword
+            # If it's successful, return 0
+            return 0 # return 
+        
+    
+
+    def LFC_WSP_ATTEN(self, value=None):
+        if value == None: 
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return 
+        
+        else:
+            # This is called when user modifies the keyword
+            # Insert some function to execute when user modifies this keyword
+            # If it's successful, return 0
+            return 0 # return 
+        
+    
+
+    def LFC_PTAMP_PRE_P(self, value=None):
+        if value != None: return -1
+        else:
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value 
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return                 
+    
+
+    def LFC_PTAMP_OUT(self, value=None):
+        if value != None: return -1
+        else:
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value 
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return                 
+    
+
+    def LFC_PTAMP_I(self, value=None):
+        if value == None: 
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return 
+        
+        else:
+            # This is called when user modifies the keyword
+            # Insert some function to execute when user modifies this keyword
+            # If it's successful, return 0
+            return 0 # return 
+        
+    
+
+    def LFC_PTAMP_ONOFF(self, value=None):
+        if value == None: 
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return 
+        
+        else:
+            # This is called when user modifies the keyword
+            # Insert some function to execute when user modifies this keyword
+            # If it's successful, return 0
+            return 0 # return 
+        
+    
+
+    def LFC_PTAMP_LATCH(self, value=None):
+        if value == None: 
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return 
+        
+        else:
+            # This is called when user modifies the keyword
+            # Insert some function to execute when user modifies this keyword
+            # If it's successful, return 0
+            return 0 # return 
+        
+    
+
+    def LFC_WGD_T(self, value=None):
+        if value == None: 
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return 
+        
+        else:
+            # This is called when user modifies the keyword
+            # Insert some function to execute when user modifies this keyword
+            # If it's successful, return 0
+            return 0 # return 
+        
+    
+
+    def LFC_PPLN_T(self, value=None):
+        if value == None: 
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return 
+        
+        else:
+            # This is called when user modifies the keyword
+            # Insert some function to execute when user modifies this keyword
+            # If it's successful, return 0
+            return 0 # return 
+
+
+    ########## These are just test keywords and functions ############
+
+    def ICECLK_ONOFF(self, value=None):
+        '''Turn on / off the clock '''
+        
+        if value == None: return self.keywords['ICECLK_ONOFF']
+        
+        else:
+            print('ICECLK value: ', value)
+            print('Writing value', value, 'to ICECLK_ONOFF')
+            if value == True: self.start_clock()
+            elif value == False: self.stop_clock()
+            else: 
+                print('something wrong with ICECLK_ONOFF')
+                return 1
+            return 0
+    
+    def ICECLK(self, value=None):
+        ''' shows current time returned by ice'''
+        
+        if value == None: return self.keywords['ICECLK']
+        
+        else:
+            print('Writing value', value, 'to ICECLK')
+            return 0
+
+    def ICESTA(self, value=None):
+        ''' shows status of the ICE connection'''
+        
+        if value == None: return #self.keywords['ICESTA']
+        else:
+            print('Writing value', value, 'to icesta')
+            if value == 2: print('ICE - KTL disconnected!')
+            return 0             
+        
+    def start_clock(self):
+        self._stop_clock = False
+        self.clock = threading.Thread(target = test_clock, args = (lambda: self._stop_clock, self))
+        print('\t\t\tstart clock')
+        self.clock.start()
+    
+    def stop_clock(self):
+        print('\t\t\tstop clock')
+        self._stop_clock = True
+        self.clock.join()
+
+
+    def SHOW_ALL_VAL(self, value=None):
+
+        if value == None:
+            return
+        else:
+
+            if value == True:
+                print(self.keywords)
+                print(value, type(value))
+            return 0
+    
+    def ICETEST(self, value=None):
+        '''When called, randomly returns an integer value between 1 to 10'''
+        if value == None:
+            # show
+            import random
+            value_to_return = random.randint(1, 10)
+            return value_to_return #self.keywords['ICETEST']
+
+        else:
+            # modify
+            return 0
