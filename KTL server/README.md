@@ -9,13 +9,16 @@ In `mockKeckLFC.py`, the mockKeckLFC class reads the xml file, stores the keywor
 The functions are defined as the same name as the keyword.
 
 ``` ruby
-def KEYWORD(self, value = None):
-    
-    if value == None: 
-        # This is called when keyword value is read
-        return self.keywords['KEYWORD']
-    else:
-        # This is called when keyword value is being modified
-        # do something    
-        return 0 # return 0 if successful
+    def KEYWORD(self, value=None):
+        if value == None: 
+            # This is called periodically
+            # Insert some function to execute when this keyword is being read and return the value
+            # If you don't want the KeckLFC class to modify this keyword, no need to return a value               
+            return 
+        
+        else:
+            # This is called when user modifies the keyword
+            # Insert some function to execute when user modifies this keyword
+            # If it's successful, return 0
+            return 0 # return 
 ```
