@@ -3,17 +3,24 @@ This is control package for Laser Frequency Comb in Keck Observatory
 
 # Installation
 
-- Step 1: Install Anaconda and prepare the environment
+This installation guide is written for Windows 11 platform. It should be similar (but untested) for other operating systems.
 
--- 1.1 Download and install Anaconda
 
-It is highly recommended to use Anaconda to manage python packages.
+## Step 1: Install Anaconda and prepare the environment
 
-Download and install Anaconda from https://www.anaconda.com/download/
+Anaconda is a free and open-source distribution of the Python (and R) programming languages for scientific computing, that aims to simplify package management and deployment. Package versions are managed by the package management system conda. **Without Anaconda, the package installation can be complicated because of the dependencies of different packages, especially for Windows users when you have other python packages already installed for whatever other reasons.** It is **highly recommended** to use Anaconda to manage python packages.
+
+
+### 1.1 Download and install Anaconda
+
+==Download and install Anaconda from https://www.anaconda.com/download/==
+
 
 Verify the installation by running `conda --version` in terminal.
 
--- 1.2 Create a new environment
+### 1.2 Create a new environment
+
+
 
 Create a new environment for KeckLFC by running `conda create -n lfc` in terminal.
 

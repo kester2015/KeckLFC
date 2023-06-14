@@ -96,11 +96,11 @@ if __name__=="__main__":
     #initialize device and get temperature
     daq = USB2408(addr=0)
     daq.connect()
-    daq2 = USB2408(addr=1)
-    daq2.connect()
+    # daq2 = USB2408(addr=1)
+    # daq2.connect()
 
     filename = r"Z:\Maodong\Projects\Keck\System Assembly test\Full_Comb_Running_2023_0330.txt"   
-    filename = r"Z:\Maodong\Projects\Keck\System Assembly test\Cabinet_open_test_2023_0405.txt"   
+    filename = r"Z:\Maodong\Projects\Keck\System Assembly test\Cabinet_open_test_2023_0605.txt"   
 
     with  open(filename,"w") as f:
         #TODO: write table head
@@ -113,15 +113,16 @@ if __name__=="__main__":
 
                 print("DAQ1 Temp".center(80,'-'))
                 Temp = daq.get_temp_all()
+                
                 for jj in Temp:
                     f.write(f"{jj:.5f}\t")
 
-                print("DAQ2 Temp".center(80,'-'))
-                Temp = daq2.get_temp_all()
-                for jj in Temp:
-                    f.write(f"{jj:.5f}\t")
+                # print("DAQ2 Temp".center(80,'-'))
+                # Temp = daq2.get_temp_all()
+                # for jj in Temp:
+                #     f.write(f"{jj:.5f}\t")
 
                 f.write("\n")
         except Exception as e:
             print(e)
-        time.sleep(30)
+        time.sleep(2)
