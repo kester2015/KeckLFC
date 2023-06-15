@@ -5,7 +5,7 @@ This is control package for Laser Frequency Comb in Keck Observatory
 
 # Installation
 
-The texts **bolded like this** are **_Actions_ you need to execute**. Please read them carefully.
+The texts ** bolded like this** are **_Actions_ you need to execute**. Please read them carefully.
 
 Other texts are explanations of the purpose of these actions. You can skip them ***only if*** you are familiar with the respective part.
 
@@ -25,9 +25,10 @@ Without Anaconda, the package installation can be complicated because of the dep
 
 **IF you already have Anaconda installed, you may skip this step.**
 
-- **Download Anaconda installation package from [https://www.anaconda.com/download/] (https://www.anaconda.com/download/).**
+- **Download Anaconda installation package from [https://www.anaconda.com/download/] (https://www.anaconda.com/download/). **
 
-- **Run the installation package and follow the DEFAULT instructions.**
+- **Run the installation package and follow the DEFAULT instructions.
+**
 
 > Note: DEFAULT instructions means ***you don't need to change any settings during the installation. Just click "Next" or "Continue" until the installation is finished.*** This procedure has been tested and works fine. You may modify the settings if you know what you are doing.
 
@@ -38,7 +39,7 @@ Anacoda Prompt (also called terminal in this guide) is a terminal-like interface
 
 Anacoda Prompt can be used to execute commands for package management. And **all following commands described later that states ***... in terminal*** should be executed in Anaconda Prompt.**
 
-- **Open Anaconda Prompt by searching "Anaconda Prompt" in Windows search bar.**
+- ** Open Anaconda Prompt by searching "Anaconda Prompt" in Windows search bar. **
 
 You should see a terminal-like window pops up. The window title should be something like "Anaconda Prompt (base)". And the command prompt should be something like "(base) C:\Users\your_user_name>".
 
@@ -50,7 +51,7 @@ You should see a terminal-like window pops up. The window title should be someth
 >- If you see a list of packages, you may want to clean them by running `conda clean --all` in terminal, make sure you see (base) in the command prompt. This will remove all packages in (base) environment. ***This is not necessary if you have just installed Anaconda.***
 
 
-- **Verify the installation by running `conda --version` in terminal.**
+- ** Verify the installation by running `conda --version` in terminal.**
 
 You should see something like "conda 4.10.3" in the terminal. If you see something like "conda is not recognized as an internal or external command, operable program or batch file.", please refer to the Common issues and solution suggestions for Anaconda installation section below.
 
@@ -60,11 +61,11 @@ You should see something like "conda 4.10.3" in the terminal. If you see somethi
 
 > Note: lfc-env is the name of the environment. You can change it to any name you like. But please remember the name you choose. You will need it later. I recommend you attach "-env" to the name to indicate it is an environment, otherwise it may be confused with package names.
 
-- **Type 'Y' and press Enter to confirm if you see a prompt like "Proceed ([y]/n)?".**
+- ** Type 'Y' and press Enter to confirm if you see a prompt like "Proceed ([y]/n)?".**
 
 If the environment is created successfully, you should see something like "Preparing transaction: done", "Verifying transaction: done", "Executing transaction: done" in the terminal.
 
-- **Activate the environment by running `conda activate lfc-env` in terminal.**
+- ** Activate the environment by running `conda activate lfc-env` in terminal.**
 
 You should see the command prompt changes to something like "(lfc-env) C:\Users\your_user_name>". This means you are now in the environment you just created. All packages you install now will be installed in this environment. ***Please make sure you see (lfc-env) in the command prompt before you install any packages.***
 
@@ -83,17 +84,17 @@ If you have trouble installing Anaconda ***(which rarely happens for Windows use
 
 ## Step 2: Install dependent packages for `KeckLFC`
 
-**BEFORE PROCEDING THIS STEP, make sure you see (lfc-env) in the command prompt shown in terminal. If not, please run `conda activate lfc-env` in terminal.**
+** BEFORE PROCEDING THIS STEP, make sure you see (lfc-env) in the command prompt shown in terminal. If not, please run `conda activate lfc-env` in terminal.**
 
 > Note: If you selected a different name for the environment, please replace "lfc-env" with the name you choose.
 
 We will use both conda and pip to install packages because some packages are not available in conda. To use `pip` we need to install it first.
 
-- **Run `conda install pip` in terminal.**
+- ** Run `conda install pip` in terminal.**
 
 You should see a list of packages to be installed.
 
-- **Type "y" and press enter to confirm the installation if you see a prompt like "Proceed ([y]/n)?". You may also need to do this for the following package installation.** Text **bolding** for this _Action_ will be omitted for the following package installation.
+- ** Type "y" and press enter to confirm the installation if you see a prompt like "Proceed ([y]/n)?". You may also need to do this for the following package installation.** Text highlight for this step will be omitted for the following package installation.
 
 You should see something like "Successfully installed ..." in the terminal if the installation is successful.
 
@@ -113,7 +114,7 @@ You should see something like "Successfully installed ..." in the terminal if th
 
 numpy, scipy, matplotlib are python packages for scientific computing. You can find more information about them in https://numpy.org/, https://www.scipy.org/, https://matplotlib.org/.
 
-- **Run `conda install numpy scipy matplotlib` in terminal.**
+- ** Run `conda install numpy scipy matplotlib` in terminal. **
 
 You should see a list of packages to be installed.
 
@@ -139,7 +140,7 @@ You should see something like "Successfully installed ..." in the terminal if th
 
 [TODO: Add more information on wsapi install. Download those necessary files and put them in the repo. Copy the online instructions here.]
 
-**Follow the instructions in [https://ii-vi.com/use-64-bit-python-3-7-to-control-the-waveshaper-through-the-usb-port/](https://ii-vi.com/use-64-bit-python-3-7-to-control-the-waveshaper-through-the-usb-port/) to install wsapi.**
+** Follow the instructions in [https://ii-vi.com/use-64-bit-python-3-7-to-control-the-waveshaper-through-the-usb-port/](https://ii-vi.com/use-64-bit-python-3-7-to-control-the-waveshaper-through-the-usb-port/) to install wsapi. **
 
 
 ### 2.end: Common issues and solution suggestions for package installation
@@ -155,7 +156,7 @@ If you have trouble installing any of the above packages, first make sure you ar
 > - If you have trouble installing package `numpy`, please refer to https://numpy.org/install/ for more information.
 
 
-## Step 3: [OPTIONAL] Install Arduino Integrated Development Environment (IDE)
+## Step 3: Install Arduino Integrated Development Environment (IDE)
 
 ***This step is optional if you don't wish to modify the logic that is already implemented in Arduino board.***
 
@@ -170,57 +171,29 @@ Arduino is an open-source electronics platform based on easy-to-use hardware and
 > Furthermore [TODO]. Arduino will also serve as a controller for "blue screen death" for the computer. Arduino will regularly send try to communicate with the computer and if the computer is not responding, Arduino will turn off the power of Pritel amplifier to put the system in "SAFE" mode.
 
 [TODO: add more information about IDE download and installation]
-- **Follow the instructions in [https://www.arduino.cc/en/software](https://www.arduino.cc/en/software) to install Arduino IDE.**
+- ** Follow the instructions in [https://www.arduino.cc/en/software](https://www.arduino.cc/en/software) to install Arduino IDE. **
 
-
-## Step 4: Download this repository
-
-This step will help you fork this repository to your local computer. You can also download the repository directly from Github website. Direct download should be easier but you will not be able to push your changes to the repository.
-
-**Choose one of the following options to fork or download the repository to your local computer.**
-
-### (Option 1) 4.1: Install Github Desktop and clone the repository
-
-This can be complicated if you are not familiar with Github. But this will allow you to push your changes to the repository and pull the latest version of the repository to your local computer.
-
-- **Follow the instructions in [https://docs.github.com/en/desktop/installing-and-configuring-github-desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop](https://docs.github.com/en/desktop/installing-and-configuring-github-desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop) to install Github Desktop.**
-
-### (Option 2) 4.2: Download the repository directly from Github website
-
-This is most straightforward way to download the repository. But you will not be able to push your changes to the repository and pull the latest version of the repository to your local computer. You will need to download the repository again if you want to get the latest version of the repository.
-
-- **click the green button "Code" on the top right corner of this page, then click "Download ZIP".**
-
-- **Unzip the downloaded file to your local computer.**
-
-- **Save the unzipped files to your project folder.**
-
-### (UNAVAILABLE YET) 4.3: Download repo from pypi using pip
-
-[TODO: upload the repo to pypi]
-
-
-## Step 5 : [OPTIONAL] Install python Integrated Development Environment (IDE): Visual Studio Code (VScode)
+## Step 4: Install python Integrated Development Environment (IDE): Visual Studio Code (VScode)
 
 ***This step is optional if you don't like VScode as your programming tool. You can use any other IDE you like.***
 
-### 5.1 Download VScode
+### 4.1 Download VScode
 
-- **Follow the instructions in [https://code.visualstudio.com/download](https://code.visualstudio.com/download) to download VScode.**
+- ** Follow the instructions in [https://code.visualstudio.com/download](https://code.visualstudio.com/download) to download VScode. **
 
-### 5.2: Open your project folder in VScode and select the python environment
+### 4.2: Open your project folder in VScode and select the python environment
 
 - 1. Open your project folder in VScode
 
- **Follow the instructions in [https://code.visualstudio.com/docs/editor/quickstart](https://code.visualstudio.com/docs/editor/quickstart) to open your project folder in VScode.**
+ ** Follow the instructions in [https://code.visualstudio.com/docs/editor/quickstart](https://code.visualstudio.com/docs/editor/quickstart) to open your project folder in VScode. **
 
 - 2. Select the python environment
     
-    **Use the Python: Select Interpreter command from the Command Palette (Ctrl+Shift+P) to select the python environment.**
+    ** Use the Python: Select Interpreter command from the Command Palette (Ctrl+Shift+P) to select the python environment. **
 
     > For more information,  Follow the instructions in [https://code.visualstudio.com/docs/python/environments](https://code.visualstudio.com/docs/python/environments) to select the python environment. 
 
-### 5.3: Install extensions in VScode
+### 4.3: Install extensions in VScode
 
 ***This step is OPTIONAL at the beginning.***
 
@@ -239,24 +212,6 @@ This is most straightforward way to download the repository. But you will not be
   Follow the instructions in [https://code.visualstudio.com/docs/editor/github](https://code.visualstudio.com/docs/editor/github) to install git extension in VScode. 
 
 
-## Step 6: Install Keysight IO Libraries Suite
 
-Keysight IO Libraries Suite is a collection of libraries and tools that help you to quickly and easily connect your test instruments to your PC. You can find more information about Keysight IO Libraries Suite in https://www.keysight.com/us/en/software/application-sw/keysight-io-libraries-suite.html.
-
-> Note: In Keck Laser Frequency Comb, we use Keysight IO Libraries Suite to communicate with not only KeySight equipments. [TODO: Identify what specifically are using it]
-
-**Follow the instructions in [https://www.keysight.com/us/en/software/application-sw/keysight-io-libraries-suite.html](https://www.keysight.com/us/en/software/application-sw/keysight-io-libraries-suite.html) to install Keysight IO Libraries Suite.**
-
-## Step 7: Install Ni-Max
-
-Ni-Max is a software that helps you to manage your National Instruments (NI) devices. It is also the software that you can use to communicate with NI devices, ***debug your NI devices, and identify the address of your NI devices.***
-
-You can find more information about Ni-Max in https://www.ni.com/en-us/support/downloads/drivers/download.ni-max.html.
-
-**Follow the instructions in [https://www.ni.com/en-us/support/downloads/drivers/download.ni-max.html](https://www.ni.com/en-us/support/downloads/drivers/download.ni-max.html) to install Ni-Max.**
-
-## Step End-1: Verify installations
-
-[TODO: add more information about how to verify the installations]
 
 

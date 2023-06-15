@@ -155,7 +155,7 @@ If you have trouble installing any of the above packages, first make sure you ar
 > - If you have trouble installing package `numpy`, please refer to https://numpy.org/install/ for more information.
 
 
-## Step 3: [OPTIONAL] Install Arduino Integrated Development Environment (IDE)
+## Step 3: Install Arduino Integrated Development Environment (IDE)
 
 ***This step is optional if you don't wish to modify the logic that is already implemented in Arduino board.***
 
@@ -187,7 +187,7 @@ This can be complicated if you are not familiar with Github. But this will allow
 
 ### (Option 2) 4.2: Download the repository directly from Github website
 
-This is most straightforward way to download the repository. But you will not be able to push your changes to the repository and pull the latest version of the repository to your local computer. You will need to download the repository again if you want to get the latest version of the repository.
+
 
 - **click the green button "Code" on the top right corner of this page, then click "Download ZIP".**
 
@@ -239,24 +239,6 @@ This is most straightforward way to download the repository. But you will not be
   Follow the instructions in [https://code.visualstudio.com/docs/editor/github](https://code.visualstudio.com/docs/editor/github) to install git extension in VScode. 
 
 
-## Step 6: Install Keysight IO Libraries Suite
 
-Keysight IO Libraries Suite is a collection of libraries and tools that help you to quickly and easily connect your test instruments to your PC. You can find more information about Keysight IO Libraries Suite in https://www.keysight.com/us/en/software/application-sw/keysight-io-libraries-suite.html.
-
-> Note: In Keck Laser Frequency Comb, we use Keysight IO Libraries Suite to communicate with not only KeySight equipments. [TODO: Identify what specifically are using it]
-
-**Follow the instructions in [https://www.keysight.com/us/en/software/application-sw/keysight-io-libraries-suite.html](https://www.keysight.com/us/en/software/application-sw/keysight-io-libraries-suite.html) to install Keysight IO Libraries Suite.**
-
-## Step 7: Install Ni-Max
-
-Ni-Max is a software that helps you to manage your National Instruments (NI) devices. It is also the software that you can use to communicate with NI devices, ***debug your NI devices, and identify the address of your NI devices.***
-
-You can find more information about Ni-Max in https://www.ni.com/en-us/support/downloads/drivers/download.ni-max.html.
-
-**Follow the instructions in [https://www.ni.com/en-us/support/downloads/drivers/download.ni-max.html](https://www.ni.com/en-us/support/downloads/drivers/download.ni-max.html) to install Ni-Max.**
-
-## Step End-1: Verify installations
-
-[TODO: add more information about how to verify the installations]
 
 
