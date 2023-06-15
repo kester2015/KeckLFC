@@ -89,16 +89,6 @@ If you have trouble installing Anaconda **(which rarely happens for Windows user
 
 > Note: If you selected a different name for the environment, please replace "lfc-env" with the name you choose.
 
-We will use both conda and pip to install packages because some packages are not available in conda. To use `pip` we need to install it first.
-
-- <mark> Run `conda install pip` in terminal.</mark>
-
-You should see a list of packages to be installed.
-
-- <mark> Type "y" and press enter to confirm the installation if you see a prompt like "Proceed ([y]/n)?". You may also need to do this for the following package installation.</mark> Text highlight for this step will be omitted for the following package installation.
-
-You should see something like "Successfully installed ..." in the terminal if the installation is successful.
-
 ### 2.1 Install pyvisa
 
 pyvisa is a python package for instrument control. You can find more information about pyvisa in https://pyvisa.readthedocs.io/en/latest/.
@@ -107,9 +97,9 @@ pyvisa is a python package for instrument control. You can find more information
 
 You should see a list of packages to be installed. 
 
-- Type "y" and press enter to confirm the installation if you see a prompt like "Proceed ([y]/n)?".
+- <mark> Type "y" and press enter to confirm the installation if you see a prompt like "Proceed ([y]/n)?".</mark>
 
-You should see something like "Successfully installed ..." in the terminal if the installation is successful.
+You should see something like "Successfully installed ..." 
 
 ### 2.2 Install numpy, scipy, matplotlib
 
@@ -119,29 +109,15 @@ numpy, scipy, matplotlib are python packages for scientific computing. You can f
 
 You should see a list of packages to be installed.
 
-- Type "y" and press enter to confirm the installation if you see a prompt like "Proceed ([y]/n)?".
+- <mark> Type "y" and press enter to confirm the installation if you see a prompt like "Proceed ([y]/n)?".</mark>
 
-You should see something like "Successfully installed ..." in the terminal if the installation is successful.
+-- 2.3 Install mcculw (for USB-2408 DAQ)
 
-### 2.3 Install mcculw (for USB-2408 DAQ)
+Run `pip install mcculw` in terminal.
 
-**You can skip this step if you don't have USB-2408 DAQ.**
+-- 2.4 Install wsapi (for Finisar WaveShaper)
 
-`mcculw` is a python package for USB-2408 DAQ. You can find more information about mcculw in https://www.mccdaq.com/PDFs/Manuals/USB-2408-2-4.pdf.
-
-- <mark>Run `pip install mcculw` in terminal.</mark>
-
-You should see a list of packages to be installed.
-
-- Type "y" and press enter to confirm the installation if you see a prompt like "Proceed ([y]/n)?".
-
-You should see something like "Successfully installed ..." in the terminal if the installation is successful.
-
-### 2.4 Install wsapi (for Finisar WaveShaper)
-
-[TODO: Add more information on wsapi install. Download those necessary files and put them in the repo. Copy the online instructions here.]
-
-<mark> Follow the instructions in [https://ii-vi.com/use-64-bit-python-3-7-to-control-the-waveshaper-through-the-usb-port/](https://ii-vi.com/use-64-bit-python-3-7-to-control-the-waveshaper-through-the-usb-port/) to install wsapi. </mark>
+Follow the instructions in https://ii-vi.com/use-64-bit-python-3-7-to-control-the-waveshaper-through-the-usb-port/ for connection guide
 
 
 ### 2.end: Common issues and solution suggestions for package installation
@@ -157,60 +133,7 @@ If you have trouble installing any of the above packages, first make sure you ar
 > - If you have trouble installing package `numpy`, please refer to https://numpy.org/install/ for more information.
 
 
-## Step 3: Install Arduino Integrated Development Environment (IDE)
-
-**This step is optional if you don't wish to modify the logic that is already implemented in Arduino board.**
-
-Arduino is an open-source electronics platform based on easy-to-use hardware and software. You can find more information about Arduino in https://www.arduino.cc/. 
-
-> Note: In Keck Laser Frequency Comb, we use Arduino to serve as a latched relay circuit to protect Pritel Amplifier. If the input power of Pritel amplifier is too low, it can cause a Q-switch failure and damage the amplifier/ pulse compressor/ ocatve waveguide. The Q-switch failure happens in a time scale of mili-seconds, which means we need a fast protection circuit to protect the amplifier. 
-
-> Here, we use an analog relay circuit and an Arduino controlled relay circuit connected in series as input to Pritel amplifier interlock, to serve as a latched relay circuit. The analog relay circuit will turn off the power of Pritel amplifier immediately (in miliseconds) if the input power is too low. The Arduino controlled relay circuit will prevent turn on the power of Pritel amplifier if the input power is back to threshold, which realize the latching of the series circuit. The Arduino controlled relay circuit will also send a signal to the computer to indicate the status of the latched relay circuit. The computer will use this signal to trigger alarm to user.
-
-> If user wish to turn on the power of Pritel amplifier after the latched relay circuit is triggered, user need to manually reset the latched relay circuit by sending command "RESET" to Arduino. The Arduino controlled relay circuit will then turn on the power of Pritel amplifier if the input power is back to threshold (Arduino will not respond if input power is still too low). 
-
-> Furthermore [TODO]. Arduino will also serve as a controller for "blue screen death" for the computer. Arduino will regularly send try to communicate with the computer and if the computer is not responding, Arduino will turn off the power of Pritel amplifier to put the system in "SAFE" mode.
-
-[TODO: add more information about IDE download and installation]
-- <mark> Follow the instructions in [https://www.arduino.cc/en/software](https://www.arduino.cc/en/software) to install Arduino IDE. </mark>
-
-## Step 4: Install python Integrated Development Environment (IDE): Visual Studio Code (VScode)
-
-**This step is optional if you don't like VScode as your programming tool. You can use any other IDE you like.**
-
-### 4.1 Download VScode
-
-- <mark> Follow the instructions in [https://code.visualstudio.com/download](https://code.visualstudio.com/download) to download VScode. </mark>
-
-### 4.2: Open your project folder in VScode and select the python environment
-
-- 1. Open your project folder in VScode
-
- <mark> Follow the instructions in [https://code.visualstudio.com/docs/editor/quickstart](https://code.visualstudio.com/docs/editor/quickstart) to open your project folder in VScode. </mark>
-
-- 2. Select the python environment
-    
-    <mark> Use the Python: Select Interpreter command from the Command Palette (Ctrl+Shift+P) to select the python environment. </mark>
-
-    > For more information,  Follow the instructions in [https://code.visualstudio.com/docs/python/environments](https://code.visualstudio.com/docs/python/environments) to select the python environment. 
-
-### 4.3: Install extensions in VScode
-
-**This step is OPTIONAL at the beginning.**
-
-> Note: VScode has already provided user friendly interface to install extensions. And those extensions typically can be installed **when you actually need them**. So you don't necessarily need to follow the following instructions and install all the extensions at the beginning.
-
-- 1. Install python extension in VScode
-
- Follow the instructions in [https://code.visualstudio.com/docs/python/python-tutorial](https://code.visualstudio.com/docs/python/python-tutorial) to install python extension in VScode.
-
-- 2. Install jupyter extension in VScode
-
- Follow the instructions in [https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) to install jupyter extension in VScode.
-
-- 3. Install git extension in VScode (optional)
-
-  Follow the instructions in [https://code.visualstudio.com/docs/editor/github](https://code.visualstudio.com/docs/editor/github) to install git extension in VScode. 
+## Step 2: Install python Integrated Development Environment (IDE): Visual Studio Code
 
 
 
