@@ -1,5 +1,6 @@
 import warnings
 from .Device import Device
+import time
 
 class OZopticsVOA(Device):
     def __init__(self, addr='ASRL7::INSTR', name='OZoptics VOA', isVISA=True):
@@ -36,8 +37,10 @@ class OZopticsVOA(Device):
         message = self.devicename.center(80,'-')+'\n'
         message = message + 'OZ optics VOA Status Summary'.center(80,'-')+'\n'
         message = message + f"|\t Attenuation: {self.atten_db:.2f} (dB)"+'\n'
+        time.sleep(0.1)
         message = message + "|\t Device Configure String:" + '\n'
         message = message + "|\t\t" + self._getConfigStr()[:-1].replace('\n','\n|\t\t')
+        time.sleep(0.1)
         message = message + '\n'+'OZ optics VOA Status Summary Ends'.center(80,'-')+'\n'
         print(message)
         return message

@@ -5,7 +5,8 @@ from .Device import Device
 
 
 from typing import Optional
-
+import time
+from time import sleep
 import pyvisa
 from pyvisa.constants import Parity
 
@@ -55,6 +56,15 @@ class AgiltronSelfAlign(Device):
         self.isVISA = True
         self.inst = self.instrument # for compatibility with Device class
 
+
+    def home(self) -> None:
+        """
+        Home the fiber switch, i.e. move to port 1.
+        """
+        self.instrument.write_raw(b"\x01\x30\x00\x00")
+        print ("Homing...")
+
+
     def set_fiber_port(self, fiber_port: int) -> None:
         """
         Switch fiber switch to port `fiber_port`.
@@ -64,16 +74,38 @@ class AgiltronSelfAlign(Device):
         """
         check_port(fiber_port, self.number_of_ports)
         if fiber_port != self.fiber_port:
+            # self.home()
+            # time.sleep(0.5) # wait for the switch to home
+
+
+            "write a dict for home_list for each port"
+            home_list = {1: b"\x01\x30\x00\x79", 2: b"\x01\x30\x00\x88", 3: b"\x01\x30\x00\xB6", 4: b"\x01\x30\x00\xC5", 5: b"\x01\x30\x00\xD5", 6: b"\x01\x30\x00\xE5"}
+            # self.instrument.clear()
             cmd = b"\x01\x35\x00" + bytes([fiber_port - 1])
             self.instrument.write_raw(cmd)
+            sleep(0.5)
+            # ret = self.instrument.read_bytes(4)
+            # print (ret)
+            
+            
+            self.instrument.write_raw(home_list[fiber_port])
+            sleep(0.5)
+            # ret = self.instrument.read_bytes(4)
+            # print (ret)
+            
+            
+            self.instrument.write_raw(cmd)
+            sleep(0.5)
+            # ret = self.instrument.read_bytes(4)
+            # print (ret)
+            
+
+
             ret = self.instrument.read_bytes(4)
+            print (ret)
             assert (
-                ret == b"\x01\x35\xff\xff"
+                ret == b"\x01\x35\x00" + bytes([fiber_port - 1])
             ), f"invalid return message, fiber port not set to {fiber_port}"
             self.fiber_port = fiber_port
 
-    def home(self) -> None:
-        """
-        Home the fiber switch, i.e. move to port 1.
-        """
-        self.instrument.write(b"\x01\x30\x00\x00")
+    

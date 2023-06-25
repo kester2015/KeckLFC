@@ -141,6 +141,7 @@ You should see something like "Successfully installed ..." in the terminal if th
 - **WaveAnalyzer GUI Software 1.9.0**
 - **WaveManager Set-up 2.7.5**
 - **WaveShaper App Setup 2.2.0**
+
 **Follow DEFAULT download procedure. Especially oo not change the default installation path.**
 
 [TODO: Add more information on wsapi install. Download those necessary files and put them in the repo. Copy the online instructions here.]
