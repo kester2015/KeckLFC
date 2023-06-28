@@ -284,5 +284,4 @@ class TEC_LFC3751(Device):
 
 
 if __name__ == '__main__':
-    
     pass

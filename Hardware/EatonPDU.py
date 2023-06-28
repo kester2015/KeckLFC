@@ -1,5 +1,5 @@
 
-from Device import Device
+from .Device import Device
 
 
 class EatonPDU(Device):

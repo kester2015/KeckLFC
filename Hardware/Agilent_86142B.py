@@ -20,7 +20,7 @@ class Agilent_86142B(Device):
         self.__activation_timeout = 3  # time to wait for device to turn on/off activation and channel status. in unit of second.
         self.inst.timeout = 25000  # communication time-out time set in units of ms
         self.inst.baud_rate = 19200  # baud rate is 9600 by default. THIS SETTING IS NECESSARY for success communication
-        self.inst.read_termination = '\r\n'  # read_termination is not specified by default.
+        self.inst.read_termination = '\n'  # read_termination is not specified by default.
         self.inst.write_termination = '\r\n'  # write_termination is '\r\n' by default.
         self.osaacquiring = False
 
@@ -49,6 +49,14 @@ class Agilent_86142B(Device):
     @resolution.setter
     def resolution(self, res):
         self.set_resolution(res)
+
+    @property
+    def sensitivity(self):
+        return self.get_sens()
+    
+    @sensitivity.setter
+    def sensitivity(self, sens):
+        self.set_sens(sens)
 
     @property
     def reflevel(self):
@@ -102,7 +110,7 @@ class Agilent_86142B(Device):
         print(self.devicename + f": Reference level set to {reflevel:.1f} dBm.")
 
     def get_wlstart(self):
-        return float(self.query('SENS:WAV:STAR?'))
+        return float(self.query('SENS:WAV:STAR?'))*1e9
 
     def set_wlstart(self, wlstart):
         wlstart = float(wlstart)
@@ -111,7 +119,7 @@ class Agilent_86142B(Device):
         print(self.devicename + f": Scan start wavelength set to {wlstart:.2f} nm.")
 
     def get_wlstop(self):
-        return float(self.query('SENS:WAV:STOP?'))
+        return float(self.query('SENS:WAV:STOP?'))*1e9
 
     def set_wlstop(self, wlstop):
         wlstop = float(wlstop)
@@ -120,7 +128,7 @@ class Agilent_86142B(Device):
         print(self.devicename + f": Scan stop wavelength set to {wlstop:.2f} nm.")
 
     def get_wlspan(self):
-        return self.get_wlstop() - self.get_wlstart()
+        return self.get_wlstop() - self.get_wlstart() 
 
     def set_wlspan(self, wlspan):
         wlspan = float(wlspan)
@@ -144,12 +152,12 @@ class Agilent_86142B(Device):
         print(self.devicename + f": Scan center wavelength set to {wlcenter:.2f} nm.")
 
     def get_resolution(self):
-        return float(self.query('SENS:BAND:RES?'))
+        return float(self.query('SENS:BAND:RES?'))*1e9
 
     def set_resolution(self, res):
         res = float(res)
-        self.write(f'SENS:BAND:RES {res:.2f}')
-        res= float(self.query('SENS:BAND:RES?'))
+        self.write(f'SENS:BAND:RES {res:.2f}nm')
+        res= self.get_resolution()
         print(self.devicename + f": Resolution set to {res:.2f} nm.")
 
     def Run(self):
@@ -164,11 +172,16 @@ class Agilent_86142B(Device):
         self.write('INIT:CONT 0')  # equivlant to repeat softkey
         print(self.devicename + ": Spectrum collection STOPped.")
 
+
+
+    def get_sens(self):
+        return float(self.query('SENS:POW:DC:RANG:LOW?'))
+    
     def set_sens(self, sens):
         sens = float(sens)
         self.write(f'SENS:POW:DC:RANG:LOW {sens:.1f}')
         sens = float(self.query('SENS:POW:DC:RANG:LOW?'))
-        print(self.devicename + ": OSA sensitivity set to " + sens + "dBm.")
+        print(self.devicename + f": OSA sensitivity set to {sens:.2f} dBm.")
 
     def blank_trace(self, trace):
         trace = str(trace).capitalize()

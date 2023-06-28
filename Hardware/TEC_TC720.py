@@ -128,10 +128,10 @@ class TEC_TC720(Device):
                 self.verboseprint('Made connection with temperature controller: {}'.format(self.name))
                 
                 #Set the machine into temperature control
-                self.set_temp(self.default_temp)
-                self.set_mode(self.mode)
-                self.set_control_type(self.control_type)
-                self.verboseprint('Mode set to: {}, control type set to: {}, temperature set to: {}C'.format(self.mode, self.control_type, self.default_temp))
+                # self.set_temp(self.default_temp)
+                # self.set_mode(self.mode)
+                # self.set_control_type(self.control_type)
+                # self.verboseprint('Mode set to: {}, control type set to: {}, temperature set to: {}C'.format(self.mode, self.control_type, self.default_temp))
 
                 return 1
             except:
