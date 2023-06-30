@@ -14,6 +14,14 @@ class ORIONLaser(Device):
         self.__default_TEC_Ohm = 9661  # ohm, about 25.902 degC
         self.__default_laserCur = 1450  # in unit of 0.1mA
 
+        # For SN: 806734, the following are the factory settings
+        # self.__factory_Cur = 1440 # in unit of 0.1mA
+        # self.__factory_T = 20.80 # degC
+
+        # For SN: 806734, the following are the default settings to lock to Rb spectroscopy
+        # self.__default_Cur_mA = 150 # in unit of 1mA
+        # self.__default_T_C = 19.181 # degC
+
     def default_DiodCur_TEC(self):
         self.writeTECsetpoint(self.__steinhart_hart_ohm2degC(self.__default_TEC_Ohm), volatile=False)
         self.writeLaserdiodeCur_mA(self.__default_laserCur / 10, volatile=False)

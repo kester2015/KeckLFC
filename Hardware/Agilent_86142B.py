@@ -16,7 +16,7 @@ class Agilent_86142B(Device):
     def __init__(self, addr='GPIB0::30::INSTR', name="Agilent 86142B"):
         super().__init__(addr=addr, name=name)
         self.__available_traces = ['A', 'B', 'C', 'D', 'E', 'F']
-        self.__available_sensitivity = ['norm', 'high1', 'high2', 'high3']
+        # self.__available_sensitivity = ['norm', 'high1', 'high2', 'high3'] # For 86142B, sensitivity is defined in unit of dBm.
         self.__activation_timeout = 3  # time to wait for device to turn on/off activation and channel status. in unit of second.
         self.inst.timeout = 25000  # communication time-out time set in units of ms
         self.inst.baud_rate = 19200  # baud rate is 9600 by default. THIS SETTING IS NECESSARY for success communication
@@ -208,16 +208,18 @@ class Agilent_86142B(Device):
         print(self.devicename + ": Trace " + trace + " is displayed.")
 
     def write_trace(self, trace):               # what is write trace?
-        trace = str(trace).capitalize()
-        if trace.casefold() == 'all':
-            for t in self.__available_traces:
-                self.write_trace(t)
-            return
-        if trace.casefold() not in [str(t).casefold() for t in self.__available_traces]:
-            raise ValueError(self.devicename + ": Trace name " + trace + " unrecognized. " +
-                             "Agilent 86142B trace must select from " + str(self.__available_traces))
-        self.query("WRT" + trace)
-        print(self.devicename + ": Trace " + trace + " is being written.")
+        # trace = str(trace).capitalize()
+        # if trace.casefold() == 'all':
+        #     for t in self.__available_traces:
+        #         self.write_trace(t)
+        #     return
+        # if trace.casefold() not in [str(t).casefold() for t in self.__available_traces]:
+        #     raise ValueError(self.devicename + ": Trace name " + trace + " unrecognized. " +
+        #                      "Agilent 86142B trace must select from " + str(self.__available_traces))
+        # self.query("WRT" + trace)
+        # print(self.devicename + ": Trace " + trace + " is being written.")
+        warnings.warn("write_trace() is not depreated for Agilent 86142B, use update_trace() instead.")
+        return self.update_trace(trace)
 
     def fix_trace(self, trace):
         trace = str(trace).capitalize()

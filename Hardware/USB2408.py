@@ -8,13 +8,47 @@ from Device import Device
 
 
 class USB2408(Device):
-    def __init__(self, addr=0, name="USB-2408 DAQ", isVISA=False):
+    def __init__(self, addr=0, name=None   #"USB-2408 DAQ"
+                 , isVISA=False):
         '''
         addr is Board number. From 0.
         '''
         super().__init__(addr, name, isVISA)
         self.__num_channels = 8
-        
+
+        if addr==1: # This Board is on optical table breadboard
+            self.thermocouple_positions = ["RF Oscillator", "RF amplifier", 
+                                           "Main Phase Modulators", "Filter Cavity",
+                                           "Board Glycol in", "Board Glycol out",
+                                           "Compression Stage","Rubidium (Rb) Cell D2-210"]
+            if self.devicename == None:
+                self.devicename = "USB-2408 DAQ on Optical Table Breadboard"
+        elif addr==0: # This Board is in electronics rack
+            self.thermocouple_positions = ["Rack side buffle (middle side rack)", "Waveshaper (upper rack)",
+                                           "Rb clock (middle rack)", "Pritel (middle upper rack)",
+                                           "Rack Glycol in", "Rack Glycol out",
+                                           "Power Supply Shelf (bottom rack)", "Unconnected"]
+            if self.devicename == None:
+                self.devicename = "USB-2408 DAQ in Electronics Rack"
+        else:
+            warnings.warn(self.devicename+
+                          f": Board number {addr} is not pre-setted when commission (Jun-28,2023). "+
+                          "Thermocouple positions (self.thermocouple_positions) not set.")
+            self.thermocouple_positions = ["Position not Pre-setted"]*self.__num_channels
+            if self.devicename == None:
+                self.devicename = "USB-2408 DAQ"
+
+
+    def printStatus(self):
+        message = "USB-2408 Thermal DAQ Status Summary".center(80, '-') + "\n"
+
+        temperature = self.get_temp_all()
+        for ii in range(self.__num_channels):
+            message += f"|Channel {ii}: \t {temperature[ii]:.3f} C \tat "+str(self.thermocouple_positions[ii])+"\n"
+
+        message = message + "USB-2408 Thermal DAQ Status Summary Ends".center(80, '-')
+
+
     def connect(self, set_TC=True):
         '''
         set_TC True will set each channel to TC at connection
@@ -70,7 +104,7 @@ class USB2408(Device):
         # Set data rate to 60Hz
         ul.set_config(
             InfoType.BOARDINFO, self.addr, channel, BoardInfo.ADDATARATE, 60)
-        print("set channel {:d} done".format(channel))
+        print(self.devicename + ": set channel {:d} done".format(channel))
 
     def get_temp(self, chan):
         try:
@@ -82,7 +116,7 @@ class USB2408(Device):
                 value_temperature = ul.t_in(self.addr, channel, TempScale.CELSIUS, options)
             except Exception as e:
                 print("Error: " + str(e))
-            print(self.devicename+": Channel {:d}:  {:.3f} Degrees.".format(channel, value_temperature))
+            print(self.devicename+": Channel {:d}:  {:.3f} Degrees.".format(channel, value_temperature) + "\t Position at "+str(self.thermocouple_positions[channel])+".")
             return value_temperature
         except Exception as e:
             print(e)
@@ -93,34 +127,78 @@ class USB2408(Device):
 
 
 if __name__=="__main__":
+    import time
     #initialize device and get temperature
     daq = USB2408(addr=0)
     daq.connect()
-    # daq2 = USB2408(addr=1)
-    # daq2.connect()
+    daq2 = USB2408(addr=1)
+    daq2.connect()
 
-    filename = r"Z:\Maodong\Projects\Keck\System Assembly test\Full_Comb_Running_2023_0330.txt"   
-    filename = r"Z:\Maodong\Projects\Keck\System Assembly test\Cabinet_open_test_2023_0605.txt"   
+    # import time
+    # time.sleep(1)
+    # print(daq.get_temp_all())
+    # time.sleep(1)
+    # print(daq2.get_temp_all())
+
+
+    # filename = r"Z:\Maodong\Projects\Keck\System Assembly test\Full_Comb_Running_2023_0330.txt"   
+    # filename = r"Z:\Maodong\Projects\Keck\System Assembly test\Cabinet_open_test_2023_0605.txt"   
+    # filename = r"C:\Users\HSFLFC\Desktop\Keck\Logs\DAQ_Temperature\DAQ_Temperature_2023_0628_1.txt"
+
+    # with  open(filename,"w") as f:
+    #     #TODO: write table head
+    #     f.write(time.strftime('%Z')+"\t")
+    #     for ii in daq.thermocouple_positions:
+    #         f.write(ii+"\t")
+    #     for ii in daq2.thermocouple_positions:
+    #         f.write(ii+"\t")
+    #     f.write("\n")
+    # while True:
+    #     try:
+    #         with open(filename,"a") as f:
+    #             f.write(time.ctime()+"\t")
+
+    #             print("DAQ1 Temp".center(80,'-'))
+    #             Temp = daq.get_temp_all()
+                
+    #             for jj in Temp:
+    #                 f.write(f"{jj:.5f}\t")
+
+    #             print("DAQ2 Temp".center(80,'-'))
+    #             Temp = daq2.get_temp_all()
+    #             for jj in Temp:
+    #                 f.write(f"{jj:.5f}\t")
+
+    #             f.write("\n")
+    #     except Exception as e:
+    #         print(e)
+    #     time.sleep(2)
+
+    filename = r"C:\Users\HSFLFC\Desktop\Keck\Logs\DAQ_Temperature\DAQ_Temperature_2023_0628_1.csv"
 
     with  open(filename,"w") as f:
         #TODO: write table head
-        f.write("")
-    import time
+        f.write(time.strftime('%Z')+",")
+        for ii in daq.thermocouple_positions:
+            f.write(ii+",")
+        for ii in daq2.thermocouple_positions:
+            f.write(ii+",")
+        f.write("\n")
     while True:
         try:
             with open(filename,"a") as f:
-                f.write(time.ctime()+"\t")
+                f.write(time.ctime()+",")
 
                 print("DAQ1 Temp".center(80,'-'))
                 Temp = daq.get_temp_all()
                 
                 for jj in Temp:
-                    f.write(f"{jj:.5f}\t")
+                    f.write(f"{jj:.5f},")
 
-                # print("DAQ2 Temp".center(80,'-'))
-                # Temp = daq2.get_temp_all()
-                # for jj in Temp:
-                #     f.write(f"{jj:.5f}\t")
+                print("DAQ2 Temp".center(80,'-'))
+                Temp = daq2.get_temp_all()
+                for jj in Temp:
+                    f.write(f"{jj:.5f},")
 
                 f.write("\n")
         except Exception as e:
