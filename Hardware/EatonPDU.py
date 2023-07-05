@@ -16,7 +16,7 @@ class EatonPDU(Device):
         # self.__password = "H619N29036" # 192.168.0.143
         self.max_login_attempt = 5
         # self.loggedin = False # no longer needed because of loggedin is a property now.
-        self.__query_interval = 0.05 # second
+        self.__query_interval = 0.02 # second
         self.passcode = "1127" # need to confirm this passcode if you want to turn on/off any outlet.
 
         # TODO: Assign outlet name to each outlet.
@@ -488,7 +488,7 @@ class EatonPDU(Device):
             print(self.devicename + f": Passcode you provided is "+passcode+". Does NOT match preset value. Turn on is aborted.")
             return False
         else:
-            print(self.devicename + f":Passcode matched preset value. Turn on is continued.")
+            print(self.devicename + f": Passcode matched preset value. Turn on is continued.")
             return self.__set_outlet_on(outlet)
 
     def __set_outlet_on(self, outlet: int):
@@ -498,7 +498,9 @@ class EatonPDU(Device):
                              f"Try set outlet switchable by self.set_outlet_switchable({outlet}, True) first.")
         self.inst.clear()
         self.write(f"set PDU.OutletSystem.Outlet[{outlet}].DelayBeforeStartup 0")
-        return self.decode_oneline_response(self.inst.read(termination='pdu#0>'))['rsp']
+        # return self.decode_oneline_response(self.inst.read(termination='pdu#0>'))['rsp']
+        time.sleep(self.__query_interval)
+        return self.get_outlet_present_status(outlet)
     
     def set_outlet_off(self, outlet: int):
         '''Set the outlet off.'''
@@ -516,7 +518,7 @@ class EatonPDU(Device):
             print(self.devicename + f": Passcode you provided is "+passcode+". Does NOT match preset value. Turn off is aborted.")
             return False
         else:
-            print(self.devicename + f":Passcode matched preset value. Turn off is continued.")
+            print(self.devicename + f": Passcode matched preset value. Turn off is continued.")
             return self.__set_outlet_off(outlet)
         
     def __set_outlet_off(self, outlet: int):
@@ -526,23 +528,26 @@ class EatonPDU(Device):
                              f"Try set outlet switchable by self.set_outlet_switchable({outlet}, True) first.")
         self.inst.clear()
         self.write(f"set PDU.OutletSystem.Outlet[{outlet}].DelayBeforeShutdown 0")
-        return self.decode_oneline_response(self.inst.read(termination='pdu#0>'))['rsp']
+        # return self.decode_oneline_response(self.inst.read(termination='pdu#0>'))['rsp']
+        time.sleep(self.__query_interval)
+        return self.get_outlet_present_status(outlet)
 
 
 
 
 if __name__=="__main__":
-    eaton = EatonPDU()
-    eaton.connect()
-    eaton.write("get PDU.OutletSystem.Outlet.Count")
-    print(eaton.inst.read(termination='pdu#0>'))
-    eaton.write("set PDU.OutletSystem.Outlet[8].DelayBeforeShutdown 0")
-    print(eaton.inst.read(termination='pdu#0>'))
-    import time
-    time.sleep(5)
-    eaton.write("set PDU.OutletSystem.Outlet[8].DelayBeforeStartup 0")
-    print(eaton.inst.read(termination='pdu#0>'))
-    print(eaton.get_active_power(6))
+    pass
+    # eaton = EatonPDU()
+    # eaton.connect()
+    # eaton.write("get PDU.OutletSystem.Outlet.Count")
+    # print(eaton.inst.read(termination='pdu#0>'))
+    # eaton.write("set PDU.OutletSystem.Outlet[8].DelayBeforeShutdown 0")
+    # print(eaton.inst.read(termination='pdu#0>'))
+    # import time
+    # time.sleep(5)
+    # eaton.write("set PDU.OutletSystem.Outlet[8].DelayBeforeStartup 0")
+    # print(eaton.inst.read(termination='pdu#0>'))
+    # print(eaton.get_active_power(6))
 
     # ========== Below are already wrapped functions ==========
     # # eaton.login()

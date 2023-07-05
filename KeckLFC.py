@@ -300,6 +300,10 @@ class KeckLFC(object):
 
         print("Mini-Comb Turn DOWN process Finished".center(80, '-'))
 
+    ########## Above are deprecated functions ##########
+
+    ########## Below are new functions, will be needed for KTL. ##########
+
     def __getitem__(self, key):
         '''Read keywords. 
         Calls the associated function, stores the returned value. 
