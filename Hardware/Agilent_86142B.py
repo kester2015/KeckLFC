@@ -346,7 +346,7 @@ class Agilent_86142B(Device):
 
 
 
-    def save_trace(self, trace, filename, extensions=['.mat', '.txt']):
+    def save_trace(self, trace, filename, extensions=['.mat', '.txt'], plot = True):
         trace = str(trace).capitalize()
         # Extension handle
         available_extensions = ['.mat', '.txt', '.fits', '.csv']
@@ -381,7 +381,7 @@ class Agilent_86142B(Device):
                 new_name = filename + '_' + date_time + '_bak' + ext
                 os.rename(filename + ext, new_name)
         # Data read
-        wl, intensity = self.get_trace(trace, plot=True, filename=filename)
+        wl, intensity = self.get_trace(trace, plot=plot, filename=filename)
         # Data save
         for ext in extensions:
             if ext == '.mat':

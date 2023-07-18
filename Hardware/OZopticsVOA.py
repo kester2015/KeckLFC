@@ -8,7 +8,7 @@ class OZopticsVOA(Device):
         self.inst.timeout = 25000  # communication time-out time set in units of ms
         self.inst.baud_rate = 9600  # 
         self.inst.read_termination = '\r\n'  # read_termination is not specified by default.
-
+        self.__cmd_interval = 0.1 # in seconds
         self._max_read_line = 32 # Maximum lines to read before 'Done' is read.
 
     def read(self):
@@ -47,9 +47,12 @@ class OZopticsVOA(Device):
 
     @property
     def atten_db(self):
+        time.sleep(self.__cmd_interval)
         return float(self._getAttenStr().replace('(',':').split((':'))[1])
+    
     @atten_db.setter
     def atten_db(self, atten):
+        time.sleep(self.__cmd_interval)
         self._setAttenStr(atten_db=atten)
 
     def _setAttenStr(self, atten_db):
