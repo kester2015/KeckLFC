@@ -62,7 +62,7 @@ class AgiltronSelfAlign(Device):
         Home the fiber switch, i.e. move to port 1.
         """
         self.instrument.write_raw(b"\x01\x30\x00\x00")
-        print ("Homing...")
+        self.info("Homing...")
 
 
     def set_fiber_port(self, fiber_port: int) -> None:
@@ -85,24 +85,24 @@ class AgiltronSelfAlign(Device):
             self.instrument.write_raw(cmd)
             sleep(0.5)
             # ret = self.instrument.read_bytes(4)
-            # print (ret)
+            # self.info(ret)
             
             
             self.instrument.write_raw(home_list[fiber_port])
             sleep(0.5)
             # ret = self.instrument.read_bytes(4)
-            # print (ret)
+            # self.info(ret)
             
             
             self.instrument.write_raw(cmd)
             sleep(0.5)
             # ret = self.instrument.read_bytes(4)
-            # print (ret)
+            # self.info(ret)
             
 
 
             ret = self.instrument.read_bytes(4)
-            print (ret)
+            self.info(ret)
             assert (
                 ret == b"\x01\x35\x00" + bytes([fiber_port - 1])
             ), f"invalid return message, fiber port not set to {fiber_port}"

@@ -52,19 +52,19 @@ class EatonPDU(Device):
         if len(self.outlet_name_list) != count:
             raise ValueError(f"The length of outlet_name_list {len(self.outlet_name_list)} should be equal to the number of outlets {count}.")
         for i in range(count):
-            print(self.devicename+f": Outlet {i+1} friendly name was {self.get_outlet_friendly_name(i+1)}")
+            self.info(self.devicename+f": Outlet {i+1} friendly name was {self.get_outlet_friendly_name(i+1)}")
             self.set_outlet_friendly_name(i+1, self.outlet_name_list[i])
             time.sleep(self.__query_interval)
 
     def printStatus(self):
         message = "Eaton PDU Status Summary".center(80, '-') + "\n"
-        print(message)
+        self.info(message)
         status = self.get_all_status()
         message += f"|\tIPv4 Address: {status['ipv4']}\n"
         message += self.input_system_status_to_str(status['InputSystem'])
         message += self.outlet_system_status_all_to_str(status['OutletSystem'])
         message += "Eaton PDU Status Summary Ends".center(80, '-')
-        print( "Eaton PDU Status Summary Ends".center(80, '-') )
+        self.info( "Eaton PDU Status Summary Ends".center(80, '-') )
         return message
     
     def get_all_status(self):
@@ -95,13 +95,13 @@ class EatonPDU(Device):
             if not relogin: # If no need to relogin, return False.
                 return False
             else: # If need to relogin, try to relogin.
-                warnings.warn(self.devicename+": Not logged in. Try to re-login.")
+                self.warning(self.devicename+": Not logged in. Try to re-login.")
                 self.login()
                 if not self.test_loggedin(relogin=False):
-                    warnings.warn(self.devicename+": Re-Login failed.")
+                    self.warning(self.devicename+": Re-Login failed.")
                     return False # If relogin failed, return False.
                 else:
-                    print(self.devicename+": Last login expired, re-Login succeed.")
+                    self.info(self.devicename+": Last login expired, re-Login succeed.")
                     return True # If relogin succeed, return True.
 
     def connect(self, login=True):
@@ -123,47 +123,47 @@ class EatonPDU(Device):
             raise ConnectionError(self.devicename+": Should connect to device before Login.")
         # self.loggedin = self.test_loggedin() # no longer needed because of loggedin is a property now.
         if self.loggedin:
-            print(self.devicename + ": Already logged in.")
+            self.info(self.devicename + ": Already logged in.")
             return 0
         fail_count = 0
         while fail_count<self.max_login_attempt:
             try:
                 self.inst.clear()
                 self.write("")
-                print(self.inst.read(termination='in:'))
+                self.info(self.inst.read(termination='in:'))
                 self.write(self.__username)
-                print(self.inst.read(termination='word:'))
+                self.info(self.inst.read(termination='word:'))
                 self.write(self.__password)
                 tt = self.inst.read(termination='>')
-                print(tt)
+                self.info(tt)
                 if 'pdu' in tt:
-                    print(self.devicename + ": Login succeed.")
+                    self.info(self.devicename + ": Login succeed.")
                     # self.loggedin = True # no longer needed because of loggedin is a property now.
                     return 1
                 else:
                     fail_count += 1
-                    print(self.devicename + 
+                    self.info(self.devicename + 
                           f": Login failed. You have {self.max_login_attempt - fail_count} attempts left.")
             except:
                 fail_count += 1
-                print(self.devicename + 
+                self.info(self.devicename + 
                       f": Login failed. You have {self.max_login_attempt - fail_count} attempts left.")
                 import time
                 time.sleep(1)
         
-        print(self.devicename + ": Login Failed.")
+        self.info(self.devicename + ": Login Failed.")
         return -1
 
     def logout(self):
         # self.loggedin = self.test_loggedin() # no longer needed because of loggedin is a property now.
         if not self.loggedin:
-            print(self.devicename + ": Already logged out.")
+            self.info(self.devicename + ": Already logged out.")
             return 0
         # if not self.loggedin:
         #     return 0
         self.write("quit")
         # self.loggedin = False # no longer needed because of loggedin is a property now.
-        print(self.devicename + ": Logged out.")
+        self.info(self.devicename + ": Logged out.")
         return 1
     
     def decode_oneline_response(self, msg, split='\x07'): 
@@ -287,7 +287,7 @@ class EatonPDU(Device):
             time.sleep(self.__query_interval)
             status[f'Phase{i}']['Voltage_V'] = self.get_input_voltage_onphase(i, test_loggedin=False)
             time.sleep(self.__query_interval)
-        print(self.input_system_status_to_str(status))
+        self.info(self.input_system_status_to_str(status))
         return status
     
     def input_system_status_to_str(self, status: dict):
@@ -326,7 +326,7 @@ class EatonPDU(Device):
         time.sleep(self.__query_interval)
         status['PowerFactor'] = self.get_outlet_power_factor(outlet, test_loggedin=False, test_available=False)
         time.sleep(self.__query_interval)
-        print(self.outlet_status_to_str(status))
+        self.info(self.outlet_status_to_str(status))
         return status
     
     def outlet_status_to_str(self, outlet_status: dict):
@@ -345,9 +345,9 @@ class EatonPDU(Device):
         status['OutletCount'] = self.get_outlet_count()
         message = f"|\tOutlet System of {self.devicename} Summary:\n"
         message += f"|\tOutlet Count: {status['OutletCount']}\n"
-        print(message)
+        self.info(message)
         for i in range(1, status['OutletCount']+1):
-            print(f"|\t\tOutlet {i}:")
+            self.info(f"|\t\tOutlet {i}:")
             status[f'Outlet{i}'] = self.get_outlet_status(i)
         return status
     
@@ -386,13 +386,13 @@ class EatonPDU(Device):
         '''Set the friendly name of the outlet.'''
         # name length limit: 31
         if len(name)>31:
-            warnings.warn(self.devicename + f": Friendly name {name} is too long, will be truncated.")
+            self.warning(self.devicename + f": Friendly name {name} is too long, will be truncated.")
             name = name[:31]
         if test_available:
             self.check_outlet_available(outlet, test_loggedin=test_loggedin)
         self.inst.clear()
         self.write(f"set PDU.OutletSystem.Outlet[{outlet}].iName {name}")
-        print(self.devicename + f": Outlet {outlet} friendly name set to {name}.")
+        self.info(self.devicename + f": Outlet {outlet} friendly name set to {name}.")
         return self.decode_oneline_response(self.inst.read(termination='pdu#0>'))['rsp']
     
     def get_outlet_current(self, outlet: int, test_loggedin=True, test_available=True):
@@ -475,20 +475,20 @@ class EatonPDU(Device):
     def set_outlet_on(self, outlet: int):
         '''Set the outlet on.'''
         if self.get_outlet_present_status(outlet) == 1:
-            print(self.devicename + f": Outlet {outlet} is already on.")
+            self.info(self.devicename + f": Outlet {outlet} is already on.")
             return True
         
         confirm = input(self.devicename + f": Outlet {outlet} is off now.\n"
                         +"Do you want to turn on outlet {outlet}? (y/n)")
         if not confirm.lower() == 'y':
-            print(self.devicename + f": Outlet {outlet} is not turned on. Turn on is aborted.")
+            self.info(self.devicename + f": Outlet {outlet} is not turned on. Turn on is aborted.")
             return False
         passcode = input(self.devicename + f": Please input the passcode to turn on outlet {outlet}: ")
         if not self.check_passcode(passcode):
-            print(self.devicename + f": Passcode you provided is "+passcode+". Does NOT match preset value. Turn on is aborted.")
+            self.info(self.devicename + f": Passcode you provided is "+passcode+". Does NOT match preset value. Turn on is aborted.")
             return False
         else:
-            print(self.devicename + f": Passcode matched preset value. Turn on is continued.")
+            self.info(self.devicename + f": Passcode matched preset value. Turn on is continued.")
             return self.__set_outlet_on(outlet)
 
     def __set_outlet_on(self, outlet: int):
@@ -505,20 +505,20 @@ class EatonPDU(Device):
     def set_outlet_off(self, outlet: int):
         '''Set the outlet off.'''
         if self.get_outlet_present_status(outlet) == 0:
-            print(self.devicename + f": Outlet {outlet} is already off.")
+            self.info(self.devicename + f": Outlet {outlet} is already off.")
             return True
         
         confirm = input(self.devicename + f": Outlet {outlet} is on now.\n"
                         +"Do you want to turn off outlet {outlet}? (y/n)")
         if not confirm.lower() == 'y':
-            print(self.devicename + f": Outlet {outlet} is not turned off. Turn off is aborted.")
+            self.info(self.devicename + f": Outlet {outlet} is not turned off. Turn off is aborted.")
             return False
         passcode = input(self.devicename + f": Please input the passcode to turn off outlet {outlet}: ")
         if not self.check_passcode(passcode):
-            print(self.devicename + f": Passcode you provided is "+passcode+". Does NOT match preset value. Turn off is aborted.")
+            self.info(self.devicename + f": Passcode you provided is "+passcode+". Does NOT match preset value. Turn off is aborted.")
             return False
         else:
-            print(self.devicename + f": Passcode matched preset value. Turn off is continued.")
+            self.info(self.devicename + f": Passcode matched preset value. Turn off is continued.")
             return self.__set_outlet_off(outlet)
         
     def __set_outlet_off(self, outlet: int):

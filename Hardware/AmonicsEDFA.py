@@ -1,8 +1,5 @@
-
 from typing import Dict
-import warnings
 import time
-
 
 from .Device import Device
 import numpy as np
@@ -49,7 +46,7 @@ class AmonicsEDFA(Device):
         message = message + "|\t\t Output Power: " + str(self.outputPowerCh1) + " mW\n"
         message = message + "|\t\t Internal PD Power: " + str(self.PDPowerCh1) + " mW\n"
         message = message + "Amonics EDFA Status Summary Ends".center(80, '-') + "\n"
-        print(message)
+        self.info(message)
         return message
 
     @property
@@ -77,10 +74,6 @@ class AmonicsEDFA(Device):
     def serialNumber(self):
         return self.query(':CAL:SYS:SERIAL?')
 
-
-
-
-
     # ------------------- Channel 1 related methods ------------------- #
     @property
     def outputPowerCh1(self):
@@ -93,8 +86,8 @@ class AmonicsEDFA(Device):
         try:
             result = float(self.query(':SENS:POW:IN:CH1?'))  # in unit of mW
         except:
-            warnings.warn(self.devicename + ": input power monitor not supported on " + self.modelNumber + "-sn. " +
-                          self.serialNumber)
+            self.warning(self.devicename + ": input power monitor not supported on " + self.modelNumber + "-sn. " +
+                         self.serialNumber)
             result = np.NAN
         return result
 
@@ -143,7 +136,6 @@ class AmonicsEDFA(Device):
     def accCh1Status(self, status):  # status should choose from 0|1|'ON'|'OFF'
         self._setChStatus(status, channel=1, mode=self.modeCh1)
 
-
     @property
     def accCh2Cur(self):  # in units of mA
         return self._getIorP(channel=2, mode=self.modeCh1)
@@ -164,8 +156,6 @@ class AmonicsEDFA(Device):
     @accCh2Status.setter
     def accCh2Status(self, status):  # status should choose from 0|1|'ON'|'OFF'
         self._setChStatus(status, channel=2, mode=self.modeCh1)
-    
-    
 
     # ------------------- ENDING of Channel 1 related methods ------------------- #
 
@@ -192,18 +182,18 @@ class AmonicsEDFA(Device):
             raise ValueError("Activation can not be turned on when ACC CH1 is OFF. Run self.accCh1Status='on' before "
                              "self.activation='on'")
         if status == '1':  # Give a SAFETY NOTIFY every time before activating
-            print(self.devicename + ": " +
-                  "ACTIVATING LASER OUTPUT, MAKE SURE SEED INPUT POWER IS APPROPRIATE TO AVOID DAMAGE")
+            self.info(self.devicename + ": " +
+                      "ACTIVATING LASER OUTPUT, MAKE SURE SEED INPUT POWER IS APPROPRIATE TO AVOID DAMAGE")
         timer_start = time.time()
         time_out = self.__activation_timeout  # 3 seconds, 2 seconds should be enough according to user manual
         while not self.activation == status_dict[status]:  # If the device is not in desired state,
             if time.time() > timer_start + time_out:
                 raise RuntimeError(self.devicename + ": " + f"Activation set failed in {time_out} seconds.")
-            print(self.devicename + ": " + "......waiting Activation status set to " + status_dict[status] + ", now " +
-                  self.activation)
+            self.info(self.devicename + ": " + "......waiting Activation status set to " + status_dict[status] +
+                      ", now " + self.activation)
             self.write(":DRIV:MCTRL " + status)  # Then Continue to send the command
-        print(self.devicename + ": " + "setted Activation status as " + self.activation +
-              f", finished in {time.time()-timer_start:.3f} seconds")
+        self.info(self.devicename + ": " + "setted Activation status as " + self.activation +
+                  f", finished in {time.time()-timer_start:.3f} seconds")
 
         # ------------------- ENDING of Laser Activation control related methods ------------------- #
 
@@ -220,32 +210,33 @@ class AmonicsEDFA(Device):
         except:
             current_mode = 'ACC'
         if not current_mode == mode:
-            print(self.devicename + ": Mode assignment discrepancy in Setting IorP. Switching to " + mode + " mode.")
+            self.info(self.devicename + ": Mode assignment discrepancy in Setting IorP. Switching to " + mode +
+                      " mode.")
             self._setChMode(channel=channel, mode=mode)
 
         max_cur = float(self.query(":READ:DRIV:MAX:" + mode + ":CH" + channel + "?"))  # ":READ:DRIV:MAX:APC:CH1?"
         if cur1 > max_cur:
-            warnings.warn(self.devicename + ": " + mode + " CH" + channel + " set point " +
-                          f"{cur1} is higher than maximum {max_cur} " + ("mA" if mode == 'ACC' else "mW") +
-                          f". Maximum value {max_cur} " + ("mA" if mode == 'ACC' else "mW") + " will be set.")
+            self.warning(self.devicename + ": " + mode + " CH" + channel + " set point " +
+                         f"{cur1} is higher than maximum {max_cur} " + ("mA" if mode == 'ACC' else "mW") +
+                         f". Maximum value {max_cur} " + ("mA" if mode == 'ACC' else "mW") + " will be set.")
             cur1 = max_cur
         self.write(":DRIV:" + mode + ":CUR:CH" + channel + f" {cur1}")
         check_cur1 = self._getIorP(channel=channel, mode=mode)  # float(self.query(":DRIV:ACC:CUR:CH1?"))
         if np.abs(check_cur1 - cur1) < 0.5:
             if mode == 'ACC':
-                print(self.devicename + ": " + "setted ACC mode CH" + channel + f" current as {check_cur1} mA.")
+                self.info(self.devicename + ": " + "setted ACC mode CH" + channel + f" current as {check_cur1} mA.")
             else:  #mode == 'APC':
-                print(self.devicename + ": " + "setted APC mode CH" + channel + f" current as {check_cur1} mW.")
+                self.info(self.devicename + ": " + "setted APC mode CH" + channel + f" current as {check_cur1} mW.")
             return 1
         else:
             if mode == 'ACC':
-                print(self.devicename + ": " + "setted ACC mode CH" + channel + f" current as {check_cur1} mA.")
-                warnings.warn(self.devicename + ": " + "ACC mode CH" + channel +
-                              f" current setpoint {cur1} deviates from current value {check_cur1} mA.")
+                self.info(self.devicename + ": " + "setted ACC mode CH" + channel + f" current as {check_cur1} mA.")
+                self.warning(self.devicename + ": " + "ACC mode CH" + channel +
+                             f" current setpoint {cur1} deviates from current value {check_cur1} mA.")
             else:  #mode=='APC'
-                print(self.devicename + ": " + "setted APC mode CH" + channel + f" power as {check_cur1} mW.")
-                warnings.warn(self.devicename + ": " + "APC mode CH" + channel +
-                              f" power setpoint {cur1} deviates from current value {check_cur1} mW.")
+                self.info(self.devicename + ": " + "setted APC mode CH" + channel + f" power as {check_cur1} mW.")
+                self.warning(self.devicename + ": " + "APC mode CH" + channel +
+                             f" power setpoint {cur1} deviates from current value {check_cur1} mW.")
             return 0
 
     def _getIorP(self, channel=1, mode='ACC'):
@@ -259,7 +250,7 @@ class AmonicsEDFA(Device):
             pass
         elif unit.casefold() in ['a', 'w']:
             cur1 = 1000 * cur1
-        # print(self.devicename + ": " + f"getted ACC mode CH1 current as {cur1} mA.")
+        # self.info(self.devicename + ": " + f"getted ACC mode CH1 current as {cur1} mA.")
         return cur1
 
     def _setChStatus(self, status, channel=1, mode='ACC'):
@@ -274,9 +265,9 @@ class AmonicsEDFA(Device):
         if status == 'off':
             status = '0'  # input formatting finished
         if status == '0' and self.activation.casefold() == 'on':
-            warnings.warn(self.devicename + ": " + "Setting " + mode + " CH" + channel +
-                          " status OFF while activation ON will automatically OFF the "
-                          "activation. Add self.activation='off' before self.accCh1Status='off' ")
+            self.warning(self.devicename + ": " + "Setting " + mode + " CH" + channel +
+                         " status OFF while activation ON will automatically OFF the "
+                         "activation. Add self.activation='off' before self.accCh1Status='off' ")
         timer_start = time.time()
         time_out = self.__activation_timeout  # 3 seconds
         while not self._getChStatus(channel=channel,
@@ -284,11 +275,12 @@ class AmonicsEDFA(Device):
             if time.time() > timer_start + time_out:
                 raise RuntimeError(self.devicename + ": " + "" + mode + " CH" + channel + " status set failed in" +
                                    f" {time_out} seconds.")
-            print(self.devicename + ": " + "......waiting " + mode + " CH" + channel + " status set to " +
-                  status_dict[status] + ", now " + self._getChStatus(channel=channel, mode=mode))
+            self.info(self.devicename + ": " + "......waiting " + mode + " CH" + channel + " status set to " +
+                      status_dict[status] + ", now " + self._getChStatus(channel=channel, mode=mode))
             self.write(":DRIV:" + mode + ":STAT:CH" + channel + " " + status)  # Then Continue to send the command
-        print(self.devicename + ": " + "setted " + mode + " CH" + channel + " status as " +
-              self._getChStatus(channel=channel, mode=mode) + f", finished in {time.time()-timer_start:.3f} seconds")
+        self.info(self.devicename + ": " + "setted " + mode + " CH" + channel + " status as " +
+                  self._getChStatus(channel=channel, mode=mode) +
+                  f", finished in {time.time()-timer_start:.3f} seconds")
 
     def _getChStatus(self, channel=1, mode='ACC'):
         mode = str(mode).upper()
@@ -302,7 +294,7 @@ class AmonicsEDFA(Device):
     def _setChMode(self, mode='ACC', channel=1):
         channel = str(channel)
         self.write(':MODE:SW:CH' + channel + ' ' + mode)
-        print(self.devicename + ": " + "CH" + channel + " mode set as " + mode)
+        self.info(self.devicename + ": " + "CH" + channel + " mode set as " + mode)
 
     def _getChMode(self, channel=1):
         channel = str(channel)
@@ -329,7 +321,7 @@ class AmonicsEDFA(Device):
     #         pass
     #     elif unit.casefold() == 'a':
     #         cur1 = 1000 * cur1
-    #     # print(self.devicename + ": " + f"getted ACC mode CH1 current as {cur1} mA.")
+    #     # self.info(self.devicename + ": " + f"getted ACC mode CH1 current as {cur1} mA.")
     #     return cur1
 
     # @accCh1Cur.setter
@@ -339,16 +331,16 @@ class AmonicsEDFA(Device):
     #     cur1 = np.abs(cur1)
     #     max_cur = float(self.query(':READ:DRIV:MAX:ACC:CH1?'))
     #     if cur1 > max_cur:
-    #         warnings.warn(self.devicename + ": " + f"ACC CH1 current set point {cur1} is higher than maximum current {max_cur} mA."
+    #         self.warning(self.devicename + ": " + f"ACC CH1 current set point {cur1} is higher than maximum current {max_cur} mA."
     #                       f" Maximum current {max_cur} mA will be set.")
     #         cur1 = max_cur
     #     self.write(f":DRIV:ACC:CUR:CH1 {cur1}")
     #     check_cur1 = self.accCh1Cur  # float(self.query(":DRIV:ACC:CUR:CH1?"))
     #     if np.abs(check_cur1 - cur1) < 0.5:
-    #         print(self.devicename + ": " + f"setted ACC mode CH1 current as {check_cur1} mA.")
+    #         self.info(self.devicename + ": " + f"setted ACC mode CH1 current as {check_cur1} mA.")
     #     else:
-    #         print(self.devicename + ": " + f"setted ACC mode CH1 current as {check_cur1} mA.")
-    #         warnings.warn(self.devicename + ": " + f"ACC mode CH1 current setpoint {cur1} deviates from current value {check_cur1} mA.")
+    #         self.info(self.devicename + ": " + f"setted ACC mode CH1 current as {check_cur1} mA.")
+    #         self.warning(self.devicename + ": " + f"ACC mode CH1 current setpoint {cur1} deviates from current value {check_cur1} mA.")
 
     # @property
     # def accCh1Status(self):
@@ -373,23 +365,24 @@ class AmonicsEDFA(Device):
     #     if status == 'off':
     #         status = '0'  # input formatting finished
     #     if status == '0' and self.activation.casefold() == 'on':
-    #         warnings.warn(self.devicename + ": " + "Setting ACC CH1 status OFF while activation ON will automatically OFF the "
+    #         self.warning(self.devicename + ": " + "Setting ACC CH1 status OFF while activation ON will automatically OFF the "
     #                       "activation. Add self.activation='off' before self.accCh1Status='off' ")
     #     timer_start = time.time()
     #     time_out = self.__activation_timeout  # 3 seconds
     #     while not self.accCh1Status == status_dict[status]:  # If the device is not in desired state,
     #         if time.time() > timer_start + time_out:
     #             raise RuntimeError(self.devicename + ": " + f"ACC CH1 status set failed in {time_out} seconds.")
-    #         print(self.devicename + ": " + "......waiting ACC CH1 status set to " + status_dict[
+    #         self.info(self.devicename + ": " + "......waiting ACC CH1 status set to " + status_dict[
     #             status] + ", now " + self.accCh1Status)
     #         self.write(":DRIV:ACC:STAT:CH1 " + status)  # Then Continue to send the command
-    #     print(self.devicename + ": " + "setted ACC CH1 status as " + self.accCh1Status + f", finished in {time.time()-timer_start:.3f} seconds")
+    #     self.info(self.devicename + ": " + "setted ACC CH1 status as " + self.accCh1Status + f", finished in {time.time()-timer_start:.3f} seconds")
 
 
 if __name__ == '__main__':
     # Following Test cases passed on AEDFA-PA-30-B-FA, No.21020811
     # from LFC.Hardware.AmonicsEDFA import AmonicsEDFA
 
+    import warnings
     # 1. initialization and connection
     print("\n-------------------------------- 1. initialization and connection ---------------------------------------")
     edfa = AmonicsEDFA()  # By default COM4

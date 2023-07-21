@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 import numbers
 import os
 from decimal import Decimal
-
 ''' Author: Maodong Gao, version 0.0, Aug 18 2022 '''
 ''' PLEASE FOLLOW camelCase Convention to maintain '''
 
@@ -139,8 +138,14 @@ class SRS_PIDcontrol_SIM960(object):
         self.__spramprate_min = 1e-3  # in V/s
         self.__spramprate_resolution = None
 
-        self.__output_lowerlim_resolution = 1e-2 # in Volt
-        self.__output_upperlim_resolution = 1e-2 # in Volt
+        self.__output_lowerlim_resolution = 1e-2  # in Volt
+        self.__output_upperlim_resolution = 1e-2  # in Volt
+
+    def info(self, x):
+        self.mainframe.info(x, name=self.devicename, level=2)
+
+    def warning(self, x):
+        self.mainframe.warning(x, name=self.devicename, level=2)
 
     def write(self, cmd, clear=True):
         if clear:  # clear=True means robust is important, otherwise speed is important
@@ -193,7 +198,7 @@ class SRS_PIDcontrol_SIM960(object):
         message = message + "|\t\t" + f"Off = {self.outoffset}  V, \taction = " + highlight_status(
             self.outoffset_action) + "\n"
         message = message + "SRS PID controller SIM960 Status Summary Ends".center(80, '-') + "\n"
-        print(message)
+        self.info(message)
         return message
 
     def set_manual_output_max(self, num):
@@ -519,17 +524,17 @@ class SRS_PIDcontrol_SIM960(object):
             raise ValueError(self.devicename + ": Unrecognized output mode " + status + " to set. Should choose from " +
                              str(available_status))
         if status == '1':
-            print(self.devicename + ": output mode 1 is understood as PID mode.")
+            self.info(self.devicename + ": output mode 1 is understood as PID mode.")
             status = 'pid'
         elif status == '0':
-            print(self.devicename + ": output mode 0 is understood as Manual mode.")
+            self.info(self.devicename + ": output mode 0 is understood as Manual mode.")
             status = 'man'
         if status == 'pid':
             self.write("AMAN1", clear=clear)
-            print(self.devicename + ": PID output is turned ON.")
+            self.info(self.devicename + ": PID output is turned ON.")
         else:
             self.write("AMAN0", clear=clear)
-            print(self.devicename + ": PID output is turned OFF, output mode is turnd to Manual.")
+            self.info(self.devicename + ": PID output is turned OFF, output mode is turnd to Manual.")
 
     # INPT(?) z 3 – 12 Input (Internal/External Setpoint)
     def get_setpoint_input_mode(self, clear=True):
@@ -551,10 +556,10 @@ class SRS_PIDcontrol_SIM960(object):
             status = 'int'
         if status == 'ext':
             self.write("INPT1", clear=clear)
-            print(self.devicename + ": Setpoint input is switched to EXTernal.")
+            self.info(self.devicename + ": Setpoint input is switched to EXTernal.")
         else:
             self.write("INPT0", clear=clear)
-            print(self.devicename + ": Setpoint input is switched to INTernal.")
+            self.info(self.devicename + ": Setpoint input is switched to INTernal.")
 
     # SETP(?) {f} 3 – 12 New setpoint
     def get_setpoint(self, clear=True):
@@ -610,11 +615,11 @@ class SRS_PIDcontrol_SIM960(object):
     # STRT z 3 – 13 Pause or continue ramping
     def spramp_START(self, clear=True):
         self.write("STRT1", clear=clear)
-        print(self.devicename + ": Setpoint ramp STARTed.")
+        self.info(self.devicename + ": Setpoint ramp STARTed.")
 
     def spramp_STOP(self, clear=True):
         self.write("STRT0", clear=clear)
-        print(self.devicename + ": Setpoint ramp STOPped.")
+        self.info(self.devicename + ": Setpoint ramp STOPped.")
 
     # MOUT(?) {f} 3 – 13 Manual Output
     def get_manual_output(self, clear=True):
@@ -625,9 +630,9 @@ class SRS_PIDcontrol_SIM960(object):
         cmd = "MOUT"
         num = num if isinstance(num, numbers.Number) else self.__decode_str_to_SIunit(num)
         # ---------------
-        low_lim = self.__manual_output_min 
+        low_lim = self.__manual_output_min
         high_lim = self.__manual_output_max
-        printstr="Output in Manual Mode in Volt"
+        printstr = "Output in Manual Mode in Volt"
         if not low_lim == None:
             low_lim = float(low_lim)
             if num < low_lim:
@@ -647,8 +652,8 @@ class SRS_PIDcontrol_SIM960(object):
                 printstr="Output in Manual Mode in Volt",
                 low_lim=self.__manual_output_min,
                 high_lim=self.__manual_output_max,
-                decimal=None if self.__manual_output_resolution == None else
-                int(-log10(self.__manual_output_resolution)),
+                decimal=None
+                if self.__manual_output_resolution == None else int(-log10(self.__manual_output_resolution)),
                 # resolution=self.__manual_output_resolution,
                 clear=clear)
         else:
@@ -658,11 +663,13 @@ class SRS_PIDcontrol_SIM960(object):
             volt_list = np.round(
                 np.linspace(volt_start, volt_stop, max(int(np.ceil(np.abs(volt_start - volt_stop) / volt_incr)), 2)) *
                 1000) / 1000
-            print(self.devicename + ": ....Manual output voltage Ramping.... Disable ranp by set self.manual_output_ramp=0. ")
-            decimal=3 if self.__manual_output_resolution == None else int(-log10(self.__manual_output_resolution))
+            self.info(self.devicename +
+                      ": ....Manual output voltage Ramping.... Disable ranp by set self.manual_output_ramp=0. ")
+            decimal = 3 if self.__manual_output_resolution == None else int(-log10(self.__manual_output_resolution))
             for vv in volt_list:
                 self.write(cmd + "{:.{}f}".format(vv, decimal), clear=clear)
-                print(self.devicename+f": Output in Manual Mode in Volt set to "+"{:.{}f}".format(vv, decimal)+".")
+                self.info(self.devicename + f": Output in Manual Mode in Volt set to " + "{:.{}f}".format(vv, decimal) +
+                          ".")
                 # self.__set_num_withcmd(cmd,
                 #                        vv,
                 #                        printstr="Output in Manual Mode in Volt",
@@ -671,7 +678,9 @@ class SRS_PIDcontrol_SIM960(object):
                 #                        decimal=None if self.__manual_output_resolution == None else
                 #                        int(-log10(self.__manual_output_resolution)),
                 #                        clear=clear)
-            print(self.devicename + ": ....Manual output voltage Ramp Finished. Disable ramp by set self.manual_output_ramp=0. ")
+            self.info(self.devicename +
+                      ": ....Manual output voltage Ramp Finished. Disable ramp by set self.manual_output_ramp=0. ")
+
     # ULIM(?) {f} 3 – 13 Upper Output Limit
     def get_output_upperlim(self, clear=True):
         cmd = "ULIM"
@@ -681,11 +690,12 @@ class SRS_PIDcontrol_SIM960(object):
         cmd = "ULIM"
         num = num if isinstance(num, numbers.Number) else self.__decode_str_to_SIunit(num)
         from math import log10
-        self.__set_num_withcmd(cmd, 
+        self.__set_num_withcmd(cmd,
                                num,
                                decimal=None if self.__output_upperlim_resolution == None else
                                int(-log10(self.__output_upperlim_resolution)),
-                               printstr="Output Upper limit in Volt", clear=clear)
+                               printstr="Output Upper limit in Volt",
+                               clear=clear)
 
     # LLIM(?) {f} 3 – 14 Lower Output Limit
     def get_output_lowerlim(self, clear=True):
@@ -696,11 +706,12 @@ class SRS_PIDcontrol_SIM960(object):
         cmd = "LLIM"
         num = num if isinstance(num, numbers.Number) else self.__decode_str_to_SIunit(num)
         from math import log10
-        self.__set_num_withcmd(cmd, 
-                               num, 
+        self.__set_num_withcmd(cmd,
+                               num,
                                decimal=None if self.__output_lowerlim_resolution == None else
-                                int(-log10(self.__output_lowerlim_resolution)),
-                               printstr="Output Lower limit in Volt", clear=clear)
+                               int(-log10(self.__output_lowerlim_resolution)),
+                               printstr="Output Lower limit in Volt",
+                               clear=clear)
 
     ## ------------------Monitor------------------
     # SMON? [i] 3 – 14 Setpoint Input Monitor
@@ -747,10 +758,10 @@ class SRS_PIDcontrol_SIM960(object):
             printstr = cmd
         if status in set(['1', 'on']):
             self.write(cmd + "1", clear=clear)
-            print(self.devicename + ": " + printstr + " is set to ON.")
+            self.info(self.devicename + ": " + printstr + " is set to ON.")
         elif status in set(['0', 'off']):
             self.write(cmd + "0")
-            print(self.devicename + ": " + printstr + " is set to OFF.")
+            self.info(self.devicename + ": " + printstr + " is set to OFF.")
         else:
             raise ValueError(self.devicename + ": Unrecognized ON/OFF string [" + status +
                              "] given. Should be 0|1|'on'|'off' ")
@@ -760,15 +771,16 @@ class SRS_PIDcontrol_SIM960(object):
         result = str(self.query(cmd + "?", clear=clear)).replace(" ", "")
         return float(result)
 
-    def __set_num_withcmd(self,
-                          cmd,
-                          num,
-                          printstr=None,
-                          low_lim=None,
-                          high_lim=None,
-                          decimal=None,
-                        #   resolution=None, # TODO: Deprecate this option!
-                          clear=True):
+    def __set_num_withcmd(
+            self,
+            cmd,
+            num,
+            printstr=None,
+            low_lim=None,
+            high_lim=None,
+            decimal=None,
+            #   resolution=None, # TODO: Deprecate this option!
+            clear=True):
         cmd = str(cmd).upper()
         num = float(num)
         if printstr == None:
@@ -787,17 +799,17 @@ class SRS_PIDcontrol_SIM960(object):
             if num > high_lim:
                 raise ValueError(self.devicename + ": Setting " + printstr + " number over high range." +
                                  f"Given number {num} should NOT higher than {high_lim}")
-        if not decimal == None:  
+        if not decimal == None:
             decimal = int(decimal)
             new_num = Decimal("{:.{}f}".format(num, decimal))
-            if not abs(Decimal(num) -new_num)<0.00001:
-                warnings.warn(self.devicename + ": Setting " + printstr + " precision overgiven, " + str(decimal) +
-                              " decimal degits required. Given number " + str(num) + " is rounded.")
+            if not abs(Decimal(num) - new_num) < 0.00001:
+                self.warning(self.devicename + ": Setting " + printstr + " precision overgiven, " + str(decimal) +
+                             " decimal degits required. Given number " + str(num) + " is rounded.")
                 num = new_num
         # if not resolution == None:
-        #     num = num // resolution * resolution  
+        #     num = num // resolution * resolution
         self.write(cmd + str(num), clear=clear)
-        print(self.devicename + ": Setting " + printstr + f" to {num}.")
+        self.info(self.devicename + ": Setting " + printstr + f" to {num}.")
 
     def __decode_str_to_SIunit(self, encoded_str: str) -> float:
         if encoded_str[-4:].casefold() in ['mv/s', 'mv/v']:
@@ -846,14 +858,14 @@ if __name__ == '__main__':
     servo1.set_output_upperlim(4)
 
     msg = servo1.printStatus()
-    
-    filename = r"Z:\Maodong\Projects\Keck\System Assembly test\RIO Rb locking\20230430\servo.txt"   
 
-    with  open(filename,"w") as f:
+    filename = r"Z:\Maodong\Projects\Keck\System Assembly test\RIO Rb locking\20230430\servo.txt"
+
+    with open(filename, "w") as f:
         f.write("")
-    with  open(filename,"a") as f:
-        f.write(msg+'\n')
-        f.write("".center(80, "=")+"\n")
+    with open(filename, "a") as f:
+        f.write(msg + '\n')
+        f.write("".center(80, "=") + "\n")
         f.write("time\t")
         f.write("measured input\t")
         f.write("output\t")
@@ -863,8 +875,8 @@ if __name__ == '__main__':
     import time
     while True:
         try:
-            with open(filename,"a") as f:
-                f.write(time.ctime()+"\t")
+            with open(filename, "a") as f:
+                f.write(time.ctime() + "\t")
 
                 print("".center(80, "-"))
 

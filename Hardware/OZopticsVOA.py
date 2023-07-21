@@ -1,4 +1,3 @@
-import warnings
 from .Device import Device
 import time
 
@@ -17,7 +16,7 @@ class OZopticsVOA(Device):
         count = 0
         while not response=='Done':
             if count > self._max_read_line: # defalt 32 lines
-                warnings.warn(self.devicename+ f": read cutoff warning, response 'Done' not detected for more than {self._max_read_line:.0f} read. Increase this limit by: self._max_read_line = 100.")
+                self.warning(self.devicename+ f": read cutoff warning, response 'Done' not detected for more than {self._max_read_line:.0f} read. Increase this limit by: self._max_read_line = 100.")
                 return result
             count = count + 1
             if not count==1:
@@ -42,7 +41,7 @@ class OZopticsVOA(Device):
         message = message + "|\t\t" + self._getConfigStr()[:-1].replace('\n','\n|\t\t')
         time.sleep(0.1)
         message = message + '\n'+'OZ optics VOA Status Summary Ends'.center(80,'-')+'\n'
-        print(message)
+        self.info(message)
         return message
 
     @property
@@ -59,7 +58,7 @@ class OZopticsVOA(Device):
         atten_db = float(atten_db)
         cmd = f"A{atten_db:.2f}"
         str_return = self.query(cmd) # return example: 'Pos:4060'
-        print(self.devicename+f": VOA attenuation setted to {atten_db:.2f} dB.")
+        self.info(self.devicename+f": VOA attenuation setted to {atten_db:.2f} dB.")
         return str_return
 
     def _getAttenStr(self):

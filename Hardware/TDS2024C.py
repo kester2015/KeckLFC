@@ -7,7 +7,6 @@ from sympy import E
 from .Device import Device
 import numpy as np
 import matplotlib.pyplot as plt
-import warnings
 import os
 
 class TDS2024C(Device):
@@ -132,7 +131,7 @@ class TDS2024C(Device):
         wvfm['Y'] = wvfm['YZEro'] + wvfm['YMUlt']*(np.array(curve) - wvfm['YOFF']);
         wvfm['X'] = wvfm['XZEro'] + wvfm['XINcr']*(np.array(range(wvfm['NR_Pt'])) - wvfm['PT_Off']);
 
-        print(self.devicename+": Trace "+str(trace)+" data read finished.")
+        self.info(self.devicename+": Trace "+str(trace)+" data read finished.")
         if plot:
             plt.plot(wvfm['X'], wvfm['Y'])
             plt.xlabel("time ("+wvfm['XUNit']+")")
@@ -159,17 +158,17 @@ class TDS2024C(Device):
         # File name extension handle
         filedir, single_filename = os.path.split(filename)
         if os.path.splitext(single_filename)[-1] in extensions:
-            warnings.warn(self.devicename+": Filename extension "+os.path.splitext(single_filename)[-1]+
+            self.warning(self.devicename+": Filename extension "+os.path.splitext(single_filename)[-1]+
                           " is ignored. This function save "+str(extensions)+". Change extension to save by extensions=['.mat']")
             filename = os.path.splitext(filename)[0]
         # File directory handle
         if (not os.path.isdir(filedir)) and (not filedir == ''):
-            warnings.warn(self.devicename+": Directory "+filedir+" does not exist. Creating new directory.")
+            self.warning(self.devicename+": Directory "+filedir+" does not exist. Creating new directory.")
             os.makedirs(filedir)
         # File already exists handle
         for ext in extensions:
             if os.path.isfile(filename+ext):
-                warnings.warn(self.devicename+": To save Filename "+filename+ext+" already exists. Previous file renamed.")
+                self.warning(self.devicename+": To save Filename "+filename+ext+" already exists. Previous file renamed.")
                 from datetime import datetime
                 now = datetime.now() # current date and time
                 date_time = now.strftime("%Y%m%d_%H%M%S") # example: '20220811_105537'
@@ -185,12 +184,12 @@ class TDS2024C(Device):
                 from scipy.io import savemat
                 try:
                     savemat(filename+'.mat', wvfm, oned_as='column')
-                    print(self.devicename+": Trace "+trace+" data is saved to "+filename+'.mat')
+                    self.info(self.devicename+": Trace "+trace+" data is saved to "+filename+'.mat')
                 except:
-                    warnings.warn(self.devicename+": Save trace to "+filename+".mat failed.")
+                    self.warning(self.devicename+": Save trace to "+filename+".mat failed.")
                     import sys
                     e = sys.exc_info()[0]
-                    print(f"Error:{e}")
+                    self.info(f"Error:{e}")
             elif ext == '.txt':
                 # Save .txt file
                 try:
@@ -200,13 +199,13 @@ class TDS2024C(Device):
                     with open(filename+'.txt', "w") as txt_file:
                         for line in data:
                             txt_file.write(" ".join(line) + "\n")
-                    print(self.devicename+": Trace "+trace+" data is saved to "+filename+'.txt')
+                    self.info(self.devicename+": Trace "+trace+" data is saved to "+filename+'.txt')
                     # todo: add exception handler
                 except:
-                    warnings.warn(self.devicename+": Save trace to "+filename+".txt failed.")
+                    self.warning(self.devicename+": Save trace to "+filename+".txt failed.")
                     import sys
                     e = sys.exc_info()[0]
-                    print(f"Error:{e}")
+                    self.info(f"Error:{e}")
             elif ext == '.fits':
                 try:
                     from astropy.io import fits
@@ -214,19 +213,19 @@ class TDS2024C(Device):
                     hdulist = fits.HDUList([hdu])
                     hdulist.writeto(filename+'.fits')
                     hdulist.close()
-                    print(self.devicename+": Trace "+trace+" data is saved to "+filename+'.fits')
+                    self.info(self.devicename+": Trace "+trace+" data is saved to "+filename+'.fits')
                 except:
-                    warnings.warn(self.devicename+": Save trace to "+filename+".fits failed.")
+                    self.warning(self.devicename+": Save trace to "+filename+".fits failed.")
                     import sys
                     e = sys.exc_info()[0]
-                    print(f"Error:{e}")
+                    self.info(f"Error:{e}")
             elif ext == '.csv':
                 try:
                     np.savetxt(filename+'.csv', np.vstack([wvfm['X'],wvfm['Y']]).T , delimiter=",")
-                    print(self.devicename+": Trace "+trace+" data is saved to "+filename+'.csv')
+                    self.info(self.devicename+": Trace "+trace+" data is saved to "+filename+'.csv')
                 except:
-                    warnings.warn(self.devicename+": Save trace to "+filename+".csv failed.")
+                    self.warning(self.devicename+": Save trace to "+filename+".csv failed.")
                     import sys
                     e = sys.exc_info()[0]
-                    print(f"Error:{e}")
+                    self.info(f"Error:{e}")
         return

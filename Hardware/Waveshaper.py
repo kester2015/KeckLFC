@@ -6,7 +6,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import copy
 import time
+
 #from scipy.interpolate import interp1d
+
 
 # Finisar Waveshaper
 # Follow https://ii-vi.com/use-64-bit-python-3-7-to-control-the-waveshaper-through-the-usb-port/ for connection guide
@@ -34,7 +36,7 @@ class Waveshaper(Device):
         errcode, _ = ws_create_waveshaper(WSname, os.getenv('APPDATA') + "/WaveManager/wsconfig/" + addr + ".wsconfig")
         self.vaild = errcode >= 0
         if errcode < 0:
-            print(f"Fail to create the Waveshaper instance: {errcode}")
+            self.error(f"Fail to create the Waveshaper instance: {errcode}")
 
     def connect(self):
         if self.vaild and not self.connected:
@@ -85,7 +87,7 @@ class Waveshaper(Device):
         self.phase = lambda y: beta2 * ((y - center) * 2 * np.pi)**2 / 2 + beta3 * ((y - center) * 2 * np.pi)**3 / 6
 
         self.info_phase = f"Set 3rd disper with d2={d2} ps/nm, d3={d3} ps/nm^2, center {center} THz"
-        print("Waveshaper " + self.info_phase + ".")
+        self.info("Waveshaper " + self.info_phase + ".")
         if preview_plot:
             plt.figure(figsize=(6, 3))
             plt.plot(self.freq, [self.phase(x) for x in self.freq])
@@ -96,14 +98,14 @@ class Waveshaper(Device):
 
     # interp phase set by jinhao------------------------------
 
-    def set_interp_phase(self, x_fre,y_phase, center=1560, centerunit='nm', preview_plot=False):
+    def set_interp_phase(self, x_fre, y_phase, center=1560, centerunit='nm', preview_plot=False):
         if centerunit.upper() == 'NM':
             center = Waveshaper.c_const / center / 1000
         from scipy.interpolate import interp1d
         self.phase = interp1d(x_fre, y_phase, kind='cubic', fill_value="extrapolate")
 
         self.info_phase = f"Set interp phase with center {center} THz"
-        print("Waveshaper " + self.info_phase + ".")
+        self.info("Waveshaper " + self.info_phase + ".")
         if preview_plot:
             plt.figure(figsize=(6, 3))
             plt.plot(self.freq, [self.phase(x) for x in self.freq])
@@ -112,8 +114,6 @@ class Waveshaper(Device):
             plt.show()
 
     # ------------------------------------------------------------------------
-
-
 
     def setBandPass(self, center=192.175, span=4, unit='thz'):
         if str(unit).casefold() == 'nm':
@@ -124,7 +124,7 @@ class Waveshaper(Device):
         startf = center - span / 2
         stopf = center + span / 2
         self.info_atten = f"Set atten to BandPass [{startf:.3f}~{stopf:.3f}] THz ([{self.__thz2nm(startf):.3f}~{self.__thz2nm(stopf):.3f}] nm)"
-        print("Waveshaper " + self.info_atten + ".")
+        self.info("Waveshaper " + self.info_atten + ".")
         self.atten = lambda x: 0 if (x < stopf and x > startf) else self.MAX_ATTEN
 
     def inverseAtten(
@@ -144,7 +144,7 @@ class Waveshaper(Device):
         osa_wl, osa_pw = osa_wl.flatten(), osa_pw.flatten()
         # if perform_center_compensate:
         #     osa_wl = osa_wl + self.__wl_conpensate
-        #     print(
+        #     self.info(
         #         self.devicename +
         #         f": inverse Atten BandPass Filter: wl on Waveshaper = wl on OSA + {self.__wl_conpensate:.3f} nm. Change this by self.__wl_conpensate=0.1."
         #     )
@@ -156,8 +156,9 @@ class Waveshaper(Device):
             peak_pos, _ = find_peaks(osa_pw, height=osa_pw_noise, distance=0.9 * min_distance)
             peak_wl, peak_pw = osa_wl[peak_pos], osa_pw[peak_pos]
         else:
-            print(self.devicename +
-                  ": inverseAtten: input is spectrum envelop instead of frequency comb, NO peak search is performed.")
+            self.warning(
+                self.devicename +
+                ": inverseAtten: input is spectrum envelop instead of frequency comb, NO peak search is performed.")
             peak_wl, peak_pw = osa_wl[osa_pw > osa_pw_noise], osa_pw[osa_pw > osa_pw_noise]
         if not peak_wl.size > 0:
             raise ValueError(self.devicename + ": inverseAtten: Spectrum to inverse is EMPTY. Try reduce osa_pw_noise.")
@@ -174,7 +175,7 @@ class Waveshaper(Device):
         if (bandpass_center == None) | (bandpass_span == None):
             startf = self.startF
             stopf = self.stopF
-            print(self.devicename + ": inverse Atten NO BandPass Filter is applied.")
+            self.info(self.devicename + ": inverse Atten NO BandPass Filter is applied.")
         else:  # center or span is not None, need perform bandPass FIlter
             if str(bandpass_unit).casefold() == 'nm':
                 startf = self.__nm2thz(bandpass_center + bandpass_span / 2)
@@ -190,7 +191,7 @@ class Waveshaper(Device):
             #     centerf, spanf = (startf + stopf) / 2, stopf - startf
             #     centerf_new = self.__nm2thz(self.__thz2nm(centerf) + self.__wl_conpensate)
             #     startf, stopf = centerf_new - spanf / 2, centerf_new + spanf / 2
-            #     print(
+            #     self.info(
             #         self.devicename +
             #         f": inverse Atten BandPass Filter: center Freq shifted by {centerf_new-centerf:.3f} THz with wl compensation. Disable by pass parameter : perform_center_compensate=False to inverseAtten()"
             #     )
@@ -198,18 +199,18 @@ class Waveshaper(Device):
                                 if atten_intp(x) > 0 else 0) if (x < stopf and x > startf) else self.MAX_ATTEN
         self.info_atten = f"Set atten to BandPass [{startf:.3f}~{stopf:.3f}] THz ([{self.__thz2nm(startf):.3f}~{self.__thz2nm(stopf):.3f}] nm)"
         self.info_atten = self.info_atten + f"\n Inverse Attenuation is applied with max attenuation {max_atten_db} dB."
-        print("Waveshaper " + self.info_atten + ".")
+        self.info("Waveshaper " + self.info_atten + ".")
         return
 
     def writeProfile(self, amp=None, phase=None, disable_beep=False):
         if amp is not None:
             if len(amp) != self.numPixels:
-                print("Invalid amp")
+                self.error("Invalid amp")
                 return
             self.atten = lambda x: amp[int((x - self.startF) * 1000)]
         if phase is not None:
             if len(phase) != self.numPixels:
-                print("Invalid phase")
+                self.error("Invalid phase")
                 return
             self.phase = lambda x: phase[int((x - self.startF) * 1000)]
         buffer = ''
@@ -218,11 +219,11 @@ class Waveshaper(Device):
         if self.vaild:
             errcode = ws_load_profile(self.inst, buffer)
             if errcode < 0:
-                print(f"Waveshaper writing error: {errcode}")
+                self.error(f"Waveshaper writing error: {errcode}")
             else:
                 self.current_atten = copy.deepcopy(self.atten)
                 self.current_phase = copy.deepcopy(self.phase)
-                print("Waveshaper profile write successful.")
+                self.info("Waveshaper profile write successful.")
                 if not disable_beep:
                     import winsound
                     winsound.Beep(800, 250)
@@ -258,16 +259,17 @@ class Waveshaper(Device):
         ax4.set_title("Preview Phase")
 
     def printStatus(self):
-        print((str(self.devicename) + " Status Summary").center(80, '-'))
-        print("|\t Atten info: " + self.info_atten)
-        print("|\t Phase info: " + self.info_phase)
+        message = (str(self.devicename) + " Status Summary").center(80, '-') + "\n"
+        message += "|\t Atten info: " + self.info_atten + "\n"
+        message += "|\t Phase info: " + self.info_phase + "\n"
         self.plotStatus()
         plt.draw()
-        print((str(self.devicename) + " Status Summary Ends").center(80, '-'))
+        self.info(message + (str(self.devicename) + " Status Summary Ends").center(80, '-'))
 
-    def nm2thz(self,nm):
+    def nm2thz(self, nm):
         return self.__nm2thz(nm)
-    def thz2nm(self,thz):
+
+    def thz2nm(self, thz):
         return self.__thz2nm(thz)
 
     def __nm2thz(self, nm):

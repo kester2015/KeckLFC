@@ -41,7 +41,7 @@ class Pizeo_MDT694A(Device):
 #         message = message + "|\t\t Output Power: " + str(self.outputPowerCh1) + "mW\n"
 #         message = message + "|\t\t Internal PD Power: " + str(self.PDPowerCh1) + "mW\n"
         message = message + "Piezo Controller MDT694A Status Summary Ends".center(80, '-') + "\n"
-        print(message)
+        self.info(message)
         return message
     
     
@@ -54,7 +54,7 @@ class Pizeo_MDT694A(Device):
     def Vset(self, Vset):
         cmd = f"XV{float(Vset)}"
         self.write(cmd)
-        print(self.devicename + ": " + "Output voltage setted to "+ f"{Vset} V.")
+        self.info(self.devicename + ": " + "Output voltage setted to "+ f"{Vset} V.")
 
         
         

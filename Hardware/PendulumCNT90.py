@@ -31,13 +31,13 @@ class PendulumCNT90(Device):
         self.write(":INIT:CONT ON")
         # self.write(":COMF:TOT:CONT")
         self.write(":SENS:TOT:GATE ON")
-        print("Pendulum Freq Counter: Gate is turned on, measurement result is continuously updated on display.")
+        self.info("Pendulum Freq Counter: Gate is turned on, measurement result is continuously updated on display.")
 
     def stop(self):
         self.write(":INIT:CONT OFF")
         # self.write(":COMF:TOT:CONT")
         self.write(":SENS:TOT:GATE OFF")
-        print("Pendulum Freq Counter: Gate is turned off, measurement result is holded on display.")
+        self.info("Pendulum Freq Counter: Gate is turned off, measurement result is holded on display.")
 
     def measFreq(self, chan, measTime=1, measArray=1):  # Measure frequency of channel=chan in unit of Hz
         # measTime in unit of seconds. MeasArray is number of measurements to return
@@ -51,16 +51,16 @@ class PendulumCNT90(Device):
         self.write(f":ACQ:APER {measTime}")
         self.write(":INIT")  # INIT and FETCh is equivlant to READ
         if measTime>3:
-            print("Pendulum Freq Counter: channel "+chan+f" frequency measureing, measure time {measTime}s.")
+            self.info("Pendulum Freq Counter: channel "+chan+f" frequency measureing, measure time {measTime}s.")
             tosleep = measTime
             while tosleep>0:
-                print("Pendulum Freq Counter: channel "+chan+" frequency measuring, "+f"......{tosleep} seconds to wait.")
+                self.info("Pendulum Freq Counter: channel "+chan+" frequency measuring, "+f"......{tosleep} seconds to wait.")
                 time.sleep(1)
                 tosleep = tosleep - 1
         try:
             result = float(self.query("FETC?"))
         except:
-            print("Pendulum Freq Counter: Measurement not completed, check signal input.")
+            self.info("Pendulum Freq Counter: Measurement not completed, check signal input.")
             result = -1
         return result
 

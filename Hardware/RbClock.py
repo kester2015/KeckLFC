@@ -21,7 +21,7 @@ class RbClock(Device):
         message = message + "|\t Phase Lock Status: " + highlight_status('LOCKED' if self.isPhaseLocked() else 'UNLOCKED') + "\n"
         message = message + "|\t Freq  Lock Status: " + highlight_status('LOCKED' if self.isFreqLocked() else 'UNLOCKED') + "\n"
         message = message + "FS725 Rubidium Frequency Standard Status Summary Ends".center(80, '-') + "\n"
-        print(message)
+        self.info(message)
         return message
 
     @property

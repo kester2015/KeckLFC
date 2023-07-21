@@ -88,7 +88,7 @@ class RedPitaya(Device):
                     ax.set_ylim(self.oscylim)
             except:
                 self.oscacquiring = False
-                print('Invalid oscscale')
+                self.warning('Invalid oscscale')
             ax.plot(t, y)
             display(fig)
             clear_output(wait=True)

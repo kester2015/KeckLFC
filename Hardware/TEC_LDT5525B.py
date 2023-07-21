@@ -27,7 +27,7 @@ class TEC_LDT5525B(Device):
         return self.read()
 
     def printStatus(self):
-        print(self.devicename + ":...Print status Will add later.")
+        self.info(self.devicename + ":...Print status Will add later.")
 
     @property
     def Tact(self):
@@ -78,7 +78,7 @@ class TEC_LDT5525B(Device):
         elif mode == "T":
             return self.write("TEC:MODE:T")
         else:
-            print("wrong mode")
+            self.warning("wrong mode")
 
 
 if __name__ == "__main__":

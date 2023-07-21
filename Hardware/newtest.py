@@ -26,7 +26,7 @@ class USB2408(Device):
         device_to_show = "USB-2408"
         #board_num = 0
         # Verify board is Board 0 in InstaCal.  If not, show message...
-        print("Looking for Board 0 in InstaCal to be {0} series...".format(device_to_show))
+        self.info("Looking for Board 0 in InstaCal to be {0} series...".format(device_to_show))
 
         try:
             # Get the devices name...
@@ -35,14 +35,14 @@ class USB2408(Device):
         except Exception as e:
             if ul.ErrorCode(1):
                 # No board at that number throws error
-                print("\nNo board found at Board 0.")
-                print(e)
+                self.info("\nNo board found at Board 0.")
+                self.error(e)
                 return
 
         else:
             if device_to_show in board_name:
                 # Board 0 is the desired device...
-                print("{0} found as Board number {1}.\n".format(board_name, self.board_num))
+                self.info("{0} found as Board number {1}.\n".format(board_name, self.board_num))
                 ul.flash_led(self.board_num)
 
                 for i in range(8):
@@ -63,13 +63,13 @@ class USB2408(Device):
                     # Set data rate to 60Hz
                     ul.set_config(
                         InfoType.BOARDINFO, self.board_num, channel, BoardInfo.ADDATARATE, 60)
-                    print("set channel {:d} done".format(i))
+                    self.info("set channel {:d} done".format(i))
                     
                     #sleep(0.2)
 
             else:
                 # Board 0 is NOT desired device...
-                print("\nNo {0} series found as Board 0. Please run InstaCal.".format(device_to_show))
+                self.warning("\nNo {0} series found as Board 0. Please run InstaCal.".format(device_to_show))
                 return
         
 
@@ -104,12 +104,12 @@ class USB2408(Device):
                 try:
                     self.value_temperature[i] = ul.t_in(self.board_num, channel, TempScale.CELSIUS, options)
                 except Exception as e:
-                    print("Error: " + str(e))
-                print("Channel {:d}:  {:.3f} Degrees.".format(channel, self.value_temperature[i]))
+                    self.info("Error: " + str(e))
+                self.info("Channel {:d}:  {:.3f} Degrees.".format(channel, self.value_temperature[i]))
 
                 
         except Exception as e:
-            print(e)
+            self.info(e)
 
     def get_temps(self):
         return self.value_temperature

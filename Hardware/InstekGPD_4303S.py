@@ -41,7 +41,7 @@ class InstekGPD_4303S(Device):
             raise ValueError("Instek GPD-4303S DCSupply: specified output status "+str(status)
             +" is not recognized, should choose from {0|1|'on'|'off'}.")
         self.write(cmd)
-        print("Instek GPD-4303S DCSupply: Output activation is turned " + ("ON." if str(status).casefold() in ['1', 'on'] else "OFF.") )
+        self.info("Instek GPD-4303S DCSupply: Output activation is turned " + ("ON." if str(status).casefold() in ['1', 'on'] else "OFF.") )
 
     @property
     def operationMode(self):
@@ -197,7 +197,7 @@ class InstekGPD_4303S(Device):
             message = message + f"|\t\t VOUT={self._getVOUT(channel=chan):.3f}V, IOUT={self._getIOUT(channel=chan):.3f}A.\n"
             message = message + f"|\t\t Output power: {self._getVOUT(channel=chan)*self._getIOUT(channel=chan):.3f}W.\n"
         message = message + "Instek DC Power Supply GPD-4303S Status Summary Ends".center(80, '-') + "\n"
-        print(message)
+        self.info(message)
         return message
 
     # ----------------------------- Private current/voltage/output SET/GET methods --------------------------------- #
@@ -243,7 +243,7 @@ class InstekGPD_4303S(Device):
             raise ValueError("Instek GPD-4303S DCSupply: Unrecognized mode "+ mode + "given. Should choose from { 'indep' | 'series' | 'parallel' }")
         cmd = 'TRACK'+str(code)
         self.write(cmd)
-        print("Instek GPD-4303S DCSupply: operation moe is set to "+mode)
+        self.info("Instek GPD-4303S DCSupply: operation moe is set to "+mode)
 
     def _getOperationMode(self):
         code = self._getStatusCode()[2:4]
@@ -285,7 +285,7 @@ class InstekGPD_4303S(Device):
             if time.time() > timer_start + time_out:
                 raise RuntimeError(f"Instek GPD-4303S DCSupply: ISET channel {channel:.0f} to {current:.3f}A failed in {time_out} seconds")
             self.write(cmd)
-        print(f"Instek GPD-4303S DCSupply: ISET channel {channel:.0f} set to {current:.3f}A")
+        self.info(f"Instek GPD-4303S DCSupply: ISET channel {channel:.0f} set to {current:.3f}A")
 
 
     def _getVOUT(self, channel=1):
@@ -317,7 +317,7 @@ class InstekGPD_4303S(Device):
             if time.time() > timer_start + time_out:
                 raise RuntimeError(f"Instek GPD-4303S DCSupply: VSET channel {channel:.0f} to {voltage:.3f}V failed in {time_out} seconds")
             self.write(cmd)
-        print(f"Instek GPD-4303S DCSupply: VSET channel {channel:.0f} set to {voltage:.3f}V")
+        self.info(f"Instek GPD-4303S DCSupply: VSET channel {channel:.0f} set to {voltage:.3f}V")
 
     # ----------------------------------------  Private auxiliary methods ------------------------------------------ #
     def __current_str_to_A(self, current_str: str) -> float:

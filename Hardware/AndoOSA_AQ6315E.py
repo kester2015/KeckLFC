@@ -1,4 +1,3 @@
-import warnings
 import time
 
 from .Device import Device
@@ -39,7 +38,7 @@ class AndoOSA_AQ6315E(Device):
         message = message + "|" + "ANDO AQ-6315 Optical Spectrum Analyzer Status Summary".center(80, '-') + "\n"
 
         message = message + "ANDO AQ-6315 Optical Spectrum Analyzer Status Summary Ends".center(80, '-') + "\n"
-        print(message)
+        self.info(message)
         return message
 
     @property
@@ -96,7 +95,7 @@ class AndoOSA_AQ6315E(Device):
     def set_reflevel(self, reflevel):
         reflevel = float(reflevel)
         self.query(f'REFL{reflevel:.1f}')
-        print(self.devicename + f": Reference level set to {reflevel:.1f} dBm.")
+        self.info(self.devicename + f": Reference level set to {reflevel:.1f} dBm.")
 
     def get_wlstart(self):
         return float(self.query('STAWL?'))
@@ -104,7 +103,7 @@ class AndoOSA_AQ6315E(Device):
     def set_wlstart(self, wlstart):
         wlstart = float(wlstart)
         self.query(f'STAWL{wlstart:.2f}')
-        print(self.devicename + f": Scan start wavelength set to {wlstart:.2f} nm.")
+        self.info(self.devicename + f": Scan start wavelength set to {wlstart:.2f} nm.")
 
     def get_wlstop(self):
         return float(self.query('STPWL?'))
@@ -112,7 +111,7 @@ class AndoOSA_AQ6315E(Device):
     def set_wlstop(self, wlstop):
         wlstop = float(wlstop)
         self.query(f'STPWL{wlstop:.2f}')
-        print(self.devicename + f": Scan stop wavelength set to {wlstop:.2f} nm.")
+        self.info(self.devicename + f": Scan stop wavelength set to {wlstop:.2f} nm.")
 
     def get_wlspan(self):
         return self.get_wlstop() - self.get_wlstart()
@@ -124,7 +123,7 @@ class AndoOSA_AQ6315E(Device):
         wlstop_new = wlcenter + wlspan / 2
         self.set_wlstart(wlstart_new)
         self.set_wlstop(wlstop_new)
-        print(self.devicename + f": Scan span wavelength set to {wlspan:.2f} nm.")
+        self.info(self.devicename + f": Scan span wavelength set to {wlspan:.2f} nm.")
 
     def get_wlcenter(self):
         return (self.get_wlstop() + self.get_wlstart()) / 2
@@ -136,7 +135,7 @@ class AndoOSA_AQ6315E(Device):
         wlstop_new = wlcenter + wlspan / 2
         self.set_wlstart(wlstart_new)
         self.set_wlstop(wlstop_new)
-        print(self.devicename + f": Scan center wavelength set to {wlcenter:.2f} nm.")
+        self.info(self.devicename + f": Scan center wavelength set to {wlcenter:.2f} nm.")
 
     def get_resolution(self):
         return float(self.query('RESLN?'))
@@ -144,19 +143,19 @@ class AndoOSA_AQ6315E(Device):
     def set_resolution(self, res):
         res = float(res)
         self.query(f'RESLN{res:.2f}')
-        print(self.devicename + f": Resolution set to {res:.2f} nm.")
+        self.info(self.devicename + f": Resolution set to {res:.2f} nm.")
 
     def Run(self):
         self.query('RPT')  # equivlant to repeat softkey
-        print(self.devicename + ": Spectrum collection RUN (repeat) start.")
+        self.info(self.devicename + ": Spectrum collection RUN (repeat) start.")
 
     def Single(self):
         self.query('SGL')  # equivlant to repeat softkey
-        print(self.devicename + ": Spectrum collection SINGLE run start.")
+        self.info(self.devicename + ": Spectrum collection SINGLE run start.")
 
     def Stop(self):
         self.query('STP')  # equivlant to repeat softkey
-        print(self.devicename + ": Spectrum collection STOPped.")
+        self.info(self.devicename + ": Spectrum collection STOPped.")
 
     def set_sens(self, sens):
         sens = str(sens).casefold()
@@ -171,7 +170,7 @@ class AndoOSA_AQ6315E(Device):
             self.query('SHI2')
         elif sens == 'high3':
             self.query('SHI3')
-        print(self.devicename + ": OSA sensitivity set to " + sens + ".")
+        self.info(self.devicename + ": OSA sensitivity set to " + sens + ".")
 
     def blank_trace(self, trace):
         trace = str(trace).capitalize()
@@ -183,7 +182,7 @@ class AndoOSA_AQ6315E(Device):
             raise ValueError(self.devicename + ": Trace name " + trace + " unrecognized. " +
                              "AQ6315 trace must select from " + str(self.__available_traces))
         self.query("BLK" + trace)
-        print(self.devicename + ": Trace " + trace + " is blanked.")
+        self.info(self.devicename + ": Trace " + trace + " is blanked.")
 
     def disp_trace(self, trace):
         trace = str(trace).capitalize()
@@ -195,7 +194,7 @@ class AndoOSA_AQ6315E(Device):
             raise ValueError(self.devicename + ": Trace name " + trace + " unrecognized. " +
                              "AQ6315 trace must select from " + str(self.__available_traces))
         self.query("DSP" + trace)
-        print(self.devicename + ": Trace " + trace + " is displayed.")
+        self.info(self.devicename + ": Trace " + trace + " is displayed.")
 
     def write_trace(self, trace):
         trace = str(trace).capitalize()
@@ -207,7 +206,7 @@ class AndoOSA_AQ6315E(Device):
             raise ValueError(self.devicename + ": Trace name " + trace + " unrecognized. " +
                              "AQ6315 trace must select from " + str(self.__available_traces))
         self.query("WRT" + trace)
-        print(self.devicename + ": Trace " + trace + " is being written.")
+        self.info(self.devicename + ": Trace " + trace + " is being written.")
 
     def fix_trace(self, trace):
         trace = str(trace).capitalize()
@@ -219,7 +218,7 @@ class AndoOSA_AQ6315E(Device):
             raise ValueError(self.devicename + ": Trace name " + trace + " unrecognized. " +
                              "AQ6315 trace must select from " + str(self.__available_traces))
         self.query("FIX" + trace)
-        print(self.devicename + ": Trace " + trace + " is fixed.")
+        self.info(self.devicename + ": Trace " + trace + " is fixed.")
 
     def osa(self, trace):
         from IPython.display import display, clear_output
@@ -235,7 +234,7 @@ class AndoOSA_AQ6315E(Device):
             #         ax.set_ylim(self.oscylim)
             # except:
             #     self.osaacquiring = False
-            #     print('Invalid oscscale')
+            #     self.info('Invalid oscscale')
             ax.plot(wl, pw)
             display(fig)
             clear_output(wait=True)
@@ -269,7 +268,7 @@ class AndoOSA_AQ6315E(Device):
             if filename is not None:
                 plt.savefig(filename + '.png')
             plt.show()
-            print(self.devicename + ": Trace " + trace + " data is collected and is shown in the plot.")
+            self.info(self.devicename + ": Trace " + trace + " data is collected and is shown in the plot.")
         return wl, intensity
 
     def save_trace(self, trace, filename, extensions=['.mat', '.txt']):
@@ -288,18 +287,18 @@ class AndoOSA_AQ6315E(Device):
         # File name extension handle
         filedir, single_filename = os.path.split(filename)
         if os.path.splitext(single_filename)[-1] in extensions:
-            warnings.warn(self.devicename + ": Filename extension " + os.path.splitext(single_filename)[-1] +
+            self.warning(self.devicename + ": Filename extension " + os.path.splitext(single_filename)[-1] +
                           " is ignored. This function save " + str(extensions) +
                           ". Change extension to save by extensions=['.mat']")
             filename = os.path.splitext(filename)[0]
         # File directory handle
         if (not os.path.isdir(filedir)) and (not filedir == ''):
-            warnings.warn(self.devicename + ": Directory " + filedir + " does not exist. Creating new directory.")
+            self.warning(self.devicename + ": Directory " + filedir + " does not exist. Creating new directory.")
             os.makedirs(filedir)
         # File already exists handle
         for ext in extensions:
             if os.path.isfile(filename + ext):
-                warnings.warn(self.devicename + ": To save Filename " + filename + ext +
+                self.warning(self.devicename + ": To save Filename " + filename + ext +
                               " already exists. Previous file renamed.")
                 from datetime import datetime
                 now = datetime.now()  # current date and time
@@ -321,12 +320,12 @@ class AndoOSA_AQ6315E(Device):
                         'timestamp': time.ctime()
                     },
                             oned_as='column')
-                    print(self.devicename + ": Trace " + trace + " data is saved to " + filename + '.mat')
+                    self.info(self.devicename + ": Trace " + trace + " data is saved to " + filename + '.mat')
                 except:
-                    warnings.warn(self.devicename + ": Save trace to " + filename + ".mat failed.")
+                    self.warning(self.devicename + ": Save trace to " + filename + ".mat failed.")
                     import sys
                     e = sys.exc_info()[0]
-                    print(f"Error:{e}")
+                    self.error(f"Error:{e}")
             elif ext == '.txt':
                 # Save .txt file
                 try:
@@ -336,13 +335,13 @@ class AndoOSA_AQ6315E(Device):
                     with open(filename + '.txt', "w") as txt_file:
                         for line in data:
                             txt_file.write(" ".join(line) + "\n")
-                    print(self.devicename + ": Trace " + trace + " data is saved to " + filename + '.txt')
+                    self.info(self.devicename + ": Trace " + trace + " data is saved to " + filename + '.txt')
                     # todo: add exception handler
                 except:
-                    warnings.warn(self.devicename + ": Save trace to " + filename + ".txt failed.")
+                    self.warning(self.devicename + ": Save trace to " + filename + ".txt failed.")
                     import sys
                     e = sys.exc_info()[0]
-                    print(f"Error:{e}")
+                    self.error(f"Error:{e}")
             elif ext == '.fits':
                 try:
                     from astropy.io import fits
@@ -350,21 +349,21 @@ class AndoOSA_AQ6315E(Device):
                     hdulist = fits.HDUList([hdu])
                     hdulist.writeto(filename + '.fits')
                     hdulist.close()
-                    print(self.devicename + ": Trace " + trace + " data is saved to " + filename + '.fits')
+                    self.info(self.devicename + ": Trace " + trace + " data is saved to " + filename + '.fits')
                 except:
-                    warnings.warn(self.devicename + ": Save trace to " + filename + ".fits failed.")
+                    self.warning(self.devicename + ": Save trace to " + filename + ".fits failed.")
                     import sys
                     e = sys.exc_info()[0]
-                    print(f"Error:{e}")
+                    self.error(f"Error:{e}")
             elif ext == '.csv':
                 try:
                     np.savetxt(filename + '.csv', np.array([wl, intensity]).T, delimiter=",")
-                    print(self.devicename + ": Trace " + trace + " data is saved to " + filename + '.csv')
+                    self.info(self.devicename + ": Trace " + trace + " data is saved to " + filename + '.csv')
                 except:
-                    warnings.warn(self.devicename + ": Save trace to " + filename + ".csv failed.")
+                    self.warning(self.devicename + ": Save trace to " + filename + ".csv failed.")
                     import sys
                     e = sys.exc_info()[0]
-                    print(f"Error:{e}")
+                    self.error(f"Error:{e}")
         return
 
 

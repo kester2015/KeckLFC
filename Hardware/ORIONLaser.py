@@ -57,7 +57,7 @@ class ORIONLaser(Device):
         tec = self.readTECsetpoint(volatile=False)
         message = message + f"|\t\t Diode Cur = {cur:.4f} mA, TEC Set = {tec:.3f}" + u'\N{DEGREE SIGN}' + "C\n"
         message = message + "ORION Laser Module Status Summary Ends".center(80, '-')
-        print(message)
+        self.info(message)
         return message
 
     def readFirmwareVersion(self):
@@ -78,9 +78,9 @@ class ORIONLaser(Device):
         W1 = response['data'][0]
         W2 = response['data'][1]
         W3 = response['data'][2]
-        print(W1)
-        print(W2)
-        print(W3)
+        self.info(W1)
+        self.info(W2)
+        self.info(W3)
         return response['data']
 
     def readProductID(self):
@@ -90,7 +90,7 @@ class ORIONLaser(Device):
     def readBoardTemp(self):
         v = int.from_bytes(self.query(0x12)['data'], byteorder='big') * 2.5 / 65520
         if v > 2.273 or v < 0.210:
-            print(self.devicename +
+            self.info(self.devicename +
                   f": Board temperature read sensor voltage {v} V, out of range (2.273V -20C, 0.210V 90C).")
             return np.NaN
         Board_V = [2.273, 2.124, 1.919, 1.667, 1.390, 1.115, 0.867, 0.660, 0.497, 0.372, 0.279, 0.210]
@@ -153,12 +153,12 @@ class ORIONLaser(Device):
         ret['valid'] = True
         if not (packet[0] == 0xA9 and packet[-1] == 0xA5):
             ret['valid'] = False
-            print(
+            self.error(
                 self.devicename +
                 f": Error read. Invaild header {packet[0]} (expect 0xA9=169) or footer {packet[-1]} (expect 0xA5=165)")
         if not sum(packet[:-1]) & 0xFF == 0:
             ret['valid'] = False
-            print(self.devicename + ": Error read. Checksum Error.")
+            self.error(self.devicename + ": Error read. Checksum Error.")
         ret['packetlength'] = packet[2]
         ret['status'] = packet[6]
         ret['cmdID'] = packet[7]

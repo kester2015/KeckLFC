@@ -123,7 +123,7 @@ class TEC_TC720(Device):
                 self.ser = serial.Serial(self.address, timeout= 2, baudrate=230400, stopbits=serial.STOPBITS_ONE, parity=serial.PARITY_NONE)
   
                 self.connected = True
-                print(self.devicename + " connected")
+                self.info(self.devicename + " connected")
 
                 self.verboseprint('Made connection with temperature controller: {}'.format(self.name))
                 
@@ -137,7 +137,7 @@ class TEC_TC720(Device):
             except:
                 import sys
                 e = sys.exc_info()[0]
-                print(f"Error:{e}")
+                self.info(f"Error:{e}")
                 return -1
         return 0
     
@@ -147,7 +147,7 @@ class TEC_TC720(Device):
             self.ser.close()
             
             self.connected = False
-            print(self.devicename + " disconnected")
+            self.info(self.devicename + " disconnected")
             return 1
         return 0
 
@@ -322,7 +322,7 @@ class TEC_TC720(Device):
                 #Check if there is an error in the checksum.
                 if response == b'*XXXX60^':
                     checksum_error = 'Checksum error'
-                    print('    {} Error: Checksum error.'.format(self.name))
+                    self.info('    {} Error: Checksum error.'.format(self.name))
                 #Unknown error
                 else:
                     checksum_error = ''
@@ -368,7 +368,7 @@ class TEC_TC720(Device):
                 
                 #Timeout check
                 elif (time.time() - start_time) > timeout:
-                    warnings.warn('Did not receive a response from temperature control unit "{}" within timout period.'.format(self.name))
+                    self.warning('Did not receive a response from temperature control unit "{}" within timout period.'.format(self.name))
                     return self.ser.read_all()
                     break
                 
@@ -376,7 +376,7 @@ class TEC_TC720(Device):
                     time.sleep(0.05)
         
         except Exception as e:
-            print('{} Error: {}'.format(self.name, e))
+            self.info('{} Error: {}'.format(self.name, e))
             raise Exception ('Connection error with temperature control unit: {}. Error: {}'.format(self.name, e))
 
     #==========================================================================
@@ -588,7 +588,7 @@ class TEC_TC720(Device):
 
         cur_mode = self.get_mode()
         if not  cur_mode == desired_mode:
-            warnings.warn('TC720: {} is not set in the right mode to use this function. Current mode: {}, set the machine in the {} mode using set_mode({})'.format(self.name, cur_mode, desired_mode, desired_mode))
+            self.warning('TC720: {} is not set in the right mode to use this function. Current mode: {}, set the machine in the {} mode using set_mode({})'.format(self.name, cur_mode, desired_mode, desired_mode))
             return False
         else:
             return True
@@ -956,7 +956,7 @@ class TEC_TC720(Device):
                     self.set_idle()
                     raise Exception('Temperature could not be reached in {} minutes, check {} system.'.format(timeout, self.name))
                 else:
-                    warnings.warn('Temperature could not be reached in {} minutes, check {} system.'.format(timeout, self.name))
+                    self.warning('Temperature could not be reached in {} minutes, check {} system.'.format(timeout, self.name))
                     break
 
 
@@ -1020,7 +1020,7 @@ class TEC_TC720(Device):
             if raise_exception == True:
                 raise Exception('Error(s) on {}: {}. {}'.format(self.name, current_errors, reset))
             else:
-                warnings.warn('Error(s) on {}: {}. {}'.format(self.name, current_errors, reset))
+                self.warning('Error(s) on {}: {}. {}'.format(self.name, current_errors, reset))
                 return [False, 'Error(s) on {}: {}. {}'.format(self.name, current_errors, reset)]
 
 
@@ -1047,7 +1047,7 @@ def find_address(identifier = None):
     
     """
 
-    warnings.warn('This function is deprecated, PLEASE DO NOT USE. Maodong, Jun 19,2023')
+    self.warning('This function is deprecated, PLEASE DO NOT USE. Maodong, Jun 19,2023')
 
     found = False
     if identifier != None:
@@ -1325,7 +1325,7 @@ def find_address(identifier = None):
 
 #         cur_mode = self.get_mode()
 #         if not  cur_mode == desired_mode:
-#             warnings.warn('TC720: {} is not set in the right mode to use this function. Current mode: {}, set the machine in the {} mode using set_mode({})'.format(self.name, cur_mode, desired_mode, desired_mode))
+#             self.warning('TC720: {} is not set in the right mode to use this function. Current mode: {}, set the machine in the {} mode using set_mode({})'.format(self.name, cur_mode, desired_mode, desired_mode))
 #             return False
 #         else:
 #             return True
@@ -1693,7 +1693,7 @@ def find_address(identifier = None):
 #                     self.set_idle()
 #                     raise Exception('Temperature could not be reached in {} minutes, check {} system.'.format(timeout, self.name))
 #                 else:
-#                     warnings.warn('Temperature could not be reached in {} minutes, check {} system.'.format(timeout, self.name))
+#                     self.warning('Temperature could not be reached in {} minutes, check {} system.'.format(timeout, self.name))
 #                     break
 
 
@@ -1757,7 +1757,7 @@ def find_address(identifier = None):
 #             if raise_exception == True:
 #                 raise Exception('Error(s) on {}: {}. {}'.format(self.name, current_errors, reset))
 #             else:
-#                 warnings.warn('Error(s) on {}: {}. {}'.format(self.name, current_errors, reset))
+#                 self.warning('Error(s) on {}: {}. {}'.format(self.name, current_errors, reset))
 #                 return [False, 'Error(s) on {}: {}. {}'.format(self.name, current_errors, reset)]
 
 
@@ -1986,7 +1986,7 @@ def find_address(identifier = None):
                 
 #                 #Timeout check
 #                 elif (time.time() - start_time) > timeout:
-#                     warnings.warn('Did not receive a response from temperature control unit "{}" within timout period.'.format(self.devicename))
+#                     self.warning('Did not receive a response from temperature control unit "{}" within timout period.'.format(self.devicename))
 #                     return self.inst.read_raw()
 #                     break
                 

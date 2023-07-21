@@ -81,7 +81,7 @@ class AgiltronSelfAlign22(Device):
     def check_mode_version(self):
         self.instrument.write_raw(b"\x01\x06\x00\x00")
         ret = self.instrument.read_bytes(4)
-        #print(ret)
+        #self.info(ret)
         assert (
             ret == b"\x01\x06\x15\x1f"
         ), f"wrong mode version, should be 0x15, 0x1f, but got {ret}. need further investigation"
@@ -89,7 +89,7 @@ class AgiltronSelfAlign22(Device):
     def check_status(self):
         self.instrument.write_raw(b"\x01\x13\x00\x00")
         ret = self.instrument.read_bytes(4)
-        #print(ret)
+        #self.info(ret)
         status_dict={1: b"\x01\x13\x01\x00", 2: b"\x01\x13\x02\x00"}
         "if ret belongs to status_dict, return the key, else return wrong status"
         for key, value in status_dict.items():
@@ -108,7 +108,7 @@ class AgiltronSelfAlign22(Device):
             assert (
                 ret == b"\x01\x14" + bytes([status]) + b"\x00"
             ), f"invalid return message, status not set to {status}"
-            print(f"status set to {status}")
+            self.info(f"status set to {status}")
             self.status = status
 
 

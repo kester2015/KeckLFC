@@ -53,7 +53,7 @@ class InstekGppDCSupply(Device):
             except:
                 pass                
         message = message + "Instek GPP DC Power Supply Status Summary Ends".center(80, '-') + "\n"
-        print(message)
+        self.info(message)
         return message
 
     @property
@@ -158,7 +158,7 @@ class InstekGppDCSupply(Device):
                 raise RuntimeError(self.devicename + ": " + f"channel {channel:.0f} OVP failed to turn "
                                    + status_dict[status].casefold() + f" in {time_out} seconds")
             self.write(cmd)
-        print(self.devicename + ": " + f"channel {channel:.0f} OVP is turned " + status_dict[status])
+        self.info(self.devicename + ": " + f"channel {channel:.0f} OVP is turned " + status_dict[status])
 
     def _getOVP(self, channel=1):
         self.__validate_channel(channel)
@@ -169,7 +169,7 @@ class InstekGppDCSupply(Device):
         self.__validate_channel(channel)
         cmd = f":OUTP{channel:.0f}:OVP {value}"
         self.write(cmd)
-        print(self.devicename + ": " + f"OVP channel {channel:.0f} set to {self._getOVP(channel=channel)}V")
+        self.info(self.devicename + ": " + f"OVP channel {channel:.0f} set to {self._getOVP(channel=channel)}V")
 
     def _getOCPStatus(self, channel=1):
         self.__validate_channel(channel)
@@ -195,7 +195,7 @@ class InstekGppDCSupply(Device):
                 raise RuntimeError(self.devicename + ": " + f"channel {channel:.0f} OCP failed to turn "
                                    + status_dict[status].casefold() + f" in {time_out} seconds")
             self.write(cmd)
-        print(self.devicename + ": " + f"channel {channel:.0f} OCP is turned " + status_dict[status])
+        self.info(self.devicename + ": " + f"channel {channel:.0f} OCP is turned " + status_dict[status])
 
     def _getOCP(self, channel=1):
         self.__validate_channel(channel)
@@ -206,7 +206,7 @@ class InstekGppDCSupply(Device):
         self.__validate_channel(channel)
         cmd = f":OUTP{channel:.0f}:OCP {value}"
         self.write(cmd)
-        print(self.devicename + ": " + f"OCP channel {channel:.0f} set to {self._getOCP(channel=channel)}V")
+        self.info(self.devicename + ": " + f"OCP channel {channel:.0f} set to {self._getOCP(channel=channel)}V")
 
     # ----------------------------- Private current/voltage/output SET/GET methods --------------------------------- #
     def _getOutputStatus(self, channel=1):
@@ -234,7 +234,7 @@ class InstekGppDCSupply(Device):
                 raise RuntimeError(self.devicename + ": " + f"channel {channel:.0f} output failed to turn "
                                    + status_dict[status].casefold() + f" in {time_out} seconds")
             self.write(cmd)
-        print(self.devicename + ": " + f"channel {channel:.0f} output is turned " + status_dict[status])
+        self.info(self.devicename + ": " + f"channel {channel:.0f} output is turned " + status_dict[status])
 
     def _getIOUT(self, channel=1):
         self.__validate_channel(channel)
@@ -257,7 +257,7 @@ class InstekGppDCSupply(Device):
             if time.time() > timer_start + time_out:
                 raise RuntimeError(self.devicename + ": " + f"ISET channel {channel:.0f} to {current:.3f}A failed in {time_out} seconds")
             self.write(cmd)
-        print(self.devicename + ": " + f"ISET channel {channel:.0f} set to {current:.3f}A")
+        self.info(self.devicename + ": " + f"ISET channel {channel:.0f} set to {current:.3f}A")
 
 
     def _getVOUT(self, channel=1):
@@ -281,7 +281,7 @@ class InstekGppDCSupply(Device):
             if time.time() > timer_start + time_out:
                 raise RuntimeError(self.devicename + ": " + f"VSET channel {channel:.0f} to {voltage:.3f}V failed in {time_out} seconds")
             self.write(cmd)
-        print(self.devicename + ": " + f"VSET channel {channel:.0f} set to {voltage:.3f}V")
+        self.info(self.devicename + ": " + f"VSET channel {channel:.0f} set to {voltage:.3f}V")
 
     # ----------------------------------------  Private auxiliary methods ------------------------------------------ #
     def __current_str_to_A(self, current_str: str) -> float:

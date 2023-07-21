@@ -30,15 +30,15 @@ class Servo():
             self.worker = threading.Thread(target=self.process,
                                            args=(setpoint, ))
             self.worker.start()
-            print(f"{self.name} started")
+            self.info(f"{self.name} started")
 
     def stop(self):
         self.locking = False
-        print(f"{self.name} stoped")
+        self.info(f"{self.name} stoped")
 
     def stop(self):
         self.locking = False
-        print(f"{self.name} stoped")
+        self.info(f"{self.name} stoped")
 
     def process(self, setpoint):
         self.q = deque()
@@ -76,7 +76,7 @@ class Servo():
 #         self.ax.set_ylim(self.setpoint - self.tol * 20,
 #                          self.setpoint + self.tol * 20)
         display(self.fig)
-        print(f"Locked:{self.locked}, x:{self.x}, y:{self.y}")
+        self.info(f"Locked:{self.locked}, x:{self.x}, y:{self.y}")
         clear_output(wait=True)
 
     def tune(self,
