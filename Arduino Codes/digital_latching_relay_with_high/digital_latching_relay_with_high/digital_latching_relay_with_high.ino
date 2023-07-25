@@ -3,6 +3,7 @@ int RelayPin2 = 8;
 int inputPin = 0;
 
 
+
 int threshold = 317;//83;
 int high_threshold = 741; // added for high
 

@@ -21,10 +21,10 @@ def send_log_file_via_email(fname):
     # size of the new email
     olmailitem = 0x0
     newmail = ol.CreateItem(olmailitem)
-    newmail.Subject = '[Regular] Keck LFC log file ' + fname
-    newmail.To = 'maodonggao@gmail.com; maodonggao@outlook.com'
+    newmail.Subject = '[Regular] [Keck LFC] log file rotated: ' + str(os.path.split(fname)[1])
+    newmail.To = 'maodonggao@outlook.com; stephanie.leifer@aero.org; jge2@caltech.edu'
     # newmail.CC='maodonggao@outlook.com'
-    newmail.Body = 'Hello, \n Attached are the rotated data logging file at Keck. \n\n Best, \n Maodong'
+    newmail.Body = '[Automatically Generated Email] \n\n' + 'Hello, \n\n Attached are the rotated data logging file at Keck. Email sent for backup only. \n\n Best, \n Maodong'
 
     newmail.Attachments.Add(fname)
     newmail.Send()

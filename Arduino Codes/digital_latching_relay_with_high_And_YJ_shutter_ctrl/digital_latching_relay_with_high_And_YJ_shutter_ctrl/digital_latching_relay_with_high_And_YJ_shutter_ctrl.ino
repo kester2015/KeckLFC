@@ -6,7 +6,7 @@ int shutterPin = 11; // Added for YJ shutter
 int shutterStatus = 0; // Added for YJ shutter, 0 pass, 1 shut
 
 int threshold = 317;//83;
-int high_threshold = 741; // added for high
+int high_threshold = 690; // added for high
 
 int lastV = 0;
 int lastV_high = 1024; // added for high
@@ -52,7 +52,7 @@ void responseSerial(String cmd) {
   
   // ------Added for high-----
   if (containsStr(cmd, "HIGH")) {
-    high_threshold = cmd.substring(9).toInt();
+    high_threshold = cmd.substring(4).toInt();
     Serial.print("High Threshold is set to ");
     Serial.println(high_threshold);
   }
@@ -75,12 +75,12 @@ void responseSerial(String cmd) {
 
   if (containsStr(cmd, "YJSHUT")) {
     digitalWrite(shutterPin,HIGH);
-    Serial.print("YJ shutter is UP, YJ is shutted.");
+    Serial.println("YJ shutter is UP, YJ is shutted.");
     shutterStatus = 1;
   }
   if (containsStr(cmd, "YJPASS")) {
     digitalWrite(shutterPin,LOW);
-    Serial.print("YJ shutter is DOWN, YJ is passing.");
+    Serial.println("YJ shutter is DOWN, YJ is passing.");
     shutterStatus = 0;
   }
   if (containsStr(cmd, "YJSTATE")) {

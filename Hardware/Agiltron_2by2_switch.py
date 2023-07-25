@@ -49,6 +49,7 @@ class AgiltronSelfAlign22(Device):
         # self.number_of_ports: int = 2
         self.status: Optional[int] = None
 
+        # status 1 YJ, status 2 HK comb
 
         self.isVISA = True
         self.inst = self.instrument # for compatibility with Device class
@@ -78,6 +79,7 @@ class AgiltronSelfAlign22(Device):
     #         #     ret == b"\x01\x35\xff\xff"
     #         # ), f"invalid return message, fiber port not set to {fiber_port}"
     #         self.fiber_port = fiber_port
+    
     def check_mode_version(self):
         self.instrument.write_raw(b"\x01\x06\x00\x00")
         ret = self.instrument.read_bytes(4)
@@ -110,6 +112,8 @@ class AgiltronSelfAlign22(Device):
             ), f"invalid return message, status not set to {status}"
             self.info(f"status set to {status}")
             self.status = status
+        else:
+            pass
 
 
 
