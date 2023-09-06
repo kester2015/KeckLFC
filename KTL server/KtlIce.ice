@@ -17,7 +17,7 @@ module Demo
     sequence<string> KeyNameSequence;
     
 
-    interface Hello
+    interface Lfc
     {
         void initialkeywords(KeywordSequence keywords);
         KeyNameSequence keylist();
