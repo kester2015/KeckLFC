@@ -90,16 +90,16 @@ class KeysightFG_33500(Device):
 
     #get output channel amplitude
     def get_channel_amplitude(self, channel):
-        return self.query(f"SOUR{channel}:VOLT?")
+        return float(self.query(f"SOUR{channel}:VOLT?"))
     #get output channel offset
     def get_channel_offset(self, channel):
-        return self.query(f"SOUR{channel}:VOLT:OFFS?")
+        return float(self.query(f"SOUR{channel}:VOLT:OFFS?"))
     #get output channel phase
     def get_channel_phase(self, channel):
-        return self.query(f"SOUR{channel}:PHAS?")
+        return float(self.query(f"SOUR{channel}:PHAS?"))
     #get output channel frequency
     def get_channel_frequency(self, channel):
-        return self.query(f"SOUR{channel}:FREQ?")
+        return float(self.query(f"SOUR{channel}:FREQ?"))
     def get_channel_state(self, channel):
         return self.query(f"OUTP{channel}?")
     def get_channel_function(self, channel):
