@@ -123,7 +123,7 @@ You should see something like "Successfully installed ..." in the terminal if th
 
 ### 2.3 Install mcculw (for USB-2408 DAQ)
 
-***You can skip this step if you don't have USB-2408 DAQ.***
+***USB-2408 DAQ is used to monitor the temperature of the instruments. It is not necessary for the operation of KeckLFC.***
 
 `mcculw` is a python package for USB-2408 DAQ. You can find more information about mcculw in https://www.mccdaq.com/PDFs/Manuals/USB-2408-2-4.pdf.
 
@@ -142,11 +142,57 @@ You should see something like "Successfully installed ..." in the terminal if th
 - **WaveManager Set-up 2.7.5**
 - **WaveShaper App Setup 2.2.0**
 
+> Note: The above **three** Apps are all necessary for the installation of wsapi. A common mistake is to only install one of the above. This will cause the folllowing installation of wsapi to fail. 
+
+**Check you can find folder C:\Program Files (x86)\Finisar\WaveManager\waveshaper**
+
+> Note added by Greg: If you can't find it, please check again you indeed installed **all the three** Apps above.
+
 **Follow DEFAULT download procedure. Especially oo not change the default installation path.**
 
 [TODO: Add more information on wsapi install. Download those necessary files and put them in the repo. Copy the online instructions here.]
 
 **Follow the instructions in [https://ii-vi.com/use-64-bit-python-3-7-to-control-the-waveshaper-through-the-usb-port/](https://ii-vi.com/use-64-bit-python-3-7-to-control-the-waveshaper-through-the-usb-port/) to install wsapi.**
+
+
+
+> Note: The following instructions are copied from the above link. Please refer to the above link for more information.
+> In order to control the WaveShaper through USB using 64-bit Python 3.7 please follow these instructions:
+
+> Load up the Command Prompt as administrator and change to the Python directory using the following command:
+> cd C:\Program Files (x86)\Finisar\WaveManager\waveshaper\api\python3
+
+> Run the setup.py script via this command:
+> python setup.py install
+
+> You must copy over the correct DLL files into the appropriate Windows folder. 64-bit Python requires the 64 bit DLLs to be copied into the System32
+> Copy this file: C:\Program Files (x86)\Finisar\WaveManager\waveshaper\bin\amd64\wsapi.dll into this folder C:\Windows\System32
+> Copy this file: C:\Program Files (x86)\Finisar\WaveManager\waveshaper\bin\amd64\ftd2xx64.dll into this folder C:\Windows\System32
+> Rename the copied file above from ftd2xx64.dll to ftd2xx.dll.
+> Copy this file: C:\Program Files (x86)\Finisar\WaveManager\waveshaper\bin\amd64\ws_cheetah64.dll into this folder C:\Windows\System32
+> Rename the copied file above from ws_cheetah64.dll to ws_cheetah.dll.
+> We can now test to see if the installation was successful. Load up Python 3.7. Import the wsapi library using the following command:
+> from wsapi import *
+
+> Return the API version number
+> ws_get_version()
+
+> This command should return a version number e.g. ‘2.7.3’. If it returns -1, then the DLL was not loaded correctly. You may wish to double-check step 3, restart Python and try again. If you still have trouble, please contact waveshaper@finisar.com.
+
+
+
+### 2.5 Install loguru (for local logging)
+
+loguru is a python package for logging. Locally logging is used to record the commands sent to the instruments and the responses from the instruments. (This function is updated during test in July 2023)
+
+- **Run `pip install loguru` in terminal.**
+
+You should see a list of packages to be installed. 
+
+- Type "y" and press enter to confirm the installation if you see a prompt like "Proceed ([y]/n)?".
+
+You should see something like "Successfully installed ..." in the terminal if the installation is successful.
+
 
 
 ### 2.end: Common issues and solution suggestions for package installation
@@ -186,13 +232,13 @@ This step will help you fork this repository to your local computer. You can als
 
 **Choose one of the following options to fork or download the repository to your local computer.**
 
-### (Option 1) 4.1: Install Github Desktop and clone the repository
+### (Option 1, do this only if you are familiar with github) 4.1: Install Github Desktop and clone the repository
 
 This can be complicated if you are not familiar with Github. But this will allow you to push your changes to the repository and pull the latest version of the repository to your local computer.
 
 - **Follow the instructions in [https://docs.github.com/en/desktop/installing-and-configuring-github-desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop](https://docs.github.com/en/desktop/installing-and-configuring-github-desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop) to install Github Desktop.**
 
-### (Option 2) 4.2: Download the repository directly from Github website
+### (Option 2, easiest way) 4.2: Download the repository directly from Github website
 
 This is most straightforward way to download the repository. But you will not be able to push your changes to the repository and pull the latest version of the repository to your local computer. You will need to download the repository again if you want to get the latest version of the repository.
 
@@ -215,11 +261,13 @@ This is most straightforward way to download the repository. But you will not be
 
 - **Follow the instructions in [https://code.visualstudio.com/download](https://code.visualstudio.com/download) to download VScode.**
 
+>Note added by Greg: Needed to click on the windows button install, NOT the “installer” or “.zip” or “CLI” buttons.
+
 ### 5.2: Open your project folder in VScode and select the python environment
 
 - 1. Open your project folder in VScode
 
- **Follow the instructions in [https://code.visualstudio.com/docs/editor/quickstart](https://code.visualstudio.com/docs/editor/quickstart) to open your project folder in VScode.**
+    **Open your project folder in VScode by clicking "File" -> "Open Folder" in VScode.**
 
 - 2. Select the python environment
     
@@ -252,15 +300,44 @@ Keysight IO Libraries Suite is a collection of libraries and tools that help you
 
 > Note: In Keck Laser Frequency Comb, we use Keysight IO Libraries Suite to communicate with not only KeySight equipments. [TODO: Identify what specifically are using it]
 
-**Follow the instructions in [https://www.keysight.com/us/en/software/application-sw/keysight-io-libraries-suite.html](https://www.keysight.com/us/en/software/application-sw/keysight-io-libraries-suite.html) to install Keysight IO Libraries Suite.**
+**Follow the instructions in [https://www.keysight.com/us/en/lib/software-detail/computer-software/io-libraries-suite-downloads-2175637.html](https://www.keysight.com/us/en/lib/software-detail/computer-software/io-libraries-suite-downloads-2175637.html) to install Keysight IO Libraries Suite.**
+
+> Note added by Greg: If the above link is broken, you may search 'Keysight IO Libraries Suite' in Google or in Keysight.com. The link should be easy to find.
 
 ## Step 7: Install Ni-Max
 
 Ni-Max is a software that helps you to manage your National Instruments (NI) devices. It is also the software that you can use to communicate with NI devices, ***debug your NI devices, and identify the address of your NI devices.***
 
-You can find more information about Ni-Max in https://www.ni.com/en-us/support/downloads/drivers/download.ni-max.html.
+You can find more information about Ni-Max in https://knowledge.ni.com/KnowledgeArticleDetails?id=kA03q000000YGQwCAO&l=en-US.
 
 **Follow the instructions in [https://www.ni.com/en-us/support/downloads/drivers/download.ni-max.html](https://www.ni.com/en-us/support/downloads/drivers/download.ni-max.html) to install Ni-Max.**
+
+> Note added by Greg: If the above link is broken, you may search 'Ni Max download' in Google or in NI.com. The link should be easy to find.
+
+
+## Step 8: Install NI-488.2 package
+
+NI-488.2 is a package that helps you to communicate with NI devices through GPIB interface.
+You can find more information about NI-488.2 in https://www.ni.com/en-us/support/downloads/drivers/download.ni-488-2.html.
+
+**Follow the instructions in [https://www.ni.com/en-us/support/downloads/drivers/download.ni-488-2.html](https://www.ni.com/en-us/support/downloads/drivers/download.ni-488-2.html) to install NI-488.2.**
+
+
+## Step 9: Install Instek GPP driver
+
+Instek GPP driver is a driver that helps you to communicate with Instek GPP devices. In our case especially Instek GPD-4303S and GPP-1326. They are power supply for RF oscillator and RF amplifier, respectively. 
+
+GPD-4303S is a four channel DC power supply, which is used to provide power for RF oscillator, and provide DC bias for RF attenuator on optical intensity modulator.
+
+GPP-1326 is a one channel high power (operating at ~120W) DC power supply, which is used to provide power for RF amplifier.
+
+You can find more information about Instek GPP driver in https://www.gwinstek.com/en-IN/products/detail/GPP-Series.
+
+**Download the driver from [https://www.gwinstek.com/en-IN/products/downloadSeriesDownNew/14684/1747](https://www.gwinstek.com/en-IN/products/downloadSeriesDownNew/14684/1747).** (In case the above link fails, you may go to [https://www.gwinstek.com/en-IN/products/detail/GPP-Series](https://www.gwinstek.com/en-IN/products/detail/GPP-Series) and click "Download" on the right side of the page. Find 'USB driver' there and click "Download".)
+
+**Install the downloaded GPP package following default instructions.**
+
+
 
 ## Step End-1: Verify installations
 
