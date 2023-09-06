@@ -5,7 +5,7 @@ import Demo
 
 sys.path.append('../')
 
-use_mock = False
+use_mock = True
 
 #import random, threading
 if not use_mock:
@@ -14,7 +14,7 @@ else:
     from mockKeckLFC import *
 
 
-class HelloI(Demo.Hello):
+class LfcI(Demo.Lfc):
 
     def __init__(self):
 
@@ -67,7 +67,7 @@ with Ice.initialize(sys.argv, 'config.server') as communicator:
         print(sys.argv[0] + ": too many arguments")
         sys.exit(1)
 
-    adapter = communicator.createObjectAdapter("Hello")
-    adapter.add(HelloI(), Ice.stringToIdentity("hello"))
+    adapter = communicator.createObjectAdapter("Lfc")
+    adapter.add(LfcI(), Ice.stringToIdentity("lfc"))
     adapter.activate()
     communicator.waitForShutdown()
