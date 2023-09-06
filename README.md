@@ -160,22 +160,33 @@ You should see something like "Successfully installed ..." in the terminal if th
 > In order to control the WaveShaper through USB using 64-bit Python 3.7 please follow these instructions:
 
 > Load up the Command Prompt as administrator and change to the Python directory using the following command:
-> cd C:\Program Files (x86)\Finisar\WaveManager\waveshaper\api\python3
+> `cd C:\Program Files (x86)\Finisar\WaveManager\waveshaper\api\python3`
 
 > Run the setup.py script via this command:
-> python setup.py install
+
+> `python setup.py install`
+
+**If you get access denied errors, you may need to run these commands as administrator. To do this, right click on the Command Prompt icon and select ‘Run as administrator’. Then repeat this step over again. Also don't forget to check you are in the right environment. You should see (lfc-env) in the command prompt. (If not please run `conda activate lfc-env` in terminal.)**
 
 > You must copy over the correct DLL files into the appropriate Windows folder. 64-bit Python requires the 64 bit DLLs to be copied into the System32
+
 > Copy this file: C:\Program Files (x86)\Finisar\WaveManager\waveshaper\bin\amd64\wsapi.dll into this folder C:\Windows\System32
+
 > Copy this file: C:\Program Files (x86)\Finisar\WaveManager\waveshaper\bin\amd64\ftd2xx64.dll into this folder C:\Windows\System32
+
 > Rename the copied file above from ftd2xx64.dll to ftd2xx.dll.
+
 > Copy this file: C:\Program Files (x86)\Finisar\WaveManager\waveshaper\bin\amd64\ws_cheetah64.dll into this folder C:\Windows\System32
+
 > Rename the copied file above from ws_cheetah64.dll to ws_cheetah.dll.
+
 > We can now test to see if the installation was successful. Load up Python 3.7. Import the wsapi library using the following command:
-> from wsapi import *
+
+> `from wsapi import *`
 
 > Return the API version number
-> ws_get_version()
+
+> `ws_get_version()`
 
 > This command should return a version number e.g. ‘2.7.3’. If it returns -1, then the DLL was not loaded correctly. You may wish to double-check step 3, restart Python and try again. If you still have trouble, please contact waveshaper@finisar.com.
 
