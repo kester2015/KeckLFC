@@ -137,22 +137,22 @@ You should see something like "Successfully installed ..." in the terminal if th
 
 ### 2.4 Install wsapi (for Finisar WaveShaper)
 
-**Install waveshaper driver from https://ii-vi.com/product-category/products/optical-communications/optical-instrumentation/. Go to tag "Software & Drivers", download and install** 
-- **WaveAnalyzer GUI Software 1.9.0**
-- **WaveManager Set-up 2.7.5**
-- **WaveShaper App Setup 2.2.0**
+- **Install waveshaper driver from https://ii-vi.com/product-category/products/optical-communications/optical-instrumentation/. Go to tag "Software & Drivers", download and install** 
+-- **WaveAnalyzer GUI Software 1.9.0**
+-- **WaveManager Set-up 2.7.5**
+-- **WaveShaper App Setup 2.2.0**
 
 > Note: The above **three** Apps are all necessary for the installation of wsapi. A common mistake is to only install one of the above. This will cause the folllowing installation of wsapi to fail. 
 
-**Check you can find folder C:\Program Files (x86)\Finisar\WaveManager\waveshaper**
+- **Check you can find folder C:\Program Files (x86)\Finisar\WaveManager\waveshaper**
 
 > Note added by Greg: If you can't find it, please check again you indeed installed **all the three** Apps above.
 
-**Follow DEFAULT download procedure. Especially oo not change the default installation path.**
+- **Follow DEFAULT download procedure. Especially oo not change the default installation path.**
 
 [TODO: Add more information on wsapi install. Download those necessary files and put them in the repo. Copy the online instructions here.]
 
-**Follow the instructions in [https://ii-vi.com/use-64-bit-python-3-7-to-control-the-waveshaper-through-the-usb-port/](https://ii-vi.com/use-64-bit-python-3-7-to-control-the-waveshaper-through-the-usb-port/) to install wsapi.**
+- **Follow the instructions in [https://ii-vi.com/use-64-bit-python-3-7-to-control-the-waveshaper-through-the-usb-port/](https://ii-vi.com/use-64-bit-python-3-7-to-control-the-waveshaper-through-the-usb-port/) to install wsapi.**
 
 
 
