@@ -383,14 +383,17 @@ class TEC_TC720(Device):
     #    Read functions
     #==========================================================================
 
-    def get_temp(self):
+    def get_temp(self, log_info=False):
         """
         Read the current temperature on sensor 1.
         Returns temperature in degree Celsius with 2 decimals.
         
         """
         self.send_message(self.message_builder('01'))
-        return self.response_to_int(self.read_message()) / 100
+        result = self.response_to_int(self.read_message()) / 100
+        if log_info:
+            self.info(self.devicename + ': Temperature 1: {}C'.format(result))
+        return result
 
     def get_temp2(self):
         """

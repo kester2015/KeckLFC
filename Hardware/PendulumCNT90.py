@@ -39,7 +39,7 @@ class PendulumCNT90(Device):
         self.write(":SENS:TOT:GATE OFF")
         self.info("Pendulum Freq Counter: Gate is turned off, measurement result is holded on display.")
 
-    def measFreq(self, chan, measTime=1, measArray=1):  # Measure frequency of channel=chan in unit of Hz
+    def measFreq(self, chan, measTime=1, measArray=1, log_info=False):  # Measure frequency of channel=chan in unit of Hz
         # measTime in unit of seconds. MeasArray is number of measurements to return
         chan = str(chan).casefold()
         if chan not in self.__channelDict:
@@ -60,8 +60,10 @@ class PendulumCNT90(Device):
         try:
             result = float(self.query("FETC?"))
         except:
-            self.info("Pendulum Freq Counter: Measurement not completed, check signal input.")
+            self.error("Pendulum Freq Counter: Measurement not completed, check signal input.")
             result = -1
+        if log_info:
+            self.info(f"Pendulum Freq Counter: channel {chan} frequency measured, {result} Hz.")
         return result
 
 # if __name__ == "__main__":

@@ -78,9 +78,9 @@ class ORIONLaser(Device):
         W1 = response['data'][0]
         W2 = response['data'][1]
         W3 = response['data'][2]
-        self.info(W1)
-        self.info(W2)
-        self.info(W3)
+        print(W1)
+        print(W2)
+        print(W3)
         return response['data']
 
     def readProductID(self):

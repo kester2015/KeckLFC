@@ -87,6 +87,8 @@ class AutoRbLock():
         plt.plot(corex,renormal_corey)
         plt.plot(x,cvv)
         plt.plot(x[max_position],cvv[max_position],'o')
+        plt.show()
+        time.sleep(0.5)
 
         amp=self.fg.get_channel_amplitude(channel=1)
         offset=self.fg.get_channel_offset(channel=1)
@@ -150,6 +152,8 @@ class AutoRbLock():
         hight=np.max(shift)-np.min(shift)
 
         plt.plot(shift)
+        plt.show()
+        time.sleep(0.5)
         if (hight>amp_test/2) & (hight<amp_test*2):
             self.fg.set_channel_func(1, 'dc')
             print('lock success')
@@ -206,6 +210,8 @@ if __name__ == '__main__':
     time.sleep(24)
     trace_x,trace_y=autolock.get_trace(trace = 1)
     plt.plot(trace_x,trace_y)
+    plt.show()
+    time.sleep(0.5)
 
     # get step 1 trace
     namp,noffset,_,_=autolock.cvv(trace_x,trace_y,1)
@@ -220,6 +226,8 @@ if __name__ == '__main__':
     time.sleep(24)
     trace_x,trace_y=autolock.get_trace(trace = 1)
     plt.plot(trace_x,trace_y)
+    plt.show()
+    time.sleep(0.5)
 
     #find step 2 trace, amp and offset
     namp,noffset,_,_=autolock.cvv(trace_x,trace_y,2)
@@ -230,6 +238,8 @@ if __name__ == '__main__':
     time.sleep(24)
     trace_x,trace_y=autolock.get_trace(trace = 1)
     plt.plot(trace_x,trace_y)
+    plt.show()
+    time.sleep(0.5)
 
     namp,noffset,_,_=autolock.cvv(trace_x,trace_y,3)
     print(namp,noffset)
