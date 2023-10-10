@@ -1,3 +1,10 @@
+
+# ==================== Device.py ====================
+# File heads are executed when `import Device' is called.
+# the behavior of 'import' ensures logger only initialized once.
+# logger.handler enqueue ensures log file is not locked by other process.
+
+
 # Reconfigure logger
 import os, sys, warnings, inspect
 
@@ -39,7 +46,7 @@ logger_format = (
     "<cyan>{extra[function_module]}</cyan>:<cyan>{extra[function_name]}</cyan>:<cyan>{extra[function_line]}</cyan>\n"
     "<level>{message}</level>")
 logger.add(sys.stderr, format=logger_format, level="INFO")  # recover console print
-logger.add(fname, format=logger_format, level="INFO", rotation="1 MB", retention=5,
+logger.add(fname, format=logger_format, level="INFO", rotation="1 MB", retention=5, enqueue=True,
            compression=send_log_file_via_email)  # 1MB per file, 5 files max
 logger.bind(devicename="Device").info('logger initialized', **get_call_kwargs(level=0))
 

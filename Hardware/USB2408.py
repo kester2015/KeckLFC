@@ -174,7 +174,7 @@ if __name__=="__main__":
     #         print(e)
     #     time.sleep(2)
 
-    filename = r"C:\Users\HSFLFC\Desktop\Keck\Logs\DAQ_Temperature\DAQ_Temperature_2023_0913_3.csv"
+    filename = r"C:\Users\HSFLFC\Desktop\Keck\Logs\DAQ_Temperature\DAQ_Temperature_2023_0920_2.csv"
 
     with  open(filename,"w") as f:
         #TODO: write table head

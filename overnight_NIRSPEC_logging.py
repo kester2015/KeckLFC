@@ -1,5 +1,5 @@
-filedir = r"C:\Users\HSFLFC\OneDrive - California Institute of Technology (1)\Vahala Group\Maodong\Projects\Keck\Tests after Commission\Logs\20230914"
-filename = filedir+"\\"+"NIRSPEC_Test_2023_0913_2.csv"
+filedir = r"C:\Users\HSFLFC\OneDrive - California Institute of Technology (1)\Vahala Group\Maodong\Projects\Keck\Tests after Commission\Logs\20230921"
+filename = filedir+"\\"+"NIRSPEC_Test_2023_0921_1.csv"
 
 # create dir if not exist
 import os
@@ -66,30 +66,33 @@ tec_ppln.connect()
 
 
 import time
-with  open(filename,"w") as f:
-    #TODO: write table head
-    f.write(time.strftime('%Z')+",")
-    f.write("Pritel Cur (mA)"+",")
 
-    f.write("Pritel Pwr (mW)"+",")
-    f.write("Rb lock error"+",")
+# If file already exists, don't write header
+if not os.path.exists(filename):
+    with  open(filename,"w") as f:
+        #TODO: write table head
+        f.write(time.strftime('%Z')+",")
+        f.write("Pritel Cur (mA)"+",")
 
-    f.write("Rb lock measure"+",")
+        f.write("Pritel Pwr (mW)"+",")
+        f.write("Rb lock error"+",")
 
-    f.write("Rb lock output"+",")
+        f.write("Rb lock measure"+",")
 
-    f.write("Freq Counter (Hz)"+",")
+        f.write("Rb lock output"+",")
 
-    f.write("IM lock error"+",")
-    f.write("IM lock measure"+",")
-    f.write("IM lock output"+",")
+        f.write("Freq Counter (Hz)"+",")
 
-    f.write("PPLN Temp (C)"+",")
-    f.write("WG Temp (C)"+",")
+        f.write("IM lock error"+",")
+        f.write("IM lock measure"+",")
+        f.write("IM lock output"+",")
 
-    f.write("\n")
+        f.write("PPLN Temp (C)"+",")
+        f.write("WG Temp (C)"+",")
 
-ii = 0
+        f.write("\n")
+
+ii = 218
 while True:
     try:
         with open(filename,"a") as f:
@@ -123,11 +126,33 @@ while True:
             ptamp.printStatus()
 
             #####
-            rio.printStatus()
             amonic27.printStatus()
             amonic23.printStatus()
             rfampPS.printStatus()
-            rfoscPS.printStatus()
+
+            try:
+                rfoscPS.printStatus()
+            except:
+                # reconnect rfoscPS
+                rfoscPS.info("Data loging error: Reconnecting rfoscPS")
+                time.sleep(1)
+                rfoscPS.disconnect()
+                time.sleep(1)
+                rfoscPS.connect()
+                time.sleep(1)
+                rfoscPS.printStatus()
+
+            try:
+                rio.printStatus()
+            except:
+                # reconnect rio
+                rio.info("Data loging error: Reconnecting rio")
+                time.sleep(1)
+                rio.disconnect()
+                time.sleep(1)
+                rio.connect()
+                time.sleep(1)
+                rio.printStatus()
             #####
     except Exception as e:
         print(e)

@@ -158,7 +158,7 @@ class ORIONLaser(Device):
                 f": Error read. Invaild header {packet[0]} (expect 0xA9=169) or footer {packet[-1]} (expect 0xA5=165)")
         if not sum(packet[:-1]) & 0xFF == 0:
             ret['valid'] = False
-            self.error(self.devicename + ": Error read. Checksum Error.")
+            self.error(self.devicename + ": Error read. Checksum Error.")     
         ret['packetlength'] = packet[2]
         ret['status'] = packet[6]
         ret['cmdID'] = packet[7]
