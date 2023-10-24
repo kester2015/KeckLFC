@@ -353,6 +353,107 @@ class KeckLFC(object):
 
     ########## KTL Keywords Implementation ############
 
+    def LFC_T_GLY_RACK_IN(self, value=None):
+        if value == None:
+            addr = 0
+            chan = 5
+            from Hardware.USB2408 import USB2408
+            daq = USB2408(addr=addr)
+            daq.connect()
+            temp = daq.get_temp(chan)
+            daq.disconnect()
+            return temp
+        else:
+            raise ValueError("LFC_T_GLY_RACK_IN is read-only")
+            return
+        
+    def LFC_T_GLY_RACK_OUT(self, value=None):
+        if value == None:
+            addr = 0
+            chan = 4
+            from Hardware.USB2408 import USB2408
+            daq = USB2408(addr=addr)
+            daq.connect()
+            temp = daq.get_temp(chan)
+            daq.disconnect()
+            return temp
+        else:
+            raise ValueError("LFC_T_GLY_RACK_OUT is read-only")
+            return
+        
+    def LFC_T_EOCB_IN(self, value=None):
+        if value == None:
+            addr = 1
+            chan = 5
+            from Hardware.USB2408 import USB2408
+            daq = USB2408(addr=addr)
+            daq.connect()
+            temp = daq.get_temp(chan)
+            daq.disconnect()
+            return temp
+        else:
+            raise ValueError("LFC_T_EOCB_IN is read-only")
+            return
+
+    def LFC_T_EOCB_OUT(self, value=None):
+        if value == None:
+            addr = 1
+            chan = 4
+            from Hardware.USB2408 import USB2408
+            daq = USB2408(addr=addr)
+            daq.connect()
+            temp = daq.get_temp(chan)
+            daq.disconnect()
+            return temp
+        else:
+            raise ValueError("LFC_T_EOCB_OUT is read-only")
+            return
+        
+    def LFC_T_RACK_TOP(self, value=None):
+        if value == None:
+            addr = 0
+            chan = 3 # Use Pritel Amplifier TEC as the rack top temperature
+            from Hardware.USB2408 import USB2408
+            daq = USB2408(addr=addr)
+            daq.connect()
+            temp = daq.get_temp(chan)
+            daq.disconnect()
+            return temp
+        else:
+            raise ValueError("LFC_T_RACK_TOP is read-only")
+            return
+        
+    def LFC_T_RACK_MID(self, value=None):
+        if value == None:
+            addr = 0
+            chan = 0 # Use Side buffle as the rack mid temperature
+            from Hardware.USB2408 import USB2408
+            daq = USB2408(addr=addr)
+            daq.connect()
+            temp = daq.get_temp(chan)
+            daq.disconnect()
+            return temp
+        else:
+            raise ValueError("LFC_T_RACK_MID is read-only")
+            return
+    
+    def LFC_T_RACK_BOT(self, value=None):
+        if value == None:
+            addr = 0
+            chan = 6 # Bottom rack temperature
+            from Hardware.USB2408 import USB2408
+            daq = USB2408(addr=addr)
+            daq.connect()
+            temp = daq.get_temp(chan)
+            daq.disconnect()
+            return temp
+        else:
+            raise ValueError("LFC_T_RACK_BOT is read-only")
+            return
+
+
+
+
     def LFC_RIO_T(self, value=None):
         self.osa.connect()
         if value == None:

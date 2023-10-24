@@ -4,7 +4,10 @@ from mcculw import ul
 from mcculw.enums import InfoType, BoardInfo, AiChanType, TcType, TempScale, TInOptions
 import warnings
 import numpy as np
-from Device import Device
+try:
+    from .Device import Device
+except:
+    from Device import Device
 
 
 class USB2408(Device):
