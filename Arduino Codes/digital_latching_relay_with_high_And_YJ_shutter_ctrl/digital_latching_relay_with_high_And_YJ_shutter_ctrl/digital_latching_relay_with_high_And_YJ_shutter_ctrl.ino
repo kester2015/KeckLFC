@@ -36,6 +36,7 @@ bool containsStr(String cmd, String str) {
 }
 
 void responseSerial(String cmd) {
+  Serial.println(cmd);
   if (containsStr(cmd, "RESET")) {
     lastV = nowV;
 
