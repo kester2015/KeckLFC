@@ -22,9 +22,12 @@ class AutoRbLock():
         self.osc = osc
         self.fg = fg
         self.servo_RB = servo_RB
-        self.file_dir1 = r"C:\Users\HSFLFC\Desktop\Keck\Keck Comb\LFC\Rb_locking_data\01.npy"
-        self.file_dir2 = r"C:\Users\HSFLFC\Desktop\Keck\Keck Comb\LFC\Rb_locking_data\02.npy"
-        self.file_dir3 = r"C:\Users\HSFLFC\Desktop\Keck\Keck Comb\LFC\Rb_locking_data\03.npy"
+        self.file_dir1 = r"C:\Users\HSFLFC\Desktop\Keck\Keck Comb\LFC\Rb_locking_data\new01.npy"
+        self.file_dir2 = r"C:\Users\HSFLFC\Desktop\Keck\Keck Comb\LFC\Rb_locking_data\new02.npy"
+        self.file_dir3 = r"C:\Users\HSFLFC\Desktop\Keck\Keck Comb\LFC\Rb_locking_data\new03.npy"
+        self.file_dir4 = r"C:\Users\HSFLFC\Desktop\Keck\Keck Comb\LFC\Rb_locking_data\cliff01.npy"
+        self.file_dir5 = r"C:\Users\HSFLFC\Desktop\Keck\Keck Comb\LFC\Rb_locking_data\cliff02.npy"
+        self.file_dir6 = r"C:\Users\HSFLFC\Desktop\Keck\Keck Comb\LFC\Rb_locking_data\cliff03.npy"
 
     def load_history_trace(self, file_dir):
         # data = loadmat(file_dir)
@@ -56,10 +59,13 @@ class AutoRbLock():
     def cvv(self,x,y,step):    #x,y is real trace, corex,corey is history trace
         if step==1:
             corex,corey=self.load_history_trace(self.file_dir1)
+            cliff_position=self.find_cliff(x,y,1)
         elif step==2:
             corex,corey=self.load_history_trace(self.file_dir2)
+            cliff_position=self.find_cliff(x,y,2)
         elif step==3:
             corex,corey=self.load_history_trace(self.file_dir3)
+            cliff_position=self.find_cliff(x,y,3)
         else:
             warnings.warn('step is wrong')
 
@@ -82,9 +88,9 @@ class AutoRbLock():
         len_data=len(renormal_y)
         max_position=np.argmax(cvv[round(len_core/2):len_data-round(len_core/2)])+round(len_core/2)
         print(f'max position={max_position}')
-        plt.plot(x,renormal_y)
+        plt.plot(x,y)
         #plt.plot(x,cvv2)
-        plt.plot(corex,renormal_corey)
+        plt.plot(corex,corey)
         plt.plot(x,cvv)
         plt.plot(x[max_position],cvv[max_position],'o')
         plt.show()
@@ -95,11 +101,67 @@ class AutoRbLock():
 
         start=offset-amp/2
         stop=offset+amp/2
+        v_per_len=amp/len_data
 
-        new_offset=start+(stop-start)*max_position/len_data
-        new_amp=(stop-start)*len_core/len_data
+        #new_offset=start+(stop-start)*max_position/len_data
+        #new_amp=(stop-start)*len_core/len_data
 
+        
+        if max_position<cliff_position:
+                
+            new_offset=stop-v_per_len*(cliff_position-max_position)
+            new_amp=v_per_len*len_core
+
+        else:
+            new_offset=start+v_per_len*(max_position-cliff_position)
+            new_amp=v_per_len*len_core
+                
         return new_amp,new_offset,max_position,cvv[max_position]
+    
+
+
+    def find_cliff(self,x,y,setp):
+        if setp==1:
+            corex,corey=self.load_history_trace(self.file_dir4)
+        elif setp==2:
+            corex,corey=self.load_history_trace(self.file_dir5)
+        elif setp==3:
+            corex,corey=self.load_history_trace(self.file_dir6)
+        else:
+            warnings.warn('step is wrong')
+
+        corex,corey=self.load_history_trace(self.file_dir4)
+        aver_corey=sum(corey)/len(corey)
+        renormal_y=y-aver_corey
+        renormal_corey=corey-aver_corey
+        # plt.plot(x,renormal_y)
+        # plt.plot(corex,renormal_corey)
+
+        cvv=np.convolve(renormal_corey[::-1],renormal_y,'same')
+        #cvv2=np.convolve(renormal_corey,renormal_y,'same')
+        len_core=len(renormal_corey)
+        len_data=len(renormal_y)
+        max_position=np.argmax(cvv[round(len_core/2):len_data-round(len_core/2)])+round(len_core/2)
+        print(f'cliff position={max_position}')
+        plt.plot(x,y)
+        #plt.plot(x,cvv2)
+        plt.plot(corex,corey)
+        plt.plot(x,cvv)
+        plt.plot(x[max_position],cvv[max_position],'o')
+        plt.show()
+        time.sleep(0.5)
+
+        # amp=self.fg.get_channel_amplitude(channel=1)
+        # offset=self.fg.get_channel_offset(channel=1)
+
+        # low=offset-amp/2
+        # high=offset+amp/2
+
+        # new_offset=start+(stop-start)*max_position/len_data
+        # new_amp=(stop-start)*len_core/len_data
+
+        return max_position
+
 
     def scan_offset(self,step):
         amp=self.fg.get_channel_amplitude(channel=1)
@@ -107,8 +169,8 @@ class AutoRbLock():
         maxp=[]
         for i in list(range(11)):
             ofset=offset+(i-5)*0.1*amp
-            self.fg.set_channel_parameters(channel=1, freq=10, amp=amp, offset=ofset, phase=0)
-            time.sleep(24)
+            self.fg.set_channel_parameters(channel=1, freq=10, amp=amp, offset=ofset, phase=180)
+            time.sleep(20)
             x,y=self.get_trace()
             _,newoff,maxp1,maxv=self.cvv(x,y,step)
             maxp.append([maxv,maxp1,newoff])
@@ -126,7 +188,7 @@ class AutoRbLock():
 
     def lock(self,amp_lock,offset_lock):
         self.fg.set_channel_func(1, 'dc')
-        self.fg.set_channel_parameters(channel=1, freq=10, amp=amp_lock, offset=offset_lock, phase=0)
+        self.fg.set_channel_parameters(channel=1, freq=10, amp=amp_lock, offset=offset_lock, phase=180)
         self.fg.set_channel_state(1, 1)
         self.servo_RB.output_mode = 'pid'
 
@@ -137,12 +199,14 @@ class AutoRbLock():
         amp_test=amp_test/2
         offset_test=self.fg.get_channel_offset(channel=1)
         #amp_test=0.01
-        self.fg.set_channel_parameters(channel=1, freq=10, amp=amp_test, offset=offset_test, phase=0)
+        self.fg.set_channel_parameters(channel=1, freq=10, amp=amp_test, offset=offset_test, phase=180)
         self.fg.set_channel_func(1, 'ramp')
         self.fg.set_channel_state(1, 1)
 
         self.fg.get_channel_parameters(1)
         shift=[]
+        
+        time.sleep(1)
         
         for i in list(range(30)):
             shift.append(self.servo_RB.output_voltage)

@@ -177,7 +177,13 @@ if __name__=="__main__":
     #         print(e)
     #     time.sleep(2)
 
-    filename = r"C:\Users\HSFLFC\Desktop\Keck\Logs\DAQ_Temperature\DAQ_Temperature_2023_0920_2.csv"
+    filename = r"C:\Users\HSFLFC\OneDrive - California Institute of Technology (1)\Vahala Group\Maodong\Projects\Keck\Tests after Commission\DAQ_Temperature\DAQ_Temperature_2023_1110_1.csv"
+
+    # if file or folder not exist, create it
+    import os
+    if not os.path.exists(os.path.dirname(filename)):
+        os.makedirs(os.path.dirname(filename))
+        
 
     with  open(filename,"w") as f:
         #TODO: write table head
