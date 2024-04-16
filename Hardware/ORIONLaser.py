@@ -5,7 +5,7 @@ import time
 
 class ORIONLaser(Device):
 
-    def __init__(self, addr='ASRL12::INSTR', name="ORION Laser Module"):
+    def __init__(self, addr='ASRL55::INSTR', name="ORION Laser Module"):
         super().__init__(addr=addr, name=name, isVISA=False)
         self.inst = self.rm.open_resource(addr, read_termination='\xA5')
         self.__thermistor_A = 1.2146e-3

@@ -17,6 +17,9 @@ class PritelAmp(Device):
         self.ramp_pwr_ma = 50  # Ramp up current step, disable by setting self.ramp=0
         self.ramp_pre_ma = 100  # Ramp up current step, disable by setting self.ramp=0
 
+        # self.speak_out_setting = True  # If True, will speak out the setting value when setting pwrAmp or preAmp
+        # TODO: add a function to read the setting value, and speak out if self.speak_out_setting is True
+
     def printStatus(self):
 
         def highlight_status(status_string):

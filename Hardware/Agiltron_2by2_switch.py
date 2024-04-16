@@ -46,14 +46,27 @@ class AgiltronSelfAlign22(Device):
             write_termination="\r\n",
             read_termination="\r\n",
         )
-        # self.number_of_ports: int = 2
-        self.status: Optional[int] = None
+
+        # # self.number_of_ports: int = 2
+        # self.status: Optional[int] = None
 
         # status 1 YJ, status 2 HK comb
-
         self.isVISA = True
         self.inst = self.instrument # for compatibility with Device class
 
+    def printStatus(self):
+        message = str(self.devicename).center(81,'-')+"\n"
+        message = message + "|"+ "Agiltron 2 by 2 switch Status Summary".center(80, '-') + "\n"
+        status_code = self.status
+        message = message + "|\t Status CODE: " + str(status_code) + "\n"
+        message = message + "|\t Signal going to Astronomer is: " + ("YJ" if status_code == 1 else "HK") + "\n"
+        message = message + "Agiltron 2 by 2 switch Status Summary Ends".center(80, '-') + "\n"
+        self.info(message)
+        return message
+
+    @property
+    def status(self):
+        return self.check_status()
 
     # def home(self) -> None:
     #     """
@@ -80,6 +93,14 @@ class AgiltronSelfAlign22(Device):
     #         # ), f"invalid return message, fiber port not set to {fiber_port}"
     #         self.fiber_port = fiber_port
     
+    def YJ_to_spectrograph(self):
+        self.info(self.devicename + ": switching to YJ")
+        self.set_status(1)
+
+    def HK_to_spectrograph(self):
+        self.info(self.devicename + ": switching to HK")
+        self.set_status(2)
+
     def check_mode_version(self):
         self.instrument.write_raw(b"\x01\x06\x00\x00")
         ret = self.instrument.read_bytes(4)
@@ -102,7 +123,7 @@ class AgiltronSelfAlign22(Device):
     def set_status(self, status: int) -> None:
         #self.instrument.clear()
         self.check_mode_version()
-        self.status = self.check_status()
+        # self.status = self.check_status() 
         if status != self.status:
             cmd = b"\x01\x14\x00" + bytes([status])
             self.instrument.write_raw(cmd)
@@ -111,7 +132,7 @@ class AgiltronSelfAlign22(Device):
                 ret == b"\x01\x14" + bytes([status]) + b"\x00"
             ), f"invalid return message, status not set to {status}"
             self.info(f"status set to {status}")
-            self.status = status
+            # self.status = status
         else:
             pass
 

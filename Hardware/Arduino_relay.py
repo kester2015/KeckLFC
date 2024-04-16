@@ -104,7 +104,14 @@ class Arduino_relay(Device):
     
     @property
     def info_str_YJ(self):
-        return self.query("YJState")
+        resp = self.query("YJState")
+        # if contain "passing":
+        if "passing" in resp.casefold():
+            return "YJ shutter is OPEN, YJ is passing."
+        elif "shutted" in resp.casefold():
+            return "YJ shutter is CLOSED, YJ is shutted."
+        else:
+            return "UNKOWN: state code: [ "+resp+" ]"
 
     def reset_relay_latch(self):
         return self.query("reset")
@@ -119,7 +126,15 @@ class Arduino_relay(Device):
         return self.query("YJPass")
     
     def get_YJ_info(self):
-        return self.query("YJState")
+        # return self.query("YJState")
+        resp = self.query("YJState")
+        # if contain "passing":
+        if "passing" in resp.casefold():
+            return "YJ shutter is OPEN, YJ is passing."
+        elif "shutted" in resp.casefold():
+            return "YJ shutter is CLOSED, YJ is shutted."
+        else:
+            return "UNKOWN: state code: [ "+resp+" ]"
     
     def get_API_help(self):
         return self.query("help")

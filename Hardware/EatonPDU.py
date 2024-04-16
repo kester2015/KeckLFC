@@ -31,7 +31,7 @@ class EatonPDU(Device):
                                  "Outlet A17", "Outlet A18",
                                  "Outlet A19", "Outlet A20",
                                  "Outlet A21", "Outlet A22",
-                                 "Outlet A23", "Outlet A24",]
+                                 "Outlet A23", "Outlet A24",] # SN H619N29036 are A1-A24
         
         self.outlet_name_list = ["Outlet B1", "Outlet B2",
                                 "Outlet B3", "Outlet B4",
@@ -44,7 +44,7 @@ class EatonPDU(Device):
                                 "Outlet B17", "Outlet B18",
                                 "Outlet B19", "Outlet B20",
                                 "Outlet B21", "Outlet B22",
-                                "Outlet B23", "Outlet B24",]
+                                "Outlet B23", "Outlet B24",] # SN H619N29040 are B1-B24
         
     def assign_outlet_name(self):
         '''Assign outlet name to each outlet.'''
