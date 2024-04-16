@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Plugin DeviceName="Thorlabs SC10"         
+        Assembly="Thorlabs.WPF.SC10" 
+        ConfigurationFile="SC10.exe.config"
+        IconFile="SC10.ico" />
